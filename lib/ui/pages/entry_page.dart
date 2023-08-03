@@ -1,0 +1,41 @@
+import 'package:enagro_app/ui/widgets/default_button.dart';
+import 'package:enagro_app/ui/widgets/default_outline_button.dart';
+import 'package:flutter/material.dart';
+
+class EntryPage extends StatefulWidget {
+  const EntryPage({super.key});
+
+  @override
+  State<EntryPage> createState() => _EntryPageState();
+}
+
+class _EntryPageState extends State<EntryPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).cardColor,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Image.asset(
+                  'images/banner_entrada.png',
+                ),
+              ),
+            ),
+            DefaultButton('Cadastre-se', () {},
+                style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 16),
+            DefaultOutlineButton('Entre', () {},
+                style: const TextStyle(
+                    color: Color.fromARGB(255, 0, 150, 50), fontSize: 18)),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+}
