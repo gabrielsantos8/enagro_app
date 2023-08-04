@@ -11,11 +11,11 @@ ThemeData primaryTheme() {
   final inputDecoration = InputDecorationTheme(
     enabledBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: corPrimariaEscura, width: 2),
-      borderRadius: BorderRadius.circular(20),
+      // borderRadius: BorderRadius.circular(20),
     ),
     focusedBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: corPrimariaClara, width: 3),
-      borderRadius: BorderRadius.circular(20),
+      // borderRadius: BorderRadius.circular(20),
     ),
   );
 
@@ -42,7 +42,6 @@ ThemeData primaryTheme() {
     inputDecorationTheme: inputDecoration,
     elevatedButtonTheme: buttonDecoration,
     cardColor: backgroundColor,
-    focusColor: loginColor,
-    hintColor : erroColor
+    focusColor: loginColor
   );
 }
