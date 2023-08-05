@@ -1,3 +1,5 @@
+import 'package:enagro_app/ui/pages/signin_page.dart';
+import 'package:enagro_app/ui/pages/signup_page.dart';
 import 'package:enagro_app/ui/widgets/default_button.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
@@ -18,18 +20,23 @@ class _EntryPageState extends State<EntryPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: Image.asset(
-                  'images/banner_entrada.png',
-                ),
-              ),
+            SizedBox(
+              height: 500,
+              child: Image.asset('images/banner_entrada.png'),
             ),
-            DefaultButton('Cadastre-se', () {},
-                style: const TextStyle(fontSize: 18)),
+            DefaultButton('Cadastre-se', () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SignupPage()),
+              );
+            }, style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 16),
-            DefaultOutlineButton('Entre', () {},
+            DefaultOutlineButton('Entre', () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SigninPage()),
+              );
+            },
                 style: const TextStyle(
                     color: Color.fromARGB(255, 0, 150, 50), fontSize: 18)),
             const SizedBox(height: 16),
