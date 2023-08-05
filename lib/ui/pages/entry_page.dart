@@ -1,4 +1,5 @@
-import 'package:enagro_app/ui/pages/singup_page.dart';
+import 'package:enagro_app/ui/pages/signin_page.dart';
+import 'package:enagro_app/ui/pages/signup_page.dart';
 import 'package:enagro_app/ui/widgets/default_button.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,12 @@ class _EntryPageState extends State<EntryPage> {
               );
             }, style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 16),
-            DefaultOutlineButton('Entre', () {},
+            DefaultOutlineButton('Entre', () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SigninPage()),
+              );
+            },
                 style: const TextStyle(
                     color: Color.fromARGB(255, 0, 150, 50), fontSize: 18)),
             const SizedBox(height: 16),

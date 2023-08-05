@@ -6,7 +6,6 @@ ThemeData primaryTheme() {
   const corPrimariaClara = Color.fromARGB(255, 1, 206, 70);
   const backgroundColor = Color.fromARGB(255, 255, 255, 255);
   const loginColor = Color.fromARGB(255, 255, 255, 255);
-  const erroColor = Color.fromARGB(255, 241, 105, 105);
 
   final inputDecoration = InputDecorationTheme(
     enabledBorder: OutlineInputBorder(
