@@ -13,7 +13,7 @@ class User {
     required this.userType,
   });
 
-  factory User.fromArray(Map<String, dynamic> usr) {
+  factory User.fromMap(Map<String, dynamic> usr) {
     return User(
         userId: usr['id'] ?? 0,
         name: usr['name'] ?? '',

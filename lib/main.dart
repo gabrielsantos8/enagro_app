@@ -1,5 +1,5 @@
+import 'package:enagro_app/ui/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'ui/pages/entry_page.dart';
 import 'ui/primary_theme.dart';
 import 'package:flutter/services.dart'; //For using SystemChrome
 
@@ -11,6 +11,6 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: primaryTheme(),
-    home: const EntryPage(),
+    home: const SplashScreen(),
   ));
 }
