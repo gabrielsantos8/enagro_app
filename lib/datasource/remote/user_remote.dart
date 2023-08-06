@@ -18,6 +18,16 @@ class UserRemote {
     return user;
   }
 
+  Future<User> register(Object params) async {
+    var prms = jsonEncode(params);
+    var data = await GeneralHttpClient().post('${url}store', prms);
+    if (data['success']) {
+      saveToken(data['token']);
+    }
+    User user = User.fromMap(data['dados']);
+    return user;
+  }
+
   static Future<void> saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);

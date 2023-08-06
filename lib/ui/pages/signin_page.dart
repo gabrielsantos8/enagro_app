@@ -22,7 +22,7 @@ class _SigninPageState extends State<SigninPage> {
   Future<User> _signIn(String email, String password) {
     Object params = {"email": email, "password": password};
 
-    UserRemote userRemote = new UserRemote();
+    UserRemote userRemote = UserRemote();
     Future<User> user = userRemote.login(params);
 
     return user;
