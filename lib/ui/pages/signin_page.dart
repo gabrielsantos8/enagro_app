@@ -1,3 +1,6 @@
+import 'package:enagro_app/datasource/remote/user_remote.dart';
+import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/ui/pages/home_page.dart';
 import 'package:enagro_app/ui/pages/signup_page.dart';
 import 'package:enagro_app/ui/widgets/default_button.dart';
 import 'package:enagro_app/ui/widgets/default_textfield.dart';
@@ -16,15 +19,19 @@ class _SigninPageState extends State<SigninPage> {
 
   String _errorMessage = '';
 
-  void _signIn() {
-    String email = emailController.text;
-    String password = passwordController.text;
+  Future<User> _signIn(String email, String password) {
+    Object params = {"email": email, "password": password};
 
-    if (!_validateFields(email, password)) {
-      return;
-    }
+    UserRemote userRemote = new UserRemote();
+    Future<User> user = userRemote.login(params);
 
-    print('Logado com sucesso!');
+    return user;
+  }
+
+  void _setErrorMsg(String msg) {
+    setState(() {
+      _errorMessage = msg;
+    });
   }
 
   bool _validateFields(String email, String pass) {
@@ -38,9 +45,7 @@ class _SigninPageState extends State<SigninPage> {
     } else {
       _errorMessage = '';
     }
-    setState(() {
-      _errorMessage = _errorMessage;
-    });
+    _setErrorMsg(_errorMessage);
     return isValid;
   }
 
@@ -76,7 +81,24 @@ class _SigninPageState extends State<SigninPage> {
             const SizedBox(height: 25),
             DefaultButton(
               'Entrar',
-              _signIn,
+              () async {
+                String email = emailController.text;
+                String password = passwordController.text;
+                if (!_validateFields(email, password)) {
+                  return;
+                }
+                User user = await _signIn(email, password);
+
+                if (user.userId > 0) {
+                  // ignore: use_build_context_synchronously
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage(user)),
+                  );
+                } else {
+                  _setErrorMsg('Email ou senha inválidos!');
+                }
+              },
               width: 400,
               style: const TextStyle(fontSize: 16),
             ),
