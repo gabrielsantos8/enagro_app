@@ -13,12 +13,12 @@ class User {
     required this.userType,
   });
 
-  factory User.fromArray(Map<String, dynamic> mapa) {
+  factory User.fromArray(Map<String, dynamic> usr) {
     return User(
-        userId: mapa['id'] ?? 0,
-        name: mapa['name'] ?? '',
-        email: mapa['email'] ?? '',
-        userTypeId: mapa['user_type_id'] ?? 0,
-        userType: mapa['user_type'] ?? '');
+        userId: usr['id'] ?? 0,
+        name: usr['name'] ?? '',
+        email: usr['email'] ?? '',
+        userTypeId: usr['user_type_id'] ?? 0,
+        userType: usr['user_type'] ?? '');
   }
 }

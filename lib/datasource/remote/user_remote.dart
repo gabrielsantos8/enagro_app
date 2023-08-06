@@ -8,8 +8,8 @@ class UserRemote {
 
   Future<User> login(Object params) async {
     var prms = jsonEncode(params);
-    var dados = await GeneralHttpClient().post('${url}login', prms);
-    User user = User.fromArray(dados['dados']);
+    var data = await GeneralHttpClient().post('${url}login', prms);
+    User user = User.fromArray(data['dados']);
     return user;
   }
 }
