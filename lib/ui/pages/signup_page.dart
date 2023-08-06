@@ -1,3 +1,6 @@
+import 'package:enagro_app/datasource/remote/user_remote.dart';
+import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/ui/pages/home_page.dart';
 import 'package:enagro_app/ui/pages/signin_page.dart';
 import 'package:enagro_app/ui/widgets/default_button.dart';
 import 'package:enagro_app/ui/widgets/default_textfield.dart';
@@ -18,17 +21,13 @@ class _SignupPageState extends State<SignupPage> {
 
   String _errorMessage = '';
 
-  void _signUp() {
-    String email = emailController.text;
-    String fullName = fullNameController.text;
-    String password = passwordController.text;
-    String passwordConfirm = passwordConfirmController.text;
+  Future<User> _signUp(String email, String fullName, String password) {
+    Object params = {"email": email, "password": password, "name": fullName};
 
-    if (!_validateAll(email, fullName, password, passwordConfirm)) {
-      return;
-    }
+    UserRemote userRemote = UserRemote();
+    Future<User> user = userRemote.register(params);
 
-    print('Cadastro realizado com sucesso!');
+    return user;
   }
 
   bool _validateEmail(String email) {
@@ -92,14 +91,18 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   bool _validateAll(String email, String fullName, String pass1, String pass2) {
-    setState(() {
-      _errorMessage = _errorMessage;
-    });
+    _setErrorMsg(_errorMessage);
     return _validateEmail(email) &&
         _validateFullName(fullName) &&
         _validateFields(email, fullName, pass1, pass2) &&
         _validatePasswords(pass1, pass2) &&
         _validatePasswordRules(pass1);
+  }
+
+  void _setErrorMsg(String msg) {
+    setState(() {
+      _errorMessage = msg;
+    });
   }
 
   @override
@@ -145,7 +148,25 @@ class _SignupPageState extends State<SignupPage> {
             const SizedBox(height: 25),
             DefaultButton(
               'Cadastrar',
-              _signUp,
+              () async {
+                String email = emailController.text;
+                String fullName = fullNameController.text;
+                String password = passwordController.text;
+                String passwordConfirm = passwordConfirmController.text;
+                if (!_validateAll(email, fullName, password, passwordConfirm)) {
+                  return;
+                }
+                User user = await _signUp(email, fullName, password);
+                if (user.userId > 0) {
+                  // ignore: use_build_context_synchronously
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage(user)),
+                  );
+                } else {
+                  _setErrorMsg('Ops, houve um erro, tente novamente mais tarde!');
+                }
+              },
               width: 400,
               style: const TextStyle(fontSize: 16),
             ),
