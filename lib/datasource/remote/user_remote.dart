@@ -1,11 +1,13 @@
 import 'dart:convert';
+import 'package:enagro_app/helpers/Util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:enagro_app/infra/general_http_client.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
+
 class UserRemote {
-  final url = "http://localhost:8000/api/user/";
+  final url = Util.concatenateEndpoint("user/");
   static const String _tokenKey = "userToken";
 
   Future<User> login(Object params) async {
