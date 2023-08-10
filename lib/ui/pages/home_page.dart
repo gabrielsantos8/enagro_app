@@ -16,63 +16,98 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).cardColor,
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.zero,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 0, 150, 50),
+        appBar: AppBar(
+          elevation: 0,
+          iconTheme: IconThemeData(color: Theme.of(context).primaryColorDark),
+          leading: Builder(builder: ((context) {
+            return IconButton(
+              icon: Icon(
+                Icons.menu,
+                color: Theme.of(context).primaryColorDark,
+                size: 44,
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 10),
-                    Image.asset('images/cow_drawer.png',
-                        width: 130), // Sua imagem aqui
-                    const SizedBox(height: 10),
-                    Text(
-                      widget.user!.name,
-                      style: TextStyle(color: Colors.white, fontSize: 17),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
-                    DefaultOutlineButton(
-                      'Ver perfil',
-                      () {},
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 150, 50)),
-                    )
-                  ],
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          })),
+        ),
+        drawer: Drawer(
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.zero,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 0, 150, 50),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 10),
+                      Image.asset('images/cow_drawer.png',
+                          width: 130), // Sua imagem aqui
+                      const SizedBox(height: 10),
+                      Text(
+                        widget.user!.name,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 17),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      DefaultOutlineButton(
+                        'Ver perfil',
+                        () {},
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 0, 150, 50)),
+                      )
+                    ],
+                  ),
                 ),
               ),
+              const SizedBox(height: 7),
+              DefaultDrawerItem(Icons.local_hospital_outlined,
+                  'Plano de saúde animal', () {}),
+              DefaultDrawerItem(Icons.shield_outlined, 'Seguro animal', () {}),
+              DefaultDrawerItem(
+                  Icons.assignment_late_outlined, 'Serviços Avulsos', () {}),
+              DefaultDrawerItem(Icons.business, 'Parceiros', () {}),
+              const Spacer(),
+              DefaultDrawerItem(Icons.info_outline, 'Sobre a Enagro', () {},
+                  div: false),
+            ],
+          ),
+        ),
+        body: ListView(
+          children: [
+            Container(
+              height: 60,
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25, bottom: 25),
+                    child: Text(
+                      'Olá, ${widget.user?.name.split(' ')[0]}!',
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(color: Colors.white, fontSize: 19),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 7),
             DefaultDrawerItem(
-                Icons.local_hospital_outlined, 'Plano de saúde animal', () {}),
-            DefaultDrawerItem(Icons.shield_outlined, 'Seguro animal', () {}),
+                Icons.local_hospital_outlined, 'Plano de Saúde', () {}),
+            DefaultDrawerItem(
+                Icons.shield_outlined, 'Seguro', () {}),
             DefaultDrawerItem(
                 Icons.assignment_late_outlined, 'Serviços Avulsos', () {}),
-            DefaultDrawerItem(Icons.business, 'Parceiros', () {}),
-            const Spacer(),
-            DefaultDrawerItem(Icons.info_outline, 'Sobre a Enagro', () {},
-                div: false),
           ],
-        ),
-      ),
-      body: ListView(),
-    );
+        ));
   }
 }
