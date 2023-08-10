@@ -91,7 +91,7 @@ class _SigninPageState extends State<SigninPage> {
 
                 if (user.userId > 0) {
                   // ignore: use_build_context_synchronously
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage(user)),
                   );

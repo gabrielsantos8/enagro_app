@@ -25,14 +25,14 @@ class _EntryPageState extends State<EntryPage> {
               child: Image.asset('images/banner_entrada.png'),
             ),
             DefaultButton('Cadastre-se', () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const SignupPage()),
               );
             }, style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 16),
             DefaultOutlineButton('Entre', () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const SigninPage()),
               );

@@ -159,7 +159,7 @@ class _SignupPageState extends State<SignupPage> {
                 User user = await _signUp(email, fullName, password);
                 if (user.userId > 0) {
                   // ignore: use_build_context_synchronously
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage(user)),
                   );
