@@ -7,14 +7,12 @@ ThemeData primaryTheme() {
   const backgroundColor = Color.fromARGB(255, 255, 255, 255);
   const loginColor = Color.fromARGB(255, 255, 255, 255);
 
-  final inputDecoration = InputDecorationTheme(
+  const inputDecoration = InputDecorationTheme(
     enabledBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: corPrimariaEscura, width: 2),
-      // borderRadius: BorderRadius.circular(20),
+      borderSide: BorderSide(color: corPrimariaEscura, width: 2),
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: corPrimariaClara, width: 3),
-      // borderRadius: BorderRadius.circular(20),
+      borderSide: BorderSide(color: corPrimariaClara, width: 3),
     ),
   );
 
