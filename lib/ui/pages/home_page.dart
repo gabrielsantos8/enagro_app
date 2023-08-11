@@ -1,5 +1,6 @@
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/widgets/default_drawer_item.dart';
+import 'package:enagro_app/ui/widgets/default_home_item.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
 
@@ -17,22 +18,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          elevation: 0,
-          iconTheme: IconThemeData(color: Theme.of(context).primaryColorDark),
-          leading: Builder(builder: ((context) {
-            return IconButton(
-              icon: Icon(
-                Icons.menu,
-                color: Theme.of(context).primaryColorDark,
-                size: 44,
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-            );
-          })),
-        ),
+            elevation: 0,
+            iconTheme: IconThemeData(color: Theme.of(context).primaryColorDark),
+            leading: Builder(builder: ((context) {
+              return IconButton(
+                icon: Icon(
+                  Icons.menu,
+                  color: Theme.of(context).primaryColorDark,
+                  size: 44,
+                ),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+              );
+            }))),
         drawer: Drawer(
           child: Column(
             children: [
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
         body: ListView(
           children: [
             Container(
-              height: 60,
+              height: 65,
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -92,21 +92,40 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 25, bottom: 25),
-                    child: Text(
-                      'Olá, ${widget.user?.name.split(' ')[0]}!',
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(color: Colors.white, fontSize: 19),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'images/logo_enagro_white.png',
+                          width: 35,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Olá, ${widget.user?.name.split(' ')[0]}!',
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 19, fontWeight: FontWeight.bold),
+                        )
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            DefaultDrawerItem(
-                Icons.local_hospital_outlined, 'Plano de Saúde', () {}),
-            DefaultDrawerItem(
-                Icons.shield_outlined, 'Seguro', () {}),
-            DefaultDrawerItem(
-                Icons.assignment_late_outlined, 'Serviços Avulsos', () {}),
+            DefaultHomeItem(
+                iconData: Icons.local_hospital_outlined,
+                title: 'Plano de Saúde Animal',
+                description: 'Nenhum plano contratado.',
+                onTap: () {}),
+            DefaultHomeItem(
+                iconData: Icons.shield_outlined,
+                title: 'Seguro Animal',
+                description: 'Nenhum seguro contratado.',
+                onTap: () {}),
+            DefaultHomeItem(
+                iconData: Icons.assignment_late_outlined,
+                title: 'Serviços Avulsos',
+                description: 'O melhor, aqui.',
+                onTap: () {}),
           ],
         ));
   }

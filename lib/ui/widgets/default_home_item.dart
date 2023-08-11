@@ -1,30 +1,64 @@
 import 'package:flutter/material.dart';
 
 class DefaultHomeItem extends StatelessWidget {
-   IconData iconData;
-  String title;
-  VoidCallback onTap;
-  bool div;
+  final IconData iconData;
+  final String title;
+  final String description;
+  final VoidCallback onTap;
+  final bool div;
 
-  DefaultHomeItem(this.iconData, this.title, this.onTap, {this.div = true, super.key});
+  const DefaultHomeItem({
+    this.iconData = Icons.info,
+    this.title = "",
+    required this.onTap,
+    this.description = "",
+    this.div = true,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          leading: Icon(iconData),
-          title: Text(title),
-          onTap: onTap,
-          trailing: const Icon(Icons.chevron_right),
-        ),
-        if(div)  
-          const Divider(
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(iconData, size: 25.0),
+                  const SizedBox(height: 4.0),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  if (description.isNotEmpty) const SizedBox(height: 4.0),
+                  if (description.isNotEmpty)
+                    Text(
+                      description,
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
+                ],
+              ),
+            ),
+            const Spacer(),
+            const Icon(Icons.chevron_right, size: 30, color: Color.fromARGB(255, 192, 191, 191))
+          ]),
+          if (div)
+            const Divider(
               color: Color.fromARGB(255, 218, 218, 218),
               thickness: 1,
               indent: 5,
-              endIndent: 5),
-      ],
-    );;
+              endIndent: 5,
+            ),
+        ],
+      ),
+    );
   }
 }
