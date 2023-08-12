@@ -1,4 +1,5 @@
 import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/ui/pages/user_page.dart';
 import 'package:enagro_app/ui/widgets/default_drawer_item.dart';
 import 'package:enagro_app/ui/widgets/default_home_item.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
@@ -48,8 +49,11 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 10),
-                      Image.asset('images/cow_drawer.png',
-                          width: 130), // Sua imagem aqui
+                      const CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(
+                            'https://s2-pegn.glbimg.com/u5v52RSMsc8hTq0f6bZPU-hMAz4=/0x0:1024x1024/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_ba41d7b1ff5f48b28d3c5f84f30a06af/internal_photos/bs/2023/e/g/90RpDKT02z2P2kTuIzkQ/libano.png'),
+                      ),
                       const SizedBox(height: 10),
                       Text(
                         widget.user!.name,
@@ -60,7 +64,13 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 10),
                       DefaultOutlineButton(
                         'Ver perfil',
-                        () {},
+                        () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserPage(widget.user)),
+                          );
+                        },
                         style: const TextStyle(
                             color: Color.fromARGB(255, 0, 150, 50)),
                       )
@@ -103,7 +113,9 @@ class _HomePageState extends State<HomePage> {
                           'Olá, ${widget.user?.name.split(' ')[0]}!',
                           textAlign: TextAlign.start,
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 19, fontWeight: FontWeight.bold),
+                              color: Colors.white,
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
