@@ -19,6 +19,7 @@ class _SignupPageState extends State<SignupPage> {
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
 
+  bool _isLoading = false;
   String _errorMessage = '';
 
   Future<User> _signUp(String email, String fullName, String password) {
@@ -147,7 +148,7 @@ class _SignupPageState extends State<SignupPage> {
                 controller: passwordConfirmController),
             const SizedBox(height: 25),
             DefaultButton(
-              'Cadastrar',
+              _isLoading ? 'Cadastrando...' : 'Cadastrar',
               () async {
                 String email = emailController.text;
                 String fullName = fullNameController.text;
@@ -156,15 +157,23 @@ class _SignupPageState extends State<SignupPage> {
                 if (!_validateAll(email, fullName, password, passwordConfirm)) {
                   return;
                 }
+                setState(() {
+                  _isLoading = true;
+                });
                 User user = await _signUp(email, fullName, password);
+                setState(() {
+                  _isLoading = false;
+                });
                 if (user.userId > 0) {
                   // ignore: use_build_context_synchronously
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage(user)),
+                       (Route<dynamic> route) => false
                   );
                 } else {
-                  _setErrorMsg('Ops, houve um erro, tente novamente mais tarde!');
+                  _setErrorMsg(
+                      'Ops, houve um erro, tente novamente mais tarde!');
                 }
               },
               width: 400,

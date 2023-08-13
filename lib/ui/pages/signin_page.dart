@@ -17,6 +17,7 @@ class _SigninPageState extends State<SigninPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  bool _isLoading = false;
   String _errorMessage = '';
 
   Future<User> _signIn(String email, String password) {
@@ -80,20 +81,29 @@ class _SigninPageState extends State<SigninPage> {
                 controller: passwordController),
             const SizedBox(height: 25),
             DefaultButton(
-              'Entrar',
+              _isLoading ? 'Entrando...' : 'Entrar',
               () async {
                 String email = emailController.text;
                 String password = passwordController.text;
                 if (!_validateFields(email, password)) {
                   return;
                 }
+                setState(() {
+                  _isLoading = true;
+                });
+
                 User user = await _signIn(email, password);
+
+                setState(() {
+                  _isLoading = false;
+                });
 
                 if (user.userId > 0) {
                   // ignore: use_build_context_synchronously
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage(user)),
+                    (Route<dynamic> route) => false
                   );
                 } else {
                   _setErrorMsg('Email ou senha inválidos!');
