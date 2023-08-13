@@ -1,4 +1,4 @@
-import 'package:enagro_app/models/user_addresses.dart';
+import 'package:enagro_app/models/user_address.dart';
 import 'package:enagro_app/models/user_type.dart';
 
 class User {

@@ -1,6 +1,6 @@
 import 'package:enagro_app/helpers/util.dart';
 import 'package:enagro_app/infra/general_http_client.dart';
-import 'package:enagro_app/models/user_addresses.dart';
+import 'package:enagro_app/models/user_address.dart';
 
 class UserAddressRemote {
   final url = Util.concatenateEndpoint("user_address/");
