@@ -27,17 +27,17 @@ class _SplashScreenState extends State<SplashScreen> {
     Map<String, dynamic> tokenInfos = await UserRemote.getTokenInfos();
     User user = User.fromMap(tokenInfos);
     // ignore: use_build_context_synchronously
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage(user)),
-    );
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(user)),
+        (Route<dynamic> route) => false);
   }
 
   void navigateToEntryPage() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const EntryPage()),
-    );
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const EntryPage()),
+        (Route<dynamic> route) => false);
   }
 
   void _isAuth() async {

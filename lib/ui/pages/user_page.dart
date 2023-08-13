@@ -1,5 +1,11 @@
+import 'package:enagro_app/datasource/remote/user_address_remote.dart';
+import 'package:enagro_app/datasource/remote/user_remote.dart';
 import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/models/user_addresses.dart';
+import 'package:enagro_app/ui/pages/entry_page.dart';
+import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
 import 'package:enagro_app/ui/widgets/default_home_item.dart';
+import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
 
 class UserPage extends StatefulWidget {
@@ -13,6 +19,12 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   @override
+  void initState() {
+    super.initState();
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
@@ -25,12 +37,10 @@ class _UserPageState extends State<UserPage> {
               color: Theme.of(context).primaryColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black
-                      .withOpacity(0.2),
+                  color: Colors.black.withOpacity(0.2),
                   spreadRadius: 1,
                   blurRadius: 3,
-                  offset: const Offset(
-                      0, 4),
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
@@ -50,13 +60,13 @@ class _UserPageState extends State<UserPage> {
                       top: 70,
                       left: 70,
                       child: InkWell(
-                        onTap: () {
-                          
-                        },
+                        onTap: () {},
                         child: CircleAvatar(
                           backgroundColor: Theme.of(context).primaryColorDark,
                           radius: 15,
-                          child: Icon(Icons.edit, size: 20, color: Theme.of(context).primaryColorLight),
+                          child: Icon(Icons.edit,
+                              size: 20,
+                              color: Theme.of(context).primaryColorLight),
                         ),
                       ),
                     ),
@@ -84,18 +94,86 @@ class _UserPageState extends State<UserPage> {
             ),
           ),
           const SizedBox(height: 20),
-          const Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Text(
-              'Seus endereços:',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.all(2.7),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey,
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child: Text(
+                      'Endereço(s):',
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    child: _buildAddressList(widget.user!.userId),
+                  ),
+                ],
+              ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: widget.user!.addresses.length,
+          const Spacer(),
+          DefaultOutlineButton(
+            'Sair',
+            () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ConfirmDialog(
+                      content: "Tem certeza que deseja sair?",
+                      noFunction: () {
+                        Navigator.pop(context);
+                      },
+                      yesFunction: () {
+                        UserRemote.signOut();
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => const EntryPage()),
+                          (Route<dynamic> route) => false
+ 
+                        );
+                      },
+                    );
+                  });
+            },
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+          const SizedBox(height: 20)
+        ],
+      ),
+    );
+  }
+}
+
+Widget _buildAddressList(int userId) {
+  return FutureBuilder(
+    future: UserAddressRemote().getByUser(userId),
+    builder: (context, snapshot) {
+      switch (snapshot.connectionState) {
+        case ConnectionState.active:
+        case ConnectionState.waiting:
+        case ConnectionState.none:
+          return Center(
+              child: CircularProgressIndicator(
+            backgroundColor: Theme.of(context).primaryColor,
+            color: Theme.of(context).primaryColorLight,
+          ));
+        case ConnectionState.done:
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                var address = widget.user!.addresses[index];
+                UserAddress address = snapshot.data![index];
                 return DefaultHomeItem(
                   title: '${address.city.description} - ${address.city.uf}',
                   description: address.complement,
@@ -105,10 +183,13 @@ class _UserPageState extends State<UserPage> {
                   onTap: () {},
                 );
               },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+            );
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('Erro ao carregar endereços!'));
+          } else {
+            return const Center(child: Text('Nenhum endereço cadastrado'));
+          }
+      }
+    },
+  );
 }

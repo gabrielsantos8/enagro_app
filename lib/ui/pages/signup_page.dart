@@ -166,9 +166,10 @@ class _SignupPageState extends State<SignupPage> {
                 });
                 if (user.userId > 0) {
                   // ignore: use_build_context_synchronously
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage(user)),
+                       (Route<dynamic> route) => false
                   );
                 } else {
                   _setErrorMsg(

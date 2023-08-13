@@ -100,9 +100,10 @@ class _SigninPageState extends State<SigninPage> {
 
                 if (user.userId > 0) {
                   // ignore: use_build_context_synchronously
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage(user)),
+                    (Route<dynamic> route) => false
                   );
                 } else {
                   _setErrorMsg('Email ou senha inválidos!');
