@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:enagro_app/models/user_phone.dart';
-import 'package:enagro_app/datasource/remote/user_phone_remote.dart'; // Importe a classe UserPhoneRemote
+import 'package:enagro_app/datasource/remote/user_phone_remote.dart';
 
 class UserPhoneEditPage extends StatefulWidget {
   final UserPhone? userPhone;
@@ -13,7 +13,7 @@ class UserPhoneEditPage extends StatefulWidget {
 class _UserPhoneEditPageState extends State<UserPhoneEditPage> {
   late TextEditingController _dddController;
   late TextEditingController _numberController;
-  bool _isSaving = false; // Variável para controlar o estado do botão
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -52,6 +52,7 @@ class _UserPhoneEditPageState extends State<UserPhoneEditPage> {
       // ignore: use_build_context_synchronously
       Navigator.pop(context, true);
     } else {
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -124,8 +125,8 @@ class _UserPhoneEditPageState extends State<UserPhoneEditPage> {
               ElevatedButton(
                 onPressed: _isSaving
                     ? null
-                    : _editPhone, // Desativar o botão enquanto está salvando
-                child: _isSaving ? Text('Salvando...') : Text('Salvar'),
+                    : _editPhone,
+                child: _isSaving ? const Text('Salvando...') : const Text('Salvar'),
               ),
             ],
           ),

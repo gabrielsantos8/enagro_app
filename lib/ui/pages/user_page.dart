@@ -218,7 +218,7 @@ Widget _buildAddressList(int userId) {
             color: Theme.of(context).primaryColorLight,
           ));
         case ConnectionState.done:
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
@@ -252,12 +252,13 @@ Widget _buildPhoneList(int userId) {
         case ConnectionState.waiting:
         case ConnectionState.none:
           return Center(
-              child: CircularProgressIndicator(
-            backgroundColor: Theme.of(context).primaryColor,
-            color: Theme.of(context).primaryColorLight,
-          ));
+            child: CircularProgressIndicator(
+              backgroundColor: Theme.of(context).primaryColor,
+              color: Theme.of(context).primaryColorLight,
+            ),
+          );
         case ConnectionState.done:
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data!.userPhoneId > 0) {
             UserPhone? phone = snapshot.data;
             return DefaultHomeItem(
               title: '(${phone?.ddd}) ${phone?.number}',
@@ -266,15 +267,28 @@ Widget _buildPhoneList(int userId) {
               rightIcon: Icons.edit_outlined,
               onTap: () {
                 Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => UserPhoneEditPage(userPhone: phone)),
-              );
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          UserPhoneEditPage(userPhone: phone)),
+                );
               },
             );
           } else if (snapshot.hasError) {
             return const Center(child: Text('Erro ao carregar telefone!'));
           } else {
-            return const Center(child: Text('Nenhum telefone cadastrado'));
+            return Center(
+                child: Column(
+              children: [
+                const Text('Nenhum telefone cadastrado'),
+                const SizedBox(height: 10),
+                DefaultOutlineButton(
+                  'Adicionar Telefone',
+                  () {},
+                  style: TextStyle(color: Theme.of(context).primaryColor),
+                ),
+              ],
+            ));
           }
       }
     },

@@ -9,7 +9,7 @@ class UserPhoneRemote {
 
   Future<UserPhone> getByUser(int id) async {
     var data = await GeneralHttpClient().getJson('${url}getByUser/$id');
-    UserPhone userPhone = UserPhone.fromMap(data['dados'][0] ?? {});
+    UserPhone userPhone = UserPhone.fromMap(data['dados'].length > 0 ? data['dados'][0] : {});
     return userPhone;
   }
 
