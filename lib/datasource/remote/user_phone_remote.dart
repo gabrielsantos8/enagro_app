@@ -18,4 +18,10 @@ class UserPhoneRemote {
     var data = await GeneralHttpClient().post('${url}update', jsonEncode(prms));
     return data['success'];
   }
+
+  Future<bool> savePhone(UserPhone usrPh) async {
+    Object prms = {"user_id": usrPh.userId, "ddd": usrPh.ddd, "number": usrPh.number};
+    var data = await GeneralHttpClient().post('${url}store', jsonEncode(prms));
+    return data['success'];
+  }
 }
