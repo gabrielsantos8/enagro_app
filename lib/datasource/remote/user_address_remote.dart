@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:enagro_app/helpers/util.dart';
 import 'package:enagro_app/infra/general_http_client.dart';
 import 'package:enagro_app/models/user_address.dart';
@@ -11,5 +13,9 @@ class UserAddressRemote {
     return userAddresses;
   }
 
+  Future<bool> editAddress(Object prms) async {
+    var data = await GeneralHttpClient().post('${url}update', jsonEncode(prms));
+    return data['success'];
+  }
 
 }

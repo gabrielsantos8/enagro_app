@@ -2,21 +2,29 @@ import 'package:enagro_app/datasource/remote/city_remote.dart';
 import 'package:flutter/material.dart';
 
 class CityUfCombo extends StatefulWidget {
-  const CityUfCombo({Key? key}) : super(key: key);
+  final Function(String, int) onSelectionChanged;
+  final int? selCityId;
+  final String? selUf;
+
+  CityUfCombo({Key? key, required this.onSelectionChanged, this.selCityId, this.selUf})
+      : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _CityUfComboState createState() => _CityUfComboState();
 }
 
 class _CityUfComboState extends State<CityUfCombo> {
   List<String> ufs = [];
   Map<int, String> citiesMap = {};
-  String selectedUf = '';
-  int selectedCityId = 0;
+  late String selectedUf; 
+  late int selectedCityId;
 
   @override
   void initState() {
     super.initState();
+    selectedUf = widget.selUf ?? 'AC';
+    selectedCityId = widget.selCityId ?? 0;
     loadUfs();
   }
 
@@ -24,27 +32,37 @@ class _CityUfComboState extends State<CityUfCombo> {
     final cityRemote = CityRemote();
     final ufList = await cityRemote.getUfs();
     setState(() {
-      ufs = List<String>.from(ufList);
+      ufs = ufList.map((obj) => obj['uf'] as String).toList();
     });
   }
 
   Future<void> loadCities(String uf) async {
     final cityRemote = CityRemote();
     final citiesList = await cityRemote.getCities(uf);
-    final map = Map<int, String>.from(citiesList.map((city) => MapEntry<int, String>(city['id'], city['description'])) as Map);
+
+    final map = citiesList.fold<Map<int, String>>({}, (previousMap, city) {
+      final id = city['id'] as int;
+      final description = city['description'] as String;
+      previousMap[id] = description;
+      return previousMap;
+    });
+
     setState(() {
       citiesMap = map;
-      selectedCityId = 0;
+      selectedCityId = map.keys.first;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         DropdownButton<String>(
           value: selectedUf,
-          hint:const Text('Selecione a UF'),
+          style: TextStyle(color: Theme.of(context).primaryColorDark),
+          dropdownColor: Theme.of(context).primaryColorLight,
+          hint: const Text('Selecione a UF'),
           items: ufs.map((String uf) {
             return DropdownMenuItem<String>(
               value: uf,
@@ -55,10 +73,13 @@ class _CityUfComboState extends State<CityUfCombo> {
             setState(() {
               selectedUf = newValue!;
               loadCities(selectedUf);
+              widget.onSelectionChanged(selectedUf, selectedCityId);
             });
           },
         ),
         DropdownButton<int>(
+          dropdownColor: Theme.of(context).primaryColorLight,
+          style: TextStyle(color: Theme.of(context).primaryColorDark),
           value: selectedCityId,
           hint: const Text('Selecione a Cidade'),
           items: citiesMap.entries.map((MapEntry<int, String> entry) {
@@ -70,6 +91,7 @@ class _CityUfComboState extends State<CityUfCombo> {
           onChanged: (int? newValue) {
             setState(() {
               selectedCityId = newValue!;
+              widget.onSelectionChanged(selectedUf, selectedCityId);
             });
           },
         ),

@@ -241,7 +241,7 @@ Widget _buildAddressList(int userId) {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    const UserAddressEditPage()),
+                                    UserAddressEditPage(address)),
                           );
                         },
                       );
