@@ -43,9 +43,9 @@ class DefaultHomeItem extends StatelessWidget {
                   if (description.isNotEmpty) const SizedBox(height: 4.0),
                   if (description.isNotEmpty)
                     Text(
-                      description.length <= 50
+                      description.length <= 45
                           ? description
-                          : '${description.substring(0, 50)}...', // Limita a 40 caracteres e adiciona "..."
+                          : '${description.substring(0, 45)}...', // Limita a 40 caracteres e adiciona "..."
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 14.0),
