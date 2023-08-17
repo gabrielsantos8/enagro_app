@@ -6,7 +6,8 @@ class CityUfCombo extends StatefulWidget {
   final int? selCityId;
   final String? selUf;
 
-  CityUfCombo({Key? key, required this.onSelectionChanged, this.selCityId, this.selUf})
+  CityUfCombo(
+      {Key? key, required this.onSelectionChanged, this.selCityId, this.selUf})
       : super(key: key);
 
   @override
@@ -16,8 +17,9 @@ class CityUfCombo extends StatefulWidget {
 
 class _CityUfComboState extends State<CityUfCombo> {
   List<String> ufs = [];
+  bool ufChange = false;
   Map<int, String> citiesMap = {};
-  late String selectedUf; 
+  late String selectedUf;
   late int selectedCityId;
 
   @override
@@ -26,6 +28,7 @@ class _CityUfComboState extends State<CityUfCombo> {
     selectedUf = widget.selUf ?? 'AC';
     selectedCityId = widget.selCityId ?? 0;
     loadUfs();
+    loadCities(selectedUf);
   }
 
   Future<void> loadUfs() async {
@@ -49,7 +52,11 @@ class _CityUfComboState extends State<CityUfCombo> {
 
     setState(() {
       citiesMap = map;
-      selectedCityId = map.keys.first;
+      if (ufChange) {
+        selectedCityId = map.keys.first;
+      } else {
+        selectedCityId = widget.selCityId ?? map.keys.first;
+      }
     });
   }
 
@@ -72,6 +79,7 @@ class _CityUfComboState extends State<CityUfCombo> {
           onChanged: (String? newValue) {
             setState(() {
               selectedUf = newValue!;
+              ufChange = true;
               loadCities(selectedUf);
               widget.onSelectionChanged(selectedUf, selectedCityId);
             });

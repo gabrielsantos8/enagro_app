@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class UserPhoneCreatePage extends StatefulWidget {
   final int userId;
-  const UserPhoneCreatePage(this.userId, {super.key});
+  final Function() onPhoneEdited;
+  const UserPhoneCreatePage(this.userId, {super.key, required this.onPhoneEdited});
 
   @override
   State<UserPhoneCreatePage> createState() => _UserPhoneCreatePageState();
@@ -33,6 +34,7 @@ class _UserPhoneCreatePageState extends State<UserPhoneCreatePage> {
     });
 
     if (isSuccess) {
+      widget.onPhoneEdited();
       // ignore: use_build_context_synchronously
       Navigator.pop(context, true);
     } else {

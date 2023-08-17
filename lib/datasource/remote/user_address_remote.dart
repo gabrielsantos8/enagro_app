@@ -18,4 +18,9 @@ class UserAddressRemote {
     return data['success'];
   }
 
+  Future<bool> saveAddress(Object prms) async {
+    var data = await GeneralHttpClient().post('${url}store', jsonEncode(prms));
+    return data['success'];
+  }
+
 }

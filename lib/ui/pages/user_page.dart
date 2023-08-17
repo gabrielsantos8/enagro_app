@@ -5,6 +5,7 @@ import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/models/user_address.dart';
 import 'package:enagro_app/models/user_phone.dart';
 import 'package:enagro_app/ui/pages/entry_page.dart';
+import 'package:enagro_app/ui/pages/user_address_create_page.dart';
 import 'package:enagro_app/ui/pages/user_address_edit_page.dart';
 import 'package:enagro_app/ui/pages/user_phone_create_page.dart';
 import 'package:enagro_app/ui/pages/user_phone_edit_page.dart';
@@ -26,7 +27,13 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
-    setState(() {});
+  }
+
+  void refreshData() {
+    setState(() {
+      _buildAddressList(widget.user!.userId);
+      _buildPhoneList(widget.user!.userId);
+    });
   }
 
   @override
@@ -204,137 +211,156 @@ class _UserPageState extends State<UserPage> {
       ),
     );
   }
-}
 
-Widget _buildAddressList(int userId) {
-  return FutureBuilder(
-    future: UserAddressRemote().getByUser(userId),
-    builder: (context, snapshot) {
-      switch (snapshot.connectionState) {
-        case ConnectionState.active:
-        case ConnectionState.waiting:
-        case ConnectionState.none:
-          return Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Theme.of(context).primaryColor,
-              color: Theme.of(context).primaryColorLight,
-            ),
-          );
-        case ConnectionState.done:
-          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            return Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      UserAddress address = snapshot.data![index];
-                      return DefaultHomeItem(
-                        title:
-                            '${address.city.description} - ${address.city.uf}',
-                        description: address.complement,
-                        div: false,
-                        iconData: Icons.home_outlined,
-                        rightIcon: Icons.edit_location_alt_outlined,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    UserAddressEditPage(address)),
-                          );
-                        },
+  Widget _buildAddressList(int userId) {
+    return FutureBuilder(
+      future: UserAddressRemote().getByUser(userId),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+          case ConnectionState.none:
+            return Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).primaryColor,
+                color: Theme.of(context).primaryColorLight,
+              ),
+            );
+          case ConnectionState.done:
+            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        UserAddress address = snapshot.data![index];
+                        return DefaultHomeItem(
+                          title:
+                              '${address.city.description} - ${address.city.uf}',
+                          description: address.complement,
+                          div: false,
+                          iconData: Icons.home_outlined,
+                          rightIcon: Icons.edit_location_alt_outlined,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserAddressEditPage(
+                                        address,
+                                        onAddressEdited: refreshData,
+                                      )),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DefaultOutlineButton(
+                      'Adicionar Endereço',
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserAddressCreatePage(
+                                  onAddressEdited: refreshData,
+                                  userId: widget.user!.userId)),
+                        );
+                      },
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('Erro ao carregar endereços!'));
+            } else {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Center(child: Text('Nenhum endereço cadastrado')),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DefaultOutlineButton(
+                      'Adicionar Endereço',
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserAddressCreatePage(
+                                  onAddressEdited: refreshData,
+                                  userId: widget.user!.userId)),
+                        );
+                      },
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                ],
+              );
+            }
+        }
+      },
+    );
+  }
+
+  Widget _buildPhoneList(int userId) {
+    return FutureBuilder(
+      future: UserPhoneRemote().getByUser(userId),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+          case ConnectionState.none:
+            return Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).primaryColor,
+                color: Theme.of(context).primaryColorLight,
+              ),
+            );
+          case ConnectionState.done:
+            if (snapshot.hasData && snapshot.data!.userPhoneId > 0) {
+              UserPhone? phone = snapshot.data;
+              return DefaultHomeItem(
+                title: '(${phone?.ddd}) ${phone?.number}',
+                div: false,
+                iconData: Icons.phone_android_outlined,
+                rightIcon: Icons.edit_outlined,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UserPhoneEditPage(
+                            userPhone: phone, onPhoneEdited: refreshData)),
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('Erro ao carregar telefone!'));
+            } else {
+              return Center(
+                  child: Column(
+                children: [
+                  const Text('Nenhum telefone cadastrado'),
+                  const SizedBox(height: 10),
+                  DefaultOutlineButton(
+                    'Adicionar Telefone',
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserPhoneCreatePage(userId,
+                                onPhoneEdited: refreshData)),
                       );
                     },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: DefaultOutlineButton(
-                    'Adicionar Endereço',
-                    () {},
                     style: TextStyle(color: Theme.of(context).primaryColor),
                   ),
-                ),
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('Erro ao carregar endereços!'));
-          } else {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Center(child: Text('Nenhum endereço cadastrado')),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: DefaultOutlineButton(
-                    'Adicionar Endereço',
-                    () {},
-                    style: TextStyle(color: Theme.of(context).primaryColor),
-                  ),
-                ),
-              ],
-            );
-          }
-      }
-    },
-  );
-}
-
-Widget _buildPhoneList(int userId) {
-  return FutureBuilder(
-    future: UserPhoneRemote().getByUser(userId),
-    builder: (context, snapshot) {
-      switch (snapshot.connectionState) {
-        case ConnectionState.active:
-        case ConnectionState.waiting:
-        case ConnectionState.none:
-          return Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Theme.of(context).primaryColor,
-              color: Theme.of(context).primaryColorLight,
-            ),
-          );
-        case ConnectionState.done:
-          if (snapshot.hasData && snapshot.data!.userPhoneId > 0) {
-            UserPhone? phone = snapshot.data;
-            return DefaultHomeItem(
-              title: '(${phone?.ddd}) ${phone?.number}',
-              div: false,
-              iconData: Icons.phone_android_outlined,
-              rightIcon: Icons.edit_outlined,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          UserPhoneEditPage(userPhone: phone)),
-                );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('Erro ao carregar telefone!'));
-          } else {
-            return Center(
-                child: Column(
-              children: [
-                const Text('Nenhum telefone cadastrado'),
-                const SizedBox(height: 10),
-                DefaultOutlineButton(
-                  'Adicionar Telefone',
-                  () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UserPhoneCreatePage(userId)),
-                    );
-                  },
-                  style: TextStyle(color: Theme.of(context).primaryColor),
-                ),
-              ],
-            ));
-          }
-      }
-    },
-  );
+                ],
+              ));
+            }
+        }
+      },
+    );
+  }
 }

@@ -4,7 +4,9 @@ import 'package:enagro_app/datasource/remote/user_phone_remote.dart';
 
 class UserPhoneEditPage extends StatefulWidget {
   final UserPhone? userPhone;
-  const UserPhoneEditPage({super.key, required this.userPhone});
+  final Function() onPhoneEdited;
+  const UserPhoneEditPage(
+      {super.key, required this.userPhone, required this.onPhoneEdited});
 
   @override
   State<UserPhoneEditPage> createState() => _UserPhoneEditPageState();
@@ -49,6 +51,7 @@ class _UserPhoneEditPageState extends State<UserPhoneEditPage> {
     });
 
     if (isSuccess) {
+      widget.onPhoneEdited();
       // ignore: use_build_context_synchronously
       Navigator.pop(context, true);
     } else {
@@ -123,10 +126,10 @@ class _UserPhoneEditPageState extends State<UserPhoneEditPage> {
               ),
               const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: _isSaving
-                    ? null
-                    : _editPhone,
-                child: _isSaving ? const Text('Salvando...') : const Text('Salvar'),
+                onPressed: _isSaving ? null : _editPhone,
+                child: _isSaving
+                    ? const Text('Salvando...')
+                    : const Text('Salvar'),
               ),
             ],
           ),
