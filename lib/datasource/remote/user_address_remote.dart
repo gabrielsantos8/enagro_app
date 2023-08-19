@@ -23,4 +23,9 @@ class UserAddressRemote {
     return data['success'];
   }
 
+  Future<bool> deleteAddress(Object prms) async {
+    var data = await GeneralHttpClient().post('${url}destroy', jsonEncode(prms));
+    return data['success'];
+  }
+
 }
