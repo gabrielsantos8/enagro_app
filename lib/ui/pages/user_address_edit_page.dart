@@ -1,12 +1,14 @@
 import 'package:enagro_app/datasource/remote/user_address_remote.dart';
 import 'package:enagro_app/models/user_address.dart';
 import 'package:enagro_app/ui/widgets/city_uf_combo.dart';
+import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
 import 'package:flutter/material.dart';
 
 class UserAddressEditPage extends StatefulWidget {
   final UserAddress userAddress;
   final Function() onAddressEdited;
-  const UserAddressEditPage(this.userAddress, {super.key, required this.onAddressEdited});
+  const UserAddressEditPage(this.userAddress,
+      {super.key, required this.onAddressEdited});
 
   @override
   State<UserAddressEditPage> createState() => _UserAddressEditPageState();
@@ -76,6 +78,37 @@ class _UserAddressEditPageState extends State<UserAddressEditPage> {
     }
   }
 
+  Future<void> _deleteAddress() async {
+    Object map = {"id": widget.userAddress.userAddressId};
+
+    bool isSuccess = await UserAddressRemote().deleteAddress(map);
+    
+    if (isSuccess) {
+      widget.onAddressEdited();
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context, true);
+    } else {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: const Text('Houve um erro ao excluir o endereço.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +130,8 @@ class _UserAddressEditPageState extends State<UserAddressEditPage> {
           const SizedBox(
             height: 50,
           ),
-          Center(child: CityUfCombo(
+          Center(
+              child: CityUfCombo(
             selUf: widget.userAddress.city.uf,
             selCityId: widget.userAddress.city.cityId,
             onSelectionChanged: (uf, city) {
@@ -120,6 +154,30 @@ class _UserAddressEditPageState extends State<UserAddressEditPage> {
             onPressed: _isSaving ? null : _editAddress,
             child: _isSaving ? const Text('Salvando...') : const Text('Salvar'),
           ),
+          const SizedBox(height: 12),
+          ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(const Color.fromARGB(255, 204, 63, 53)),
+                padding: MaterialStateProperty.all(
+                    const EdgeInsets.symmetric(horizontal: 28, vertical: 18)),
+              ),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ConfirmDialog(
+                        content: "Tem certeza que deseja excluir?",
+                        noFunction: () {
+                          Navigator.pop(context);
+                        },
+                        yesFunction: () {
+                          Navigator.pop(context);
+                          _deleteAddress();
+                        },
+                      );
+                    });
+              },
+              child: const Text('Excluir'))
         ],
       ),
     )));
