@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:enagro_app/datasource/remote/user_address_remote.dart';
 import 'package:enagro_app/datasource/remote/user_phone_remote.dart';
 import 'package:enagro_app/datasource/remote/user_remote.dart';
@@ -13,11 +15,13 @@ import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
 import 'package:enagro_app/ui/widgets/default_home_item.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UserPage extends StatefulWidget {
   final User? user;
+  final Function() onUserEdited;
 
-  const UserPage(this.user, {super.key});
+  const UserPage(this.user, {super.key, required this.onUserEdited});
 
   @override
   State<UserPage> createState() => _UserPageState();
@@ -47,6 +51,7 @@ class _UserPageState extends State<UserPage> {
       Navigator.pop(context, true);
 
       setState(() {
+        widget.onUserEdited();
         userProfileImageUrl = _loadUserProfileImage();
       });
     } else {
@@ -56,7 +61,7 @@ class _UserPageState extends State<UserPage> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Erro'),
-            content: const Text('Houve um erro ao remove imagem.'),
+            content: const Text('Houve um erro ao remover imagem.'),
             actions: [
               ElevatedButton(
                 onPressed: () {
@@ -68,6 +73,44 @@ class _UserPageState extends State<UserPage> {
           );
         },
       );
+    }
+  }
+
+  Future<void> _sendImage() async {
+    UserRemote userRemote = UserRemote();
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      File file = File(pickedFile.path);
+      bool isSuccess = await userRemote.sendImage(file, widget.user!.userId);
+      if (isSuccess) {
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context, true);
+
+        setState(() {
+          widget.onUserEdited();
+          userProfileImageUrl = _loadUserProfileImage();
+        });
+      } else {
+        // ignore: use_build_context_synchronously
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Erro'),
+              content: const Text('Houve um erro ao enviar imagem.'),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
 
@@ -89,13 +132,9 @@ class _UserPageState extends State<UserPage> {
                 onTap: _removeImage,
               ),
               ListTile(
-                leading: const Icon(Icons.send),
-                title: const Text("Enviar imagem"),
-                onTap: () {
-                  // Lógica para enviar a imagem
-                  Navigator.pop(context); // Fechar a modal
-                },
-              ),
+                  leading: const Icon(Icons.send),
+                  title: const Text("Enviar imagem"),
+                  onTap: _sendImage),
             ],
           ),
         );
@@ -107,7 +146,6 @@ class _UserPageState extends State<UserPage> {
     setState(() {
       _buildAddressList(widget.user!.userId);
       _buildPhoneList(widget.user!.userId);
-      _loadUserProfileImage();
     });
   }
 

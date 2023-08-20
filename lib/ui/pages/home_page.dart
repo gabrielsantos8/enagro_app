@@ -24,6 +24,12 @@ class _HomePageState extends State<HomePage> {
     userProfileImageUrl = _loadUserProfileImage();
   }
 
+  void refreshData() {
+    setState(() {
+      userProfileImageUrl = _loadUserProfileImage();
+    });
+  }
+
   Future<String> _loadUserProfileImage() async {
     UserRemote userRemote = UserRemote();
     return userRemote.getImage(widget.user!.userId);
@@ -95,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => UserPage(widget.user)),
+                                builder: (context) => UserPage(widget.user, onUserEdited: refreshData)),
                           );
                         },
                         style: const TextStyle(
