@@ -1,4 +1,6 @@
+import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
 import 'package:enagro_app/helpers/Util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:enagro_app/infra/general_http_client.dart';
@@ -28,6 +30,33 @@ class UserRemote {
     }
     User user = User.fromMap(data['dados']);
     return user;
+  }
+
+  Future<String> getImage(int id) async {
+    var data = await GeneralHttpClient().getJson('${url}getImage/$id');
+    if (data['success']) {
+      return data['image_url'].toString().replaceAll('localhost', '10.0.2.2');
+    }
+    return 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+  }
+
+  
+  Future<bool> removeImage(int id) async {
+    var data = await GeneralHttpClient().getJson('${url}removeImage/$id');
+    return data['success'];
+  }
+
+  Future<bool> sendImage(File file, int userId) async {
+
+    Uri urlP = Uri.parse('${url}sendImage');
+
+    var request = http.MultipartRequest('POST', urlP);
+    request.fields['user_id'] = userId.toString(); 
+    request.files.add(
+      await http.MultipartFile.fromPath('foto_perfil', file.path),
+    );
+    final response = await request.send();
+    return response.statusCode == 200;
   }
 
   static Future<void> saveToken(String token) async {
