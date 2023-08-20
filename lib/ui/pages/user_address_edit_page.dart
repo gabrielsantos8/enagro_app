@@ -149,7 +149,7 @@ class _UserAddressEditPageState extends State<UserAddressEditPage> {
                 decoration: const InputDecoration.collapsed(
                     hintText: "Complemento", border: InputBorder.none),
               )),
-          const SizedBox(height: 32),
+          const SizedBox(height: 12),
           ElevatedButton(
             onPressed: _isSaving ? null : _editAddress,
             child: _isSaving ? const Text('Salvando...') : const Text('Salvar'),

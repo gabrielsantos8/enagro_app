@@ -30,6 +30,20 @@ class UserRemote {
     return user;
   }
 
+  Future<String> getImage(int id) async {
+    var data = await GeneralHttpClient().getJson('${url}getImage/$id');
+    if (data['success']) {
+      return data['image_url'].toString().replaceAll('localhost', '10.0.2.2');
+    }
+    return 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+  }
+
+  
+  Future<bool> removeImage(int id) async {
+    var data = await GeneralHttpClient().getJson('${url}removeImage/$id');
+    return data['success'];
+  }
+
   static Future<void> saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);

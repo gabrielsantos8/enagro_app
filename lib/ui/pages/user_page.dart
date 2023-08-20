@@ -24,15 +24,90 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  late Future<String> userProfileImageUrl;
+
   @override
   void initState() {
     super.initState();
+    setState(() {
+      userProfileImageUrl = _loadUserProfileImage();
+    });
+  }
+
+  Future<String> _loadUserProfileImage() async {
+    UserRemote userRemote = UserRemote();
+    return userRemote.getImage(widget.user!.userId);
+  }
+
+  Future<void> _removeImage() async {
+    bool isSuccess = await UserRemote().removeImage(widget.user!.userId);
+
+    if (isSuccess) {
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context, true);
+
+      setState(() {
+        userProfileImageUrl = _loadUserProfileImage();
+      });
+    } else {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: const Text('Houve um erro ao remove imagem.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  void _showModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Opções"),
+              const SizedBox(height: 16.0),
+              ListTile(
+                leading: const Icon(Icons.delete),
+                title: const Text("Remover imagem"),
+                onTap: _removeImage,
+              ),
+              ListTile(
+                leading: const Icon(Icons.send),
+                title: const Text("Enviar imagem"),
+                onTap: () {
+                  // Lógica para enviar a imagem
+                  Navigator.pop(context); // Fechar a modal
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void refreshData() {
     setState(() {
       _buildAddressList(widget.user!.userId);
       _buildPhoneList(widget.user!.userId);
+      _loadUserProfileImage();
     });
   }
 
@@ -62,17 +137,31 @@ class _UserPageState extends State<UserPage> {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(
-                        'https://s2-pegn.glbimg.com/u5v52RSMsc8hTq0f6bZPU-hMAz4=/0x0:1024x1024/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_ba41d7b1ff5f48b28d3c5f84f30a06af/internal_photos/bs/2023/e/g/90RpDKT02z2P2kTuIzkQ/libano.png',
-                      ),
+                    FutureBuilder<String>(
+                      future: userProfileImageUrl,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator(); // Ou outro indicador de carregamento
+                        } else if (snapshot.hasError) {
+                          return const Text('Erro ao carregar imagem');
+                        } else {
+                          return CircleAvatar(
+                            radius: 50,
+                            backgroundImage: NetworkImage(
+                              snapshot.data!,
+                            ),
+                          );
+                        }
+                      },
                     ),
                     Positioned(
                       top: 70,
                       left: 70,
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          _showModal(context);
+                        },
                         child: CircleAvatar(
                           backgroundColor: Theme.of(context).primaryColorDark,
                           radius: 15,

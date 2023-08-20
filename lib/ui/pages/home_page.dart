@@ -1,3 +1,4 @@
+import 'package:enagro_app/datasource/remote/user_remote.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/pages/user_page.dart';
 import 'package:enagro_app/ui/widgets/default_drawer_item.dart';
@@ -15,6 +16,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Future<String> userProfileImageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    userProfileImageUrl = _loadUserProfileImage();
+  }
+
+  Future<String> _loadUserProfileImage() async {
+    UserRemote userRemote = UserRemote();
+    return userRemote.getImage(widget.user!.userId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,10 +63,23 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 10),
-                      const CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(
-                            'https://s2-pegn.glbimg.com/u5v52RSMsc8hTq0f6bZPU-hMAz4=/0x0:1024x1024/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_ba41d7b1ff5f48b28d3c5f84f30a06af/internal_photos/bs/2023/e/g/90RpDKT02z2P2kTuIzkQ/libano.png'),
+                      FutureBuilder<String>(
+                        future: userProfileImageUrl,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator(); // Ou outro indicador de carregamento
+                          } else if (snapshot.hasError) {
+                            return const Text('Erro ao carregar imagem');
+                          } else {
+                            return CircleAvatar(
+                              radius: 50,
+                              backgroundImage: NetworkImage(
+                                snapshot.data!,
+                              ),
+                            );
+                          }
+                        },
                       ),
                       const SizedBox(height: 10),
                       Text(
