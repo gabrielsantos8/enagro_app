@@ -1,5 +1,6 @@
 import 'package:enagro_app/datasource/remote/veterinarian_remote.dart';
 import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/models/veterinarian.dart';
 import 'package:enagro_app/ui/pages/veterinarian_page..dart';
 import 'package:enagro_app/ui/widgets/default_textfield.dart';
 import 'package:enagro_app/ui/widgets/uf_combo.dart';
@@ -56,18 +57,17 @@ class _VeterinarianCreatePageState extends State<VeterinarianCreatePage> {
       "user_id": widget.user!.userId
     };
 
-    bool isSuccess = await VeterinarianRemote().saveVeterinarian(map);
+    Veterinarian veterinarian = await VeterinarianRemote().saveVeterinarian(map);
 
     setState(() {
       _isSaving = false;
     });
 
-    if (isSuccess) {
+    if (veterinarian.userId > 0) {
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-            builder: (context) => VeterinarianPage(widget.user)),
+        MaterialPageRoute(builder: (context) => VeterinarianPage(widget.user, veterinarian)),
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -97,57 +97,62 @@ class _VeterinarianCreatePageState extends State<VeterinarianCreatePage> {
         body: Center(
             child: Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: ListView(
         children: [
-          const Text(
-            'Cadastre-se',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(
-            height: 50,
-          ),
-          DefaultTextField(
-            controller: _nameController,
-            fieldlabel: 'Confirme seu nome',
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          DefaultTextField(
-            controller: _idCrmvController,
-            fieldlabel: 'Código registro CRMV',
-            type: TextInputType.number,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          DefaultTextField(
-              controller: _crmvController,
-              fieldlabel: 'CRMV',
-              type: TextInputType.number),
-          const SizedBox(
-            height: 20,
-          ),
-          Center(
-              child: UfCombo(
-            fieldlabel: 'UF Registro',
-            onSelectionChanged: (uf) {
-              setState(() {
-                selUf = uf;
-              });
-            },
-          )),
-          const SizedBox(height: 12),
-          ElevatedButton(
-            onPressed: _isSaving ? null : _saveAddress,
-            child: _isSaving ? const Text('Salvando...') : const Text('Salvar'),
-          ),
+          Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Cadastre-se',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+                DefaultTextField(
+                  controller: _nameController,
+                  fieldlabel: 'Confirme seu nome',
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                DefaultTextField(
+                  controller: _idCrmvController,
+                  fieldlabel: 'Código registro CRMV',
+                  type: TextInputType.number,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                DefaultTextField(
+                    controller: _crmvController,
+                    fieldlabel: 'CRMV',
+                    type: TextInputType.number),
+                const SizedBox(
+                  height: 20,
+                ),
+                Center(
+                    child: UfCombo(
+                  fieldlabel: 'UF Registro',
+                  onSelectionChanged: (uf) {
+                    setState(() {
+                      selUf = uf;
+                    });
+                  },
+                )),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: _isSaving ? null : _saveAddress,
+                  child: _isSaving
+                      ? const Text('Salvando...')
+                      : const Text('Salvar'),
+                ),
+              ])
         ],
       ),
     )));
