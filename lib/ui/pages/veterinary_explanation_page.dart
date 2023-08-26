@@ -85,7 +85,7 @@ class _VeterinaryExplanationState extends State<VeterinaryExplanation> {
               ),
               DefaultButton(
                   'Vamos lá!',
-                  () => Navigator.push(
+                  () => Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
