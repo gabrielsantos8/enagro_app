@@ -1,5 +1,6 @@
 import 'package:enagro_app/datasource/remote/user_remote.dart';
 import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/ui/pages/partners_page.dart';
 import 'package:enagro_app/ui/pages/user_page.dart';
 import 'package:enagro_app/ui/widgets/default_drawer_item.dart';
 import 'package:enagro_app/ui/widgets/default_home_item.dart';
@@ -101,7 +102,8 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => UserPage(widget.user, onUserEdited: refreshData)),
+                                builder: (context) => UserPage(widget.user,
+                                    onUserEdited: refreshData)),
                           );
                         },
                         style: const TextStyle(
@@ -117,7 +119,12 @@ class _HomePageState extends State<HomePage> {
               DefaultDrawerItem(Icons.shield_outlined, 'Seguro animal', () {}),
               DefaultDrawerItem(
                   Icons.assignment_late_outlined, 'Serviços Avulsos', () {}),
-              DefaultDrawerItem(Icons.business, 'Parceiros', () {}),
+              DefaultDrawerItem(Icons.business, 'Parceiros', () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PartnersPage(widget.user)));
+              }),
               const Spacer(),
               DefaultDrawerItem(Icons.info_outline, 'Sobre a Enagro', () {},
                   div: false),
