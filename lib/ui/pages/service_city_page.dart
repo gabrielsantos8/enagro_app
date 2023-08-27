@@ -23,7 +23,7 @@ class _ServiceCityPageState extends State<ServiceCityPage> {
 
   Future<List<ServiceCity>> fetchAtendeData() async {
     Future<List<ServiceCity>> serviceCities =
-        ServiceCityRemote().getByVeterinarian(widget.veterinarian!.userId);
+        ServiceCityRemote().getByVeterinarian(widget.veterinarian!.userVeterinarianId);
     return serviceCities;
   }
 
