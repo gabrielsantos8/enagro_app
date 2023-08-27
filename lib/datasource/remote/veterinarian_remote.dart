@@ -14,8 +14,13 @@ class VeterinarianRemote {
     return vet;
   }
 
-   Future<bool> saveVeterinarian(Object prms) async {
+   Future<Veterinarian> saveVeterinarian(Object prms) async {
     var data = await GeneralHttpClient().post('${url}store', jsonEncode(prms));
-    return data['success'];
+    if(data['success']) {
+      Veterinarian vet = Veterinarian.fromMap(data['dados'][0]);
+      return vet;
+    }
+    Veterinarian vet = Veterinarian.fromMap({});
+    return vet;
   }
 }

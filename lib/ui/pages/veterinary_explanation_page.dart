@@ -30,7 +30,7 @@ class _VeterinaryExplanationState extends State<VeterinaryExplanation> {
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => VeterinarianPage(widget.user)),
+        MaterialPageRoute(builder: (context) => VeterinarianPage(widget.user, vet)),
       );
     }
   }
