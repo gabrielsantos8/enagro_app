@@ -66,9 +66,24 @@ class _VeterinarianPageState extends State<VeterinarianPage> {
             ),
           ),
           DefaultHomeItem(
-              iconData: Icons.location_city,
-              title: 'Municípios de Atendimento',
-              description: 'Municípios do estado vinculado ao seu CRMV.',
+              iconData: Icons.warning_outlined,
+              title: 'Acionamentos',
+              description: 'Acionamentos em busca de atendimento.',
+              onTap: () {}),
+          DefaultHomeItem(
+              iconData: Icons.local_hospital_outlined,
+              title: 'Meus Planos de Saúde Animal',
+              description: 'Meus Planos de saúde animal disponíveis.',
+              onTap: () {}),
+          DefaultHomeItem(
+              iconData: Icons.assignment_late_outlined,
+              title: 'Meus Serviços Avulsos',
+              description: 'Meu serviços avulsos disponíveis.',
+              onTap: () {}),
+          DefaultHomeItem(
+              iconData: Icons.location_city_outlined,
+              title: 'Meus Municípios de Atendimento',
+              description: 'Meus municípios de atendimento, pela UF do CRMV.',
               onTap: () {
                 Navigator.push(
                     context,
