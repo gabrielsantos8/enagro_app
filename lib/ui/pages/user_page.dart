@@ -234,105 +234,110 @@ class _UserPageState extends State<UserPage> {
           ),
           const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.all(2.7),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1.0,
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Telefone',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 130, 130, 130),
+                      fontSize: 16),
                 ),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 246, 246, 246),
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10))),
-                    child: const Center(
-                      child: Text(
-                        'Telefone:',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 100,
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 246, 246, 246),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
                         ),
-                      ),
+                      ],
+                    ),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.12,
+                      child: _buildPhoneList(widget.user!.userId),
                     ),
                   ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.12,
-                    child: _buildPhoneList(widget.user!.userId),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.all(2.7),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1.0,
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Endereço(s)',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 130, 130, 130),
+                      fontSize: 16),
                 ),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 246, 246, 246),
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10))),
-                    child: const Center(
-                      child: Text(
-                        'Endereço(s):',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 220,
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 246, 246, 246),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
                         ),
-                      ),
+                      ],
+                    ),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.31,
+                      child: _buildAddressList(widget.user!.userId),
                     ),
                   ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.31,
-                    child: _buildAddressList(widget.user!.userId),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           const Spacer(),
-          const SizedBox(height: 20),
-          DefaultOutlineButton(
-            'Sair',
-            () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return ConfirmDialog(
-                      content: "Tem certeza que deseja sair?",
-                      noFunction: () {
-                        Navigator.pop(context);
-                      },
-                      yesFunction: () {
-                        UserRemote.signOut();
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => const EntryPage()),
-                            (Route<dynamic> route) => false);
-                      },
-                    );
-                  });
-            },
-            style: TextStyle(color: Theme.of(context).primaryColor),
-          ),
+          Padding(
+              padding: const EdgeInsets.all(8),
+              child: DefaultOutlineButton(
+                'Sair',
+                () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return ConfirmDialog(
+                          content: "Tem certeza que deseja sair?",
+                          noFunction: () {
+                            Navigator.pop(context);
+                          },
+                          yesFunction: () {
+                            UserRemote.signOut();
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => const EntryPage()),
+                                (Route<dynamic> route) => false);
+                          },
+                        );
+                      });
+                },
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              )),
           const SizedBox(height: 20)
         ],
       ),
