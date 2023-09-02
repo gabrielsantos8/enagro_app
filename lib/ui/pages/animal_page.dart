@@ -1,6 +1,7 @@
 import 'package:enagro_app/datasource/remote/animal_remote.dart';
 import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/ui/widgets/card_list_item.dart';
 import 'package:enagro_app/ui/widgets/default_home_item.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
@@ -61,18 +62,22 @@ Widget _buildAnimalList(int userId) {
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             return Column(
               children: [
-                const Text("Animais", style: TextStyle(fontSize: 18, color: Color.fromARGB(255, 114, 114, 114), fontWeight: FontWeight.bold),),
+                const Text(
+                  "Animais",
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Color.fromARGB(255, 114, 114, 114),
+                      fontWeight: FontWeight.bold),
+                ),
                 Expanded(
                   child: ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       Animal animal = snapshot.data![index];
-                      return DefaultHomeItem(
+                      return CardListItem(
                         title: animal.name,
-                        description: animal.description,
-                        div: true,
-                        iconData: Icons.catching_pokemon,
-                        rightIcon: Icons.edit_location_alt_outlined,
+                        description: '${animal.userAddress.city.description} - ${animal.userAddress.city.uf}',
+                        imageUrl: animal.imgUrl,
                         onTap: () {},
                       );
                     },
