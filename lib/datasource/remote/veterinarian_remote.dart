@@ -17,7 +17,8 @@ class VeterinarianRemote {
    Future<Veterinarian> saveVeterinarian(Object prms) async {
     var data = await GeneralHttpClient().post('${url}store', jsonEncode(prms));
     if(data['success']) {
-      Veterinarian vet = Veterinarian.fromMap(data['dados'][0]);
+      print(data);
+      Veterinarian vet = Veterinarian.fromMap(data['dados']);
       return vet;
     }
     Veterinarian vet = Veterinarian.fromMap({});

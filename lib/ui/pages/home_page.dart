@@ -1,5 +1,6 @@
 import 'package:enagro_app/datasource/remote/user_remote.dart';
 import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/ui/pages/animal_page.dart';
 import 'package:enagro_app/ui/pages/partners_page.dart';
 import 'package:enagro_app/ui/pages/user_page.dart';
 import 'package:enagro_app/ui/widgets/default_drawer_item.dart';
@@ -104,6 +105,18 @@ class _HomePageState extends State<HomePage> {
                             MaterialPageRoute(
                                 builder: (context) => UserPage(widget.user,
                                     onUserEdited: refreshData)),
+                          );
+                        },
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 0, 150, 50)),
+                      ),
+                      DefaultOutlineButton(
+                        'Meus animais',
+                        () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AnimalPage(widget.user)),
                           );
                         },
                         style: const TextStyle(
