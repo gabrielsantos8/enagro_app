@@ -105,7 +105,7 @@ class _AnimalPageState extends State<AnimalPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    AnimalCreatePage(refreshData)));
+                                    AnimalCreatePage(refreshData, widget.user!.userId)));
                       },
                       style: TextStyle(color: Theme.of(context).primaryColor),
                     ),

@@ -1,5 +1,7 @@
+import 'package:enagro_app/datasource/remote/animal_remote.dart';
 import 'package:enagro_app/ui/widgets/animal_type_combo.dart';
 import 'package:enagro_app/ui/widgets/default_textfield.dart';
+import 'package:enagro_app/ui/widgets/user_address_combo.dart';
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
 // ignore: depend_on_referenced_packages
@@ -7,7 +9,8 @@ import 'package:intl/intl.dart';
 
 class AnimalCreatePage extends StatefulWidget {
   final Function() onAnimalEdited;
-  const AnimalCreatePage(this.onAnimalEdited, {super.key});
+  final int userId;
+  const AnimalCreatePage(this.onAnimalEdited, this.userId, {super.key});
 
   @override
   State<AnimalCreatePage> createState() => _AnimalCreatePageState();
@@ -18,6 +21,8 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
   final TextEditingController _nomeController = TextEditingController();
 
   late int selAnimalTypeId = 0;
+  late int selUserAddressId = 0;
+  late String birthDate = DateTime.now().toString();
 
   bool _isSaving = false;
 
@@ -26,7 +31,16 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
       _isSaving = true;
     });
 
-    bool isSuccess = true;
+    Object prms = {
+      "name": _nomeController.text,
+      "description": _descriptionController.text,
+      "animal_type_id": selAnimalTypeId,
+      "user_address_id": selUserAddressId,
+      "birth_date": birthDate,
+      "img_url": "https://static.thenounproject.com/png/1554486-200.png"
+    };
+
+    bool isSuccess = await AnimalRemote().saveAnimal(prms);
 
     setState(() {
       _isSaving = false;
@@ -43,7 +57,7 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Erro'),
-            content: const Text('Houve um erro ao salvar o endereço.'),
+            content: const Text('Houve um erro ao salvar o animal.'),
             actions: [
               ElevatedButton(
                 onPressed: () {
@@ -64,9 +78,7 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
         body: Center(
             child: Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: ListView(
         children: [
           const Text(
             'Cadastrar Animal',
@@ -101,7 +113,7 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
             dateFormat: DateFormat('dd/MM/yyyy'),
             mode: DateTimeFieldPickerMode.date,
             onDateSelected: (DateTime value) {
-              print(value);
+              birthDate = value.toString();
             },
           ),
           const SizedBox(
@@ -112,6 +124,12 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
                 selAnimalTypeId = anmTypeId;
               },
               fieldlabel: "Tipo"),
+          UserAddressCombo(
+              userId: widget.userId,
+              onSelectionChanged: (usrAddress) {
+                selUserAddressId = usrAddress;
+              },
+              fieldlabel: "Endereço"),
           const SizedBox(height: 32),
           ElevatedButton(
             onPressed: _isSaving ? null : _createAnimal,

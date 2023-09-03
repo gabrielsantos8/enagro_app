@@ -34,9 +34,9 @@ class _AnimalTypeComboState extends State<AnimalTypeCombo> {
     final animalTypeRemote = AnimalTypeRemote();
     final animalTypeList = await animalTypeRemote.getAnimalTypes();
 
-    final map = animalTypeList.fold<Map<int, String>>({}, (previousMap, city) {
-      final id = city['id'] as int;
-      final description = city['description'] as String;
+    final map = animalTypeList.fold<Map<int, String>>({}, (previousMap, animalType) {
+      final id = animalType['id'] as int;
+      final description = animalType['description'] as String;
       previousMap[id] = description;
       return previousMap;
     });

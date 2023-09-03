@@ -59,7 +59,7 @@ class _AnimalDetailsState extends State<AnimalDetails> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color:  const Color.fromARGB(255, 255, 255, 255),
+                color: const Color.fromARGB(255, 255, 255, 255),
                 boxShadow: [
                   BoxShadow(
                     color: const Color.fromARGB(255, 133, 133, 133)
@@ -84,14 +84,17 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                           fit: BoxFit.fill,
                         ),
                       ),
-                      InkWell(
-                        onTap: () {},
-                        child: CircleAvatar(
-                          backgroundColor: Theme.of(context).primaryColorDark,
-                          radius: 20,
-                          child: Icon(Icons.edit,
-                              size: 22,
-                              color: Theme.of(context).primaryColorLight),
+                      Padding(
+                        padding: EdgeInsets.only(right: 10, bottom: 10),
+                        child: InkWell(
+                          onTap: () {},
+                          child: CircleAvatar(
+                            backgroundColor: Theme.of(context).primaryColorDark,
+                            radius: 20,
+                            child: Icon(Icons.edit,
+                                size: 22,
+                                color: Theme.of(context).primaryColorLight),
+                          ),
                         ),
                       )
                     ],
