@@ -1,3 +1,4 @@
+import 'package:enagro_app/datasource/remote/animal_remote.dart';
 import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/user_address.dart';
 import 'package:enagro_app/ui/widgets/confirm_button.dart';
@@ -6,14 +7,47 @@ import 'package:flutter/material.dart';
 
 class AnimalDetails extends StatefulWidget {
   final Animal? animal;
+  final Function() onAnimalEdited;
 
-  const AnimalDetails(this.animal, {Key? key}) : super(key: key);
+  const AnimalDetails(this.animal, this.onAnimalEdited, {Key? key})
+      : super(key: key);
 
   @override
   State<AnimalDetails> createState() => _AnimalDetailsState();
 }
 
 class _AnimalDetailsState extends State<AnimalDetails> {
+  Future<void> _deleteAnimal() async {
+    Object map = {"id": widget.animal!.animalId};
+
+    bool isSuccess = await AnimalRemote().deleteAnimal(map);
+
+    if (isSuccess) {
+      widget.onAnimalEdited();
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context, true);
+    } else {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: const Text('Houve um erro ao excluir o animal.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,7 +151,7 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                         style: TextStyle(color: Theme.of(context).primaryColor),
                       ),
                       ConfirmButton(
-                          yesFunction: () {},
+                          yesFunction: _deleteAnimal,
                           color: Colors.red,
                           buttonText: "Excluir",
                           confirmText: "Tem certeza que deseja excluir?")
@@ -154,7 +188,7 @@ void _showAddressDetailsModal(BuildContext context, UserAddress userAddress) {
             onPressed: () {
               Navigator.of(context).pop(); // Fechar o modal
             },
-            child: Text("Fechar"),
+            child: const Text("Fechar"),
           ),
         ],
       );
