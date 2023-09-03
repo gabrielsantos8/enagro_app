@@ -1,7 +1,7 @@
 import 'package:enagro_app/datasource/remote/user_address_remote.dart';
 import 'package:enagro_app/models/user_address.dart';
 import 'package:enagro_app/ui/widgets/city_uf_combo.dart';
-import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
+import 'package:enagro_app/ui/widgets/confirm_button.dart';
 import 'package:flutter/material.dart';
 
 class UserAddressEditPage extends StatefulWidget {
@@ -82,7 +82,7 @@ class _UserAddressEditPageState extends State<UserAddressEditPage> {
     Object map = {"id": widget.userAddress.userAddressId};
 
     bool isSuccess = await UserAddressRemote().deleteAddress(map);
-    
+
     if (isSuccess) {
       widget.onAddressEdited();
       // ignore: use_build_context_synchronously
@@ -155,29 +155,13 @@ class _UserAddressEditPageState extends State<UserAddressEditPage> {
             child: _isSaving ? const Text('Salvando...') : const Text('Salvar'),
           ),
           const SizedBox(height: 12),
-          ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(const Color.fromARGB(255, 204, 63, 53)),
-                padding: MaterialStateProperty.all(
-                    const EdgeInsets.symmetric(horizontal: 28, vertical: 18)),
-              ),
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return ConfirmDialog(
-                        content: "Tem certeza que deseja excluir?",
-                        noFunction: () {
-                          Navigator.pop(context);
-                        },
-                        yesFunction: () {
-                          Navigator.pop(context);
-                          _deleteAddress();
-                        },
-                      );
-                    });
+          ConfirmButton(
+              yesFunction: () {
+                _deleteAddress();
               },
-              child: const Text('Excluir'))
+              color: const Color.fromARGB(255, 204, 63, 53),
+              buttonText: "Excluir",
+              confirmText: "Tem certeza que deseja excluir?"),
         ],
       ),
     )));

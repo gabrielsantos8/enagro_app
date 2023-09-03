@@ -1,8 +1,8 @@
 import 'package:enagro_app/datasource/remote/animal_remote.dart';
 import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/ui/pages/animal_details.dart';
 import 'package:enagro_app/ui/widgets/card_list_item.dart';
-import 'package:enagro_app/ui/widgets/default_home_item.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
 
@@ -78,7 +78,9 @@ Widget _buildAnimalList(int userId) {
                         title: animal.name,
                         description: '${animal.userAddress.city.description} - ${animal.userAddress.city.uf}',
                         imageUrl: animal.imgUrl,
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AnimalDetails(animal)));
+                        },
                       );
                     },
                   ),
