@@ -59,7 +59,7 @@ class _AnimalDetailsState extends State<AnimalDetails> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 255, 255, 255),
+                color:  const Color.fromARGB(255, 255, 255, 255),
                 boxShadow: [
                   BoxShadow(
                     color: const Color.fromARGB(255, 133, 133, 133)

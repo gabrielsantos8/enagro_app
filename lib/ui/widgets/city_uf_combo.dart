@@ -6,7 +6,7 @@ class CityUfCombo extends StatefulWidget {
   final int? selCityId;
   final String? selUf;
 
-  CityUfCombo(
+  const CityUfCombo(
       {Key? key, required this.onSelectionChanged, this.selCityId, this.selUf})
       : super(key: key);
 

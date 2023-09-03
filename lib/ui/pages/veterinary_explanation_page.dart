@@ -2,7 +2,7 @@ import 'package:enagro_app/datasource/remote/veterinarian_remote.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/models/veterinarian.dart';
 import 'package:enagro_app/ui/pages/veterinarian_create_page.dart';
-import 'package:enagro_app/ui/pages/veterinarian_page..dart';
+import 'package:enagro_app/ui/pages/veterinarian_page.dart';
 import 'package:enagro_app/ui/widgets/default_button.dart';
 import 'package:flutter/material.dart';
 

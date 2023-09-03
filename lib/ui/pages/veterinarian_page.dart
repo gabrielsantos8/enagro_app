@@ -20,7 +20,7 @@ class _VeterinarianPageState extends State<VeterinarianPage> {
       body: ListView(
         children: [
           Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
             ),
