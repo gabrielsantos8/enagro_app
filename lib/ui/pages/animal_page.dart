@@ -15,6 +15,12 @@ class AnimalPage extends StatefulWidget {
 }
 
 class _AnimalPageState extends State<AnimalPage> {
+  void refreshData() {
+    setState(() {
+      _buildAnimalList(widget.user!.userId);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,78 +48,83 @@ class _AnimalPageState extends State<AnimalPage> {
               )),
         ));
   }
-}
 
-Widget _buildAnimalList(int userId) {
-  return FutureBuilder(
-    future: AnimalRemote().getByUser(userId),
-    builder: (context, snapshot) {
-      switch (snapshot.connectionState) {
-        case ConnectionState.active:
-        case ConnectionState.waiting:
-        case ConnectionState.none:
-          return Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Theme.of(context).primaryColor,
-              color: Theme.of(context).primaryColorLight,
-            ),
-          );
-        case ConnectionState.done:
-          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            return Column(
-              children: [
-                const Text(
-                  "Animais",
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Color.fromARGB(255, 114, 114, 114),
-                      fontWeight: FontWeight.bold),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      Animal animal = snapshot.data![index];
-                      return CardListItem(
-                        title: animal.name,
-                        description: '${animal.userAddress.city.description} - ${animal.userAddress.city.uf}',
-                        imageUrl: animal.imgUrl,
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => AnimalDetails(animal)));
-                        },
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: DefaultOutlineButton(
-                    'Adicionar Animal',
-                    () {},
-                    style: TextStyle(color: Theme.of(context).primaryColor),
-                  ),
-                ),
-              ],
+  Widget _buildAnimalList(int userId) {
+    return FutureBuilder(
+      future: AnimalRemote().getByUser(userId),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+          case ConnectionState.none:
+            return Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).primaryColor,
+                color: Theme.of(context).primaryColorLight,
+              ),
             );
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('Erro ao carregar animais!'));
-          } else {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Center(child: Text('Nenhum animal cadastrado')),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: DefaultOutlineButton(
-                    'Adicionar Animal',
-                    () {},
-                    style: TextStyle(color: Theme.of(context).primaryColor),
+          case ConnectionState.done:
+            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+              return Column(
+                children: [
+                  const Text(
+                    "Animais",
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Color.fromARGB(255, 114, 114, 114),
+                        fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
-            );
-          }
-      }
-    },
-  );
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        Animal animal = snapshot.data![index];
+                        return CardListItem(
+                          title: animal.name,
+                          description:
+                              '${animal.userAddress.city.description} - ${animal.userAddress.city.uf}',
+                          imageUrl: animal.imgUrl,
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AnimalDetails(animal, refreshData)));
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DefaultOutlineButton(
+                      'Adicionar Animal',
+                      () {},
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('Erro ao carregar animais!'));
+            } else {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Center(child: Text('Nenhum animal cadastrado')),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DefaultOutlineButton(
+                      'Adicionar Animal',
+                      () {},
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                ],
+              );
+            }
+        }
+      },
+    );
+  }
 }
