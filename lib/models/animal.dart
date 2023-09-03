@@ -1,4 +1,4 @@
-import 'package:enagro_app/models/animalType.dart';
+import 'package:enagro_app/models/animal_type.dart';
 import 'package:enagro_app/models/user_address.dart';
 
 class Animal {

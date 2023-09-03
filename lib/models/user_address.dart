@@ -29,12 +29,12 @@ class UserAddress {
     return userAddresses;
   }
 
-  static UserAddress getAddress(int id, String complement, int city_id,
+  static UserAddress getAddress(int id, String complement, int cityId,
       String city, String uf, int ibge) {
     Map<String, dynamic> mp = {
       "id": id,
       "complement": complement,
-      "city_id": city_id,
+      "city_id": cityId,
       "city": city,
       "uf": uf,
       "ibge": ibge
