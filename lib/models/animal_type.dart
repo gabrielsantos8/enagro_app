@@ -13,4 +13,12 @@ class AnimalType {
     Map<String, dynamic> mp = {"id": id, "description": description};
     return AnimalType.fromMap(mp);
   }
+
+   static List<AnimalType> fromArray(List anmTypes) {
+    List<AnimalType> animalTypes = [];
+    for (var animalType in anmTypes) {
+      animalTypes.add(AnimalType.fromMap(animalType));
+    }
+    return animalTypes;
+  }
 }
