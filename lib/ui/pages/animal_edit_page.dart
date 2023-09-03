@@ -1,46 +1,68 @@
+import 'package:date_field/date_field.dart';
 import 'package:enagro_app/datasource/remote/animal_remote.dart';
+import 'package:enagro_app/models/animal.dart';
+import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/widgets/animal_type_combo.dart';
 import 'package:enagro_app/ui/widgets/default_textfield.dart';
 import 'package:enagro_app/ui/widgets/user_address_combo.dart';
 import 'package:flutter/material.dart';
-import 'package:date_field/date_field.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
-class AnimalCreatePage extends StatefulWidget {
+class AnimalEditPage extends StatefulWidget {
   final Function() onAnimalEdited;
-  final int userId;
-  const AnimalCreatePage(this.onAnimalEdited, this.userId, {super.key});
+  final User? user;
+  final Animal? animal;
+  const AnimalEditPage(
+      {super.key,
+      required this.onAnimalEdited,
+      required this.user,
+      required this.animal});
 
   @override
-  State<AnimalCreatePage> createState() => _AnimalCreatePageState();
+  State<AnimalEditPage> createState() => _AnimalEditPageState();
 }
 
-class _AnimalCreatePageState extends State<AnimalCreatePage> {
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
-
+class _AnimalEditPageState extends State<AnimalEditPage> {
+  late TextEditingController _descriptionController;
+  late TextEditingController _nameController;
   late int selAnimalTypeId = 0;
   late int selUserAddressId = 0;
   late String birthDate = DateTime.now().toString();
 
   bool _isSaving = false;
 
-  Future<void> _createAnimal() async {
+  @override
+  void initState() {
+    super.initState();
+    _descriptionController =
+        TextEditingController(text: widget.animal!.description.toString());
+    _nameController =
+        TextEditingController(text: widget.animal!.name.toString());
+  }
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _editAnimal() async {
     setState(() {
       _isSaving = true;
     });
 
     Object prms = {
+      "id": widget.animal!.animalId,
       "name": _nameController.text,
       "description": _descriptionController.text,
       "animal_type_id": selAnimalTypeId,
       "user_address_id": selUserAddressId,
-      "birth_date": birthDate,
-      "img_url": "https://static.thenounproject.com/png/1554486-200.png"
+      "birth_date": birthDate
     };
 
-    bool isSuccess = await AnimalRemote().saveAnimal(prms);
+    bool isSuccess = await AnimalRemote().updateAnimal(prms);
 
     setState(() {
       _isSaving = false;
@@ -103,6 +125,7 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
             height: 10,
           ),
           DateTimeFormField(
+            initialValue: widget.animal!.birthDate,
             decoration: const InputDecoration(
               hintStyle: TextStyle(color: Colors.black45),
               errorStyle: TextStyle(color: Colors.redAccent),
@@ -120,19 +143,21 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
             height: 10,
           ),
           AnimalTypeCombo(
+              selAnimalType: widget.animal!.animalType.animalTypeId,
               onSelectionChanged: (anmTypeId) {
                 selAnimalTypeId = anmTypeId;
               },
               fieldlabel: "Tipo"),
           UserAddressCombo(
-              userId: widget.userId,
+              selUserAddress: widget.animal!.userAddress.userAddressId,
+              userId: widget.user!.userId,
               onSelectionChanged: (usrAddress) {
                 selUserAddressId = usrAddress;
               },
               fieldlabel: "Endereço"),
           const SizedBox(height: 32),
           ElevatedButton(
-            onPressed: _isSaving ? null : _createAnimal,
+            onPressed: _isSaving ? null : _editAnimal,
             child: _isSaving ? const Text('Salvando...') : const Text('Salvar'),
           ),
         ],

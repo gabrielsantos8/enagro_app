@@ -90,7 +90,7 @@ class _AnimalPageState extends State<AnimalPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        AnimalDetails(animal, refreshData)));
+                                        AnimalDetails(animal, widget.user, refreshData)));
                           },
                         );
                       },

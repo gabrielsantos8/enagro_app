@@ -1,15 +1,18 @@
 import 'package:enagro_app/datasource/remote/animal_remote.dart';
 import 'package:enagro_app/models/animal.dart';
+import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/models/user_address.dart';
+import 'package:enagro_app/ui/pages/animal_edit_page.dart';
 import 'package:enagro_app/ui/widgets/confirm_button.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
 
 class AnimalDetails extends StatefulWidget {
   final Animal? animal;
+  final User? user;
   final Function() onAnimalEdited;
 
-  const AnimalDetails(this.animal, this.onAnimalEdited, {Key? key})
+  const AnimalDetails(this.animal, this.user, this.onAnimalEdited, {Key? key})
       : super(key: key);
 
   @override
@@ -17,6 +20,12 @@ class AnimalDetails extends StatefulWidget {
 }
 
 class _AnimalDetailsState extends State<AnimalDetails> {
+
+  void refresh() {
+    widget.onAnimalEdited();
+    Navigator.pop(context);
+  }
+
   Future<void> _deleteAnimal() async {
     Object map = {"id": widget.animal!.animalId};
 
@@ -85,7 +94,7 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(right: 10, bottom: 10),
+                        padding: const EdgeInsets.only(right: 10, bottom: 10),
                         child: InkWell(
                           onTap: () {},
                           child: CircleAvatar(
@@ -149,7 +158,16 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                     children: [
                       DefaultOutlineButton(
                         "Editar",
-                        () {},
+                        () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AnimalEditPage(
+                                        animal: widget.animal,
+                                        onAnimalEdited: refresh,
+                                        user: widget.user,
+                                      )));
+                        },
                         width: 100,
                         style: TextStyle(color: Theme.of(context).primaryColor),
                       ),

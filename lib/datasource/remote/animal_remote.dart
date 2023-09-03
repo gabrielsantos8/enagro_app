@@ -20,7 +20,11 @@ class AnimalRemote {
 
   Future<bool> saveAnimal(Object prms) async {
     var data = await GeneralHttpClient().post('${url}store', jsonEncode(prms));
-    print(data);
+    return data['success'];
+  }
+
+  Future<bool> updateAnimal(Object prms) async {
+    var data = await GeneralHttpClient().post('${url}update', jsonEncode(prms));
     return data['success'];
   }
 
