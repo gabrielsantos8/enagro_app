@@ -18,16 +18,18 @@ class CardListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-          leading: SizedBox(
-            width: 80,
-            child: Image.network(
-              imageUrl,
-            ),
+        leading: SizedBox(
+          width: 90,
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.fill,
           ),
-          title: Text(title),
-          subtitle: Text(description),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: onTap),
+        ),
+        title: Text(title),
+        subtitle: Text(description),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: onTap,
+      ),
     );
   }
 }
