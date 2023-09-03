@@ -1,6 +1,7 @@
 import 'package:enagro_app/datasource/remote/animal_remote.dart';
 import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/ui/pages/animal_create_page.dart';
 import 'package:enagro_app/ui/pages/animal_details.dart';
 import 'package:enagro_app/ui/widgets/card_list_item.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
@@ -89,7 +90,7 @@ class _AnimalPageState extends State<AnimalPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        AnimalDetails(animal, refreshData)));
+                                        AnimalDetails(animal, widget.user, refreshData)));
                           },
                         );
                       },
@@ -99,7 +100,13 @@ class _AnimalPageState extends State<AnimalPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: DefaultOutlineButton(
                       'Adicionar Animal',
-                      () {},
+                      () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    AnimalCreatePage(refreshData, widget.user!.userId)));
+                      },
                       style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
                   ),

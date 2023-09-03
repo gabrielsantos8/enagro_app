@@ -23,6 +23,11 @@ class AnimalRemote {
     return data['success'];
   }
 
+  Future<bool> updateAnimal(Object prms) async {
+    var data = await GeneralHttpClient().post('${url}update', jsonEncode(prms));
+    return data['success'];
+  }
+
   Future<bool> deleteAnimal(Object prms) async {
     var data = await GeneralHttpClient().post('${url}destroy', jsonEncode(prms));
     return data['success'];

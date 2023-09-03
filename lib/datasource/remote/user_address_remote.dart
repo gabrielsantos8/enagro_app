@@ -28,4 +28,9 @@ class UserAddressRemote {
     return data['success'];
   }
 
+  Future<List> comboGetByUser(int id) async {
+    var data = await GeneralHttpClient().getJson('${url}getComboByUser/$id');
+    return data['dados'];
+  }
+
 }

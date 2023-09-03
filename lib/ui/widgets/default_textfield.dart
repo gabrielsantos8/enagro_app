@@ -4,15 +4,17 @@ class DefaultTextField extends StatelessWidget {
   final String fieldlabel;
   final TextInputType type;
   final bool isPass;
-  final TextEditingController controller; 
+  final TextEditingController controller;
+  final int maxLines;
 
-  const DefaultTextField({super.key, this.fieldlabel = "", this.type = TextInputType.text, this.isPass = false, required this.controller});
+  const DefaultTextField({super.key, this.fieldlabel = "", this.type = TextInputType.text, this.isPass = false, required this.controller, this.maxLines = 1});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: type,
       obscureText: isPass,
+      maxLines: maxLines,
       controller: controller,
       enableSuggestions: !isPass,
       autocorrect: !isPass,
