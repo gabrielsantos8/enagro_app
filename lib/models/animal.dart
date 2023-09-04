@@ -26,7 +26,10 @@ class Animal {
         description: anml['description'] ?? '',
         animalType: AnimalType.getAnimalType(
             anml['animal_type_id'] ?? 0, anml['animal_type'] ?? ''),
-        imgUrl: (anml['img_url'] ?? '').toString().replaceAll('localhost', '10.0.2.2'),
+        imgUrl: (anml['img_url'] ??
+                'https://static.thenounproject.com/png/1554486-200.png')
+            .toString()
+            .replaceAll('localhost', '10.0.2.2'),
         userAddress: UserAddress.getAddress(
             anml['user_address_id'] ?? 0,
             anml['complement'] ?? '',

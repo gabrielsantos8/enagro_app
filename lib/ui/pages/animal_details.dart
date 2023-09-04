@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:enagro_app/datasource/remote/animal_remote.dart';
 import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/user.dart';
@@ -6,6 +8,7 @@ import 'package:enagro_app/ui/pages/animal_edit_page.dart';
 import 'package:enagro_app/ui/widgets/confirm_button.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AnimalDetails extends StatefulWidget {
   final Animal? animal;
@@ -20,10 +23,123 @@ class AnimalDetails extends StatefulWidget {
 }
 
 class _AnimalDetailsState extends State<AnimalDetails> {
+  late Future<String> animalImageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      animalImageUrl = _loadAnimalImage();
+    });
+  }
 
   void refresh() {
     widget.onAnimalEdited();
     Navigator.pop(context);
+  }
+
+  void _showModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Opções"),
+              const SizedBox(height: 16.0),
+              ListTile(
+                leading: const Icon(Icons.delete),
+                title: const Text("Remover imagem"),
+                onTap: _removeImage,
+              ),
+              ListTile(
+                  leading: const Icon(Icons.send),
+                  title: const Text("Enviar imagem"),
+                  onTap: _sendImage),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _removeImage() async {
+    bool isSuccess = await AnimalRemote().removeImage(widget.animal!.animalId);
+
+    if (isSuccess) {
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context, true);
+
+      setState(() {
+        widget.onAnimalEdited();
+        animalImageUrl = _loadAnimalImage();
+      });
+    } else {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: const Text('Houve um erro ao remover imagem.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  Future<String> _loadAnimalImage() async {
+    AnimalRemote userRemote = AnimalRemote();
+    return userRemote.getImage(widget.animal!.animalId);
+  }
+
+  Future<void> _sendImage() async {
+    AnimalRemote animalRemote = AnimalRemote();
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      File file = File(pickedFile.path);
+      bool isSuccess = await animalRemote.sendImage(file, widget.animal!.animalId);
+      if (isSuccess) {
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context, true);
+
+        setState(() {
+          widget.onAnimalEdited();
+          animalImageUrl = _loadAnimalImage();
+        });
+      } else {
+        // ignore: use_build_context_synchronously
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Erro'),
+              content: const Text('Houve um erro ao enviar imagem.'),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
   }
 
   Future<void> _deleteAnimal() async {
@@ -88,15 +204,35 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                       SizedBox(
                         height: 300,
                         width: MediaQuery.of(context).size.height * 0.7,
-                        child: Image.network(
-                          widget.animal!.imgUrl,
-                          fit: BoxFit.fill,
+                        child: FutureBuilder<String>(
+                          future: animalImageUrl,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  color: Theme.of(context).primaryColorLight,
+                                ),
+                              ); // Ou outro indicador de carregamento
+                            } else if (snapshot.hasError) {
+                              return const Text('Erro ao carregar imagem');
+                            } else {
+                              return Image.network(
+                                snapshot.data!,
+                                fit: BoxFit.fill,
+                              );
+                            }
+                          },
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 10, bottom: 10),
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            _showModal(context);
+                          },
                           child: CircleAvatar(
                             backgroundColor: Theme.of(context).primaryColorDark,
                             radius: 20,
