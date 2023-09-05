@@ -89,8 +89,8 @@ class _AnimalPageState extends State<AnimalPage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        AnimalDetails(animal, widget.user, refreshData)));
+                                    builder: (context) => AnimalDetails(
+                                        animal, widget.user, refreshData)));
                           },
                         );
                       },
@@ -104,8 +104,8 @@ class _AnimalPageState extends State<AnimalPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    AnimalCreatePage(refreshData, widget.user!.userId)));
+                                builder: (context) => AnimalCreatePage(
+                                    refreshData, widget.user!.userId)));
                       },
                       style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
@@ -123,7 +123,13 @@ class _AnimalPageState extends State<AnimalPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: DefaultOutlineButton(
                       'Adicionar Animal',
-                      () {},
+                      () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AnimalCreatePage(
+                                    refreshData, widget.user!.userId)));
+                      },
                       style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
                   ),
