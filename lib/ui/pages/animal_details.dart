@@ -5,8 +5,8 @@ import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/models/user_address.dart';
 import 'package:enagro_app/ui/pages/animal_edit_page.dart';
-import 'package:enagro_app/ui/widgets/confirm_button.dart';
-import 'package:enagro_app/ui/widgets/default_outline_button.dart';
+import 'package:enagro_app/ui/widgets/circular_button.dart';
+import 'package:enagro_app/ui/widgets/confirm_circular_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -110,7 +110,8 @@ class _AnimalDetailsState extends State<AnimalDetails> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       File file = File(pickedFile.path);
-      bool isSuccess = await animalRemote.sendImage(file, widget.animal!.animalId);
+      bool isSuccess =
+          await animalRemote.sendImage(file, widget.animal!.animalId);
       if (isSuccess) {
         // ignore: use_build_context_synchronously
         Navigator.pop(context, true);
@@ -202,7 +203,7 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                     alignment: Alignment.bottomRight,
                     children: [
                       SizedBox(
-                        height: 300,
+                        height: 250,
                         width: MediaQuery.of(context).size.height * 0.7,
                         child: FutureBuilder<String>(
                           future: animalImageUrl,
@@ -253,65 +254,97 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                       color: Color.fromARGB(255, 71, 71, 71),
                     ),
                   ),
-                  const SizedBox(height: 20),
                   Padding(
                       padding: const EdgeInsets.all(8),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(' ${widget.animal!.animalType.description}'),
-                              Text(
-                                  'Nasc.: ${widget.animal!.birthDate.day}/${widget.animal!.birthDate.month}/${widget.animal!.birthDate.year}'),
-                              InkWell(
-                                onTap: () {
-                                  _showAddressDetailsModal(
-                                      context, widget.animal!.userAddress);
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      '${widget.animal!.userAddress.city.description} - ${widget.animal!.userAddress.city.uf}',
+                          DataTable(
+                            columns: const [
+                              DataColumn(label: Text('')),
+                              DataColumn(label: Text('')),
+                            ],
+                            rows: [
+                              DataRow(cells: [
+                                const DataCell(Text(
+                                  'Tipo:',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )),
+                                DataCell(Text(
+                                    ' ${widget.animal!.animalType.description}')),
+                              ]),
+                              DataRow(cells: [
+                                const DataCell(Text('Nascimento:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                                DataCell(Text(
+                                    '${widget.animal!.birthDate.day}/${widget.animal!.birthDate.month}/${widget.animal!.birthDate.year}')),
+                              ]),
+                              DataRow(cells: [
+                                const DataCell(Text('Local:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                                DataCell(
+                                  InkWell(
+                                    onTap: () {
+                                      _showAddressDetailsModal(
+                                          context, widget.animal!.userAddress);
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          '${widget.animal!.userAddress.city.description} - ${widget.animal!.userAddress.city.uf}',
+                                        ),
+                                        Icon(
+                                          Icons.not_listed_location_outlined,
+                                          size: 22,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                      ],
                                     ),
-                                    Icon(
-                                      Icons.not_listed_location_outlined,
-                                      size: 22,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                  ),
+                                )
+                              ]),
                             ],
                           ),
                           const SizedBox(height: 20),
-                          Text(widget.animal!.description),
+                          Center(
+                            child: Text(
+                              widget.animal!.description,
+                              textAlign: TextAlign
+                                  .center, // Isso alinha o texto ao centro horizontalmente
+                            ),
+                          ),
                           const SizedBox(height: 20),
                         ],
                       )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      DefaultOutlineButton(
-                        "Editar",
-                        () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AnimalEditPage(
-                                        animal: widget.animal,
-                                        onAnimalEdited: refresh,
-                                        user: widget.user,
-                                      )));
-                        },
-                        width: 100,
-                        style: TextStyle(color: Theme.of(context).primaryColor),
-                      ),
-                      ConfirmButton(
-                          yesFunction: _deleteAnimal,
-                          color: Colors.red,
-                          buttonText: "Excluir",
-                          confirmText: "Tem certeza que deseja excluir?")
+                      CircularButton(
+                          label: "Editar",
+                          color: const Color.fromARGB(255, 238, 237, 237),
+                          icon: Icons.edit_outlined,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AnimalEditPage(
+                                          animal: widget.animal,
+                                          onAnimalEdited: refresh,
+                                          user: widget.user,
+                                        )));
+                          }),
+                      CircularButton(
+                          label: "Histórico",
+                          color: const Color.fromARGB(255, 238, 237, 237),
+                          icon: Icons.history_outlined,
+                          onPressed: () {}),
+                      ConfirmCircularButton(
+                          label: "Excluir",
+                          color: const Color.fromARGB(255, 255, 227, 225),
+                          icon: Icons.delete_outline,
+                          confirmText: "Tem certeza que deseja excluir?",
+                          onPressed: _deleteAnimal)
                     ],
                   ),
                 ],
