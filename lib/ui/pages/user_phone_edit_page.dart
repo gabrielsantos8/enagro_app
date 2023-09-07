@@ -41,7 +41,7 @@ class _UserPhoneEditPageState extends State<UserPhoneEditPage> {
     UserPhone editedPhone = UserPhone(
         userPhoneId: widget.userPhone!.userPhoneId,
         ddd: int.parse(_dddController.text),
-        number: int.parse(_numberController.text),
+        number: _numberController.text,
         userId: widget.userPhone!.userId);
 
     bool isSuccess = await UserPhoneRemote().editPhone(editedPhone);

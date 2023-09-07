@@ -24,7 +24,7 @@ class _UserPhoneCreatePageState extends State<UserPhoneCreatePage> {
     UserPhone phone = UserPhone(
         userPhoneId: 0,
         ddd: int.parse(_dddController.text),
-        number: int.parse(_numberController.text),
+        number: _numberController.text,
         userId: widget.userId);
 
     bool isSuccess = await UserPhoneRemote().savePhone(phone);
