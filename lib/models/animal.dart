@@ -1,3 +1,4 @@
+import 'package:enagro_app/models/animal_subtype.dart';
 import 'package:enagro_app/models/animal_type.dart';
 import 'package:enagro_app/models/user_address.dart';
 
@@ -9,6 +10,8 @@ class Animal {
   final String imgUrl;
   final UserAddress userAddress;
   final DateTime birthDate;
+  final double weight;
+  final AnimalSubType animalSubType;
 
   Animal(
       {required this.animalType,
@@ -17,7 +20,9 @@ class Animal {
       required this.birthDate,
       required this.animalId,
       required this.description,
-      required this.name});
+      required this.name,
+      required this.weight,
+      required this.animalSubType});
 
   factory Animal.fromMap(Map<String, dynamic> anml) {
     return Animal(
@@ -37,7 +42,13 @@ class Animal {
             anml['city'] ?? '',
             anml['uf'] ?? '',
             anml['ibge'] ?? 0),
-        birthDate: DateTime.parse(anml['birth_date'] ?? '1900-12-01'));
+        birthDate: DateTime.parse(anml['birth_date'] ?? '1900-12-01'),
+        weight: anml['weight'].toDouble() ?? 0.0,
+        animalSubType: AnimalSubType.getAnimalSubType(
+            anml['animal_subtype_id'] ?? 0,
+            anml['animal_subtype'] ?? '',
+            anml['animal_type_id'] ?? 0,
+            anml['animal_type'] ?? ''));
   }
 
   static List<Animal> getAnimals(List animals) {

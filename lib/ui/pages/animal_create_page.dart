@@ -1,5 +1,5 @@
 import 'package:enagro_app/datasource/remote/animal_remote.dart';
-import 'package:enagro_app/ui/widgets/animal_type_combo.dart';
+import 'package:enagro_app/ui/widgets/animal_subtype_type_combo.dart';
 import 'package:enagro_app/ui/widgets/default_textfield.dart';
 import 'package:enagro_app/ui/widgets/user_address_combo.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +19,10 @@ class AnimalCreatePage extends StatefulWidget {
 class _AnimalCreatePageState extends State<AnimalCreatePage> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
 
   late int selAnimalTypeId = 0;
+  late int selAnimalSubtypeId = 0;
   late int selUserAddressId = 0;
   late String birthDate = DateTime.now().toString();
 
@@ -35,8 +37,10 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
       "name": _nameController.text,
       "description": _descriptionController.text,
       "animal_type_id": selAnimalTypeId,
+      "animal_subtype_id": selAnimalSubtypeId,
       "user_address_id": selUserAddressId,
       "birth_date": birthDate,
+      "weight": _weightController.text,
       "img_url": "https://static.thenounproject.com/png/1554486-200.png"
     };
 
@@ -89,18 +93,25 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(
-            height: 50,
+            height: 40,
           ),
           DefaultTextField(controller: _nameController, fieldlabel: 'Nome'),
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
           DefaultTextField(
               controller: _descriptionController,
               fieldlabel: 'Descrição',
               maxLines: 8),
+              const SizedBox(
+            height: 20,
+          ),
+          DefaultTextField(
+              type: TextInputType.number,
+              controller: _weightController,
+              fieldlabel: 'Peso'),
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
           DateTimeFormField(
             decoration: const InputDecoration(
@@ -117,20 +128,20 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
             },
           ),
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
-          AnimalTypeCombo(
-              onSelectionChanged: (anmTypeId) {
-                selAnimalTypeId = anmTypeId;
-              },
-              fieldlabel: "Tipo"),
+          const Text('Tipo/Subtipo', style: TextStyle(fontSize: 18)),
+          AnimalSubtypeTypeCombo(onSelectionChanged: (anmTypeId, anmSubTypeId) {
+            selAnimalTypeId = anmTypeId;
+            selAnimalSubtypeId = anmSubTypeId;
+          }),
           UserAddressCombo(
               userId: widget.userId,
               onSelectionChanged: (usrAddress) {
                 selUserAddressId = usrAddress;
               },
               fieldlabel: "Endereço"),
-          const SizedBox(height: 32),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: _isSaving ? null : _createAnimal,
             child: _isSaving ? const Text('Salvando...') : const Text('Salvar'),

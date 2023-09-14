@@ -273,6 +273,22 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                                     ' ${widget.animal!.animalType.description}')),
                               ]),
                               DataRow(cells: [
+                                const DataCell(Text(
+                                  'Sub-Tipo:',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )),
+                                DataCell(Text(
+                                    ' ${widget.animal!.animalSubType.description}')),
+                              ]),
+                               DataRow(cells: [
+                                const DataCell(Text(
+                                  'Peso:',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )),
+                                DataCell(Text(
+                                    ' ${widget.animal!.weight}kg')),
+                              ]),
+                              DataRow(cells: [
                                 const DataCell(Text('Nascimento:',
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold))),
