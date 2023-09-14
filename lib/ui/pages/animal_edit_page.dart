@@ -2,7 +2,7 @@ import 'package:date_field/date_field.dart';
 import 'package:enagro_app/datasource/remote/animal_remote.dart';
 import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/user.dart';
-import 'package:enagro_app/ui/widgets/animal_type_combo.dart';
+import 'package:enagro_app/ui/widgets/animal_subtype_type_combo.dart';
 import 'package:enagro_app/ui/widgets/default_textfield.dart';
 import 'package:enagro_app/ui/widgets/user_address_combo.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,9 @@ class AnimalEditPage extends StatefulWidget {
 class _AnimalEditPageState extends State<AnimalEditPage> {
   late TextEditingController _descriptionController;
   late TextEditingController _nameController;
+  late TextEditingController _weightController;
   late int selAnimalTypeId = 0;
+  late int selAnimalSubtypeId = 0;
   late int selUserAddressId = 0;
   late String birthDate = DateTime.now().toString();
 
@@ -39,6 +41,7 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
         TextEditingController(text: widget.animal!.description.toString());
     _nameController =
         TextEditingController(text: widget.animal!.name.toString());
+    _weightController = TextEditingController(text: widget.animal!.weight.toString());
   }
 
   @override
@@ -58,8 +61,10 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
       "name": _nameController.text,
       "description": _descriptionController.text,
       "animal_type_id": selAnimalTypeId,
+      "animal_subtype_id": selAnimalSubtypeId,
       "user_address_id": selUserAddressId,
-      "birth_date": birthDate
+      "birth_date": birthDate,
+      "weight": _weightController.text
     };
 
     bool isSuccess = await AnimalRemote().updateAnimal(prms);
@@ -111,7 +116,7 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(
-            height: 50,
+            height: 40,
           ),
           DefaultTextField(controller: _nameController, fieldlabel: 'Nome'),
           const SizedBox(
@@ -142,12 +147,21 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
           const SizedBox(
             height: 10,
           ),
-          AnimalTypeCombo(
-              selAnimalType: widget.animal!.animalType.animalTypeId,
-              onSelectionChanged: (anmTypeId) {
+          DefaultTextField(
+              type: TextInputType.number,
+              controller: _weightController,
+              fieldlabel: 'Peso'),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text('Tipo/Subtipo', style: TextStyle(fontSize: 18)),
+          AnimalSubtypeTypeCombo(
+              selAnimalTypeId: widget.animal!.animalType.animalTypeId,
+              selAnimalSubtypeId: widget.animal!.animalSubType.animalSubTypeId,
+              onSelectionChanged: (anmTypeId, anmSubTypeId) {
                 selAnimalTypeId = anmTypeId;
-              },
-              fieldlabel: "Tipo"),
+                selAnimalSubtypeId = anmSubTypeId;
+              }),
           UserAddressCombo(
               selUserAddress: widget.animal!.userAddress.userAddressId,
               userId: widget.user!.userId,
