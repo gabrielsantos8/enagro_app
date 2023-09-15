@@ -95,6 +95,14 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
           const SizedBox(
             height: 40,
           ),
+          const Text('Tipo/Subtipo', style: TextStyle(fontSize: 18)),
+          AnimalSubtypeTypeCombo(onSelectionChanged: (anmTypeId, anmSubTypeId) {
+            selAnimalTypeId = anmTypeId;
+            selAnimalSubtypeId = anmSubTypeId;
+          }),
+          const SizedBox(
+            height: 20,
+          ),
           DefaultTextField(controller: _nameController, fieldlabel: 'Nome'),
           const SizedBox(
             height: 20,
@@ -130,11 +138,6 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
           const SizedBox(
             height: 20,
           ),
-          const Text('Tipo/Subtipo', style: TextStyle(fontSize: 18)),
-          AnimalSubtypeTypeCombo(onSelectionChanged: (anmTypeId, anmSubTypeId) {
-            selAnimalTypeId = anmTypeId;
-            selAnimalSubtypeId = anmSubTypeId;
-          }),
           UserAddressCombo(
               userId: widget.userId,
               onSelectionChanged: (usrAddress) {

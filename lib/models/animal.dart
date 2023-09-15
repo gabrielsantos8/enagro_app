@@ -12,6 +12,7 @@ class Animal {
   final DateTime birthDate;
   final double weight;
   final AnimalSubType animalSubType;
+  final int amount;
 
   Animal(
       {required this.animalType,
@@ -22,7 +23,8 @@ class Animal {
       required this.description,
       required this.name,
       required this.weight,
-      required this.animalSubType});
+      required this.animalSubType,
+      required this.amount});
 
   factory Animal.fromMap(Map<String, dynamic> anml) {
     return Animal(
@@ -48,7 +50,8 @@ class Animal {
             anml['animal_subtype_id'] ?? 0,
             anml['animal_subtype'] ?? '',
             anml['animal_type_id'] ?? 0,
-            anml['animal_type'] ?? ''));
+            anml['animal_type'] ?? ''),
+        amount:  anml['amount'] ?? 0);
   }
 
   static List<Animal> getAnimals(List animals) {

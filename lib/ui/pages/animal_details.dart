@@ -196,7 +196,7 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                   ),
                 ],
               ),
-              height: MediaQuery.of(context).size.height * 0.99,
+              height: MediaQuery.of(context).size.height * 1.1,
               child: Column(
                 children: [
                   Stack(
@@ -280,14 +280,21 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                                 DataCell(Text(
                                     ' ${widget.animal!.animalSubType.description}')),
                               ]),
-                               DataRow(cells: [
+                              DataRow(cells: [
                                 const DataCell(Text(
                                   'Peso:',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 )),
-                                DataCell(Text(
-                                    ' ${widget.animal!.weight}kg')),
+                                DataCell(Text(' ${widget.animal!.weight}kg')),
                               ]),
+                              if (widget.animal!.animalSubType.animalSubTypeId == 3)
+                                  DataRow(cells: [
+                                    const DataCell(Text(
+                                      'Quantidade:',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    )),
+                                    DataCell(Text(' ${widget.animal!.amount}')),
+                                  ]),
                               DataRow(cells: [
                                 const DataCell(Text('Nascimento:',
                                     style: TextStyle(
@@ -333,7 +340,7 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                           const SizedBox(height: 20),
                         ],
                       )),
-                  Row(
+                       Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CircularButton(
