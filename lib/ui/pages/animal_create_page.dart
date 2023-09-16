@@ -20,6 +20,8 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final List types = [3, 4];
 
   late int selAnimalTypeId = 0;
   late int selAnimalSubtypeId = 0;
@@ -41,6 +43,8 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
       "user_address_id": selUserAddressId,
       "birth_date": birthDate,
       "weight": _weightController.text,
+      "amount":
+          (_amountController.text.isNotEmpty && int.parse(_amountController.text) > 0) ? _amountController.text : 1,
       "img_url": "https://static.thenounproject.com/png/1554486-200.png"
     };
 
@@ -97,8 +101,10 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
           ),
           const Text('Tipo/Subtipo', style: TextStyle(fontSize: 18)),
           AnimalSubtypeTypeCombo(onSelectionChanged: (anmTypeId, anmSubTypeId) {
-            selAnimalTypeId = anmTypeId;
-            selAnimalSubtypeId = anmSubTypeId;
+            setState(() {
+              selAnimalTypeId = anmTypeId;
+              selAnimalSubtypeId = anmSubTypeId;
+            });
           }),
           const SizedBox(
             height: 20,
@@ -111,23 +117,34 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
               controller: _descriptionController,
               fieldlabel: 'Descrição',
               maxLines: 8),
-              const SizedBox(
+          const SizedBox(
             height: 20,
+          ),
+          if (types.contains(selAnimalSubtypeId))
+            DefaultTextField(
+                withDecimals: false,
+                type: const TextInputType.numberWithOptions(decimal: false),
+                controller: _amountController,
+                fieldlabel: 'Quantidade'),
+          SizedBox(
+            height: (types.contains(selAnimalSubtypeId)) ? 20 : 0,
           ),
           DefaultTextField(
               type: TextInputType.number,
               controller: _weightController,
-              fieldlabel: 'Peso'),
+              fieldlabel:
+                  'Peso ${types.contains(selAnimalSubtypeId) ? 'médio' : ''}'),
           const SizedBox(
             height: 20,
           ),
           DateTimeFormField(
-            decoration: const InputDecoration(
-              hintStyle: TextStyle(color: Colors.black45),
-              errorStyle: TextStyle(color: Colors.redAccent),
-              border: OutlineInputBorder(),
-              suffixIcon: Icon(Icons.event_note),
-              labelText: 'Data Nascimento',
+            decoration: InputDecoration(
+              hintStyle: const TextStyle(color: Colors.black45),
+              errorStyle: const TextStyle(color: Colors.redAccent),
+              border: const OutlineInputBorder(),
+              suffixIcon: const Icon(Icons.event_note),
+              labelText:
+                  'Data Nascimento ${types.contains(selAnimalSubtypeId) ? 'média' : ''}',
             ),
             dateFormat: DateFormat('dd/MM/yyyy'),
             mode: DateTimeFieldPickerMode.date,
