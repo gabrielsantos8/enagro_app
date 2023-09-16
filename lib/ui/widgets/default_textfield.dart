@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class DefaultTextField extends StatelessWidget {
   final String fieldlabel;
   final TextInputType type;
   final bool isPass;
+  final bool withDecimals;
   final TextEditingController controller;
   final int maxLines;
 
-  const DefaultTextField({super.key, this.fieldlabel = "", this.type = TextInputType.text, this.isPass = false, required this.controller, this.maxLines = 1});
+  const DefaultTextField(
+      {super.key,
+      this.fieldlabel = "",
+      this.type = TextInputType.text,
+      this.isPass = false,
+      required this.controller,
+      this.maxLines = 1,
+      this.withDecimals = true});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +24,8 @@ class DefaultTextField extends StatelessWidget {
       keyboardType: type,
       obscureText: isPass,
       maxLines: maxLines,
+      inputFormatters:
+          (!withDecimals) ? [FilteringTextInputFormatter.digitsOnly] : [],
       controller: controller,
       enableSuggestions: !isPass,
       autocorrect: !isPass,

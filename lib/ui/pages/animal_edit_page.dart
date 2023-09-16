@@ -27,10 +27,12 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
   late TextEditingController _descriptionController;
   late TextEditingController _nameController;
   late TextEditingController _weightController;
+  late TextEditingController _amountController;
   late int selAnimalTypeId = 0;
   late int selAnimalSubtypeId = 0;
   late int selUserAddressId = 0;
   late String birthDate = DateTime.now().toString();
+  final List types = [3, 4];
 
   bool _isSaving = false;
 
@@ -41,14 +43,23 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
         TextEditingController(text: widget.animal!.description.toString());
     _nameController =
         TextEditingController(text: widget.animal!.name.toString());
-    _weightController = TextEditingController(text: widget.animal!.weight.toString());
+    _weightController =
+        TextEditingController(text: widget.animal!.weight.toString());
+    _amountController =
+        TextEditingController(text: widget.animal!.amount.toString());
   }
 
   @override
   void dispose() {
     _descriptionController.dispose();
     _nameController.dispose();
+    _weightController.dispose();
+    _amountController.dispose();
     super.dispose();
+  }
+
+  void showQtdInput() {
+    setState(() {});
   }
 
   Future<void> _editAnimal() async {
@@ -64,7 +75,11 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
       "animal_subtype_id": selAnimalSubtypeId,
       "user_address_id": selUserAddressId,
       "birth_date": birthDate,
-      "weight": _weightController.text
+      "weight": _weightController.text,
+      "amount": (_amountController.text.isNotEmpty &&
+              int.parse(_amountController.text) > 0)
+          ? _amountController.text
+          : 1,
     };
 
     bool isSuccess = await AnimalRemote().updateAnimal(prms);
@@ -118,25 +133,53 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
           const SizedBox(
             height: 40,
           ),
+          const Text('Tipo/Subtipo', style: TextStyle(fontSize: 18)),
+          AnimalSubtypeTypeCombo(
+              selAnimalTypeId: widget.animal!.animalType.animalTypeId,
+              selAnimalSubtypeId: widget.animal!.animalSubType.animalSubTypeId,
+              onSelectionChanged: (anmTypeId, anmSubTypeId) {
+                setState(() {
+                  selAnimalTypeId = anmTypeId;
+                  selAnimalSubtypeId = anmSubTypeId;
+                });
+              }),
           DefaultTextField(controller: _nameController, fieldlabel: 'Nome'),
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
           DefaultTextField(
               controller: _descriptionController,
               fieldlabel: 'Descrição',
               maxLines: 8),
           const SizedBox(
-            height: 10,
+            height: 20,
+          ),
+          if (types.contains(selAnimalSubtypeId))
+            DefaultTextField(
+                withDecimals: false,
+                type: const TextInputType.numberWithOptions(decimal: false),
+                controller: _amountController,
+                fieldlabel: 'Quantidade'),
+          SizedBox(
+            height: (types.contains(selAnimalSubtypeId)) ? 20 : 0,
+          ),
+          DefaultTextField(
+              type: TextInputType.number,
+              controller: _weightController,
+              fieldlabel:
+                  'Peso ${types.contains(selAnimalSubtypeId) ? 'médio' : ''}'),
+          const SizedBox(
+            height: 20,
           ),
           DateTimeFormField(
             initialValue: widget.animal!.birthDate,
-            decoration: const InputDecoration(
-              hintStyle: TextStyle(color: Colors.black45),
-              errorStyle: TextStyle(color: Colors.redAccent),
-              border: OutlineInputBorder(),
-              suffixIcon: Icon(Icons.event_note),
-              labelText: 'Data Nascimento',
+            decoration: InputDecoration(
+              hintStyle: const TextStyle(color: Colors.black45),
+              errorStyle: const TextStyle(color: Colors.redAccent),
+              border: const OutlineInputBorder(),
+              suffixIcon: const Icon(Icons.event_note),
+              labelText:
+                  'Data Nascimento ${types.contains(selAnimalSubtypeId) ? 'média' : ''}',
             ),
             dateFormat: DateFormat('dd/MM/yyyy'),
             mode: DateTimeFieldPickerMode.date,
@@ -145,23 +188,8 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
             },
           ),
           const SizedBox(
-            height: 10,
-          ),
-          DefaultTextField(
-              type: TextInputType.number,
-              controller: _weightController,
-              fieldlabel: 'Peso'),
-          const SizedBox(
             height: 20,
           ),
-          const Text('Tipo/Subtipo', style: TextStyle(fontSize: 18)),
-          AnimalSubtypeTypeCombo(
-              selAnimalTypeId: widget.animal!.animalType.animalTypeId,
-              selAnimalSubtypeId: widget.animal!.animalSubType.animalSubTypeId,
-              onSelectionChanged: (anmTypeId, anmSubTypeId) {
-                selAnimalTypeId = anmTypeId;
-                selAnimalSubtypeId = anmSubTypeId;
-              }),
           UserAddressCombo(
               selUserAddress: widget.animal!.userAddress.userAddressId,
               userId: widget.user!.userId,
