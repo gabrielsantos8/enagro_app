@@ -129,9 +129,6 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 7),
               DefaultDrawerItem(Icons.local_hospital_outlined,
                   'Plano de saúde animal', () {}),
-              DefaultDrawerItem(Icons.shield_outlined, 'Seguro animal', () {}),
-              DefaultDrawerItem(
-                  Icons.assignment_late_outlined, 'Serviços Avulsos', () {}),
               DefaultDrawerItem(Icons.business, 'Parceiros', () {
                 Navigator.push(
                     context,
@@ -180,17 +177,7 @@ class _HomePageState extends State<HomePage> {
                 iconData: Icons.local_hospital_outlined,
                 title: 'Plano de Saúde Animal',
                 description: 'Nenhum plano contratado.',
-                onTap: () {}),
-            DefaultHomeItem(
-                iconData: Icons.shield_outlined,
-                title: 'Seguro Animal',
-                description: 'Nenhum seguro contratado.',
-                onTap: () {}),
-            DefaultHomeItem(
-                iconData: Icons.assignment_late_outlined,
-                title: 'Serviços Avulsos',
-                description: 'O melhor, aqui.',
-                onTap: () {}),
+                onTap: () {})
           ],
         ));
   }

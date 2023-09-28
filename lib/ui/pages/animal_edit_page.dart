@@ -186,6 +186,13 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
             onDateSelected: (DateTime value) {
               birthDate = value.toString();
             },
+            lastDate: DateTime.now(),
+            validator: (value) {
+              if(value != null) {
+                return 'Data nascimento é obrigatória!';
+              }
+              return null;
+            },
           ),
           const SizedBox(
             height: 20,

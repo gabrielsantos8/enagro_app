@@ -1,5 +1,6 @@
 import 'package:enagro_app/datasource/remote/user_phone_remote.dart';
 import 'package:enagro_app/models/user_phone.dart';
+import 'package:enagro_app/ui/widgets/default_textfield.dart';
 import 'package:flutter/material.dart';
 
 class UserPhoneCreatePage extends StatefulWidget {
@@ -81,30 +82,23 @@ class _UserPhoneCreatePageState extends State<UserPhoneCreatePage> {
               Row(
                 children: [
                   Flexible(
-                    child: TextFormField(
-                      controller: _dddController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 2,
-                      decoration: const InputDecoration(
-                        hintText: 'DDD',
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 0.1, horizontal: 8),
-                      ),
-                    ),
+                    child: DefaultTextField(
+                        withDecimals: false,
+                        controller: _dddController,
+                        type: const TextInputType.numberWithOptions(
+                            decimal: false),
+                        maxSize: 2,
+                        fieldlabel: 'DDD'),
                   ),
                   const SizedBox(width: 16),
                   Flexible(
-                    child: TextFormField(
-                      controller: _numberController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 9,
-                      decoration: const InputDecoration(
-                        hintText: 'Número',
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 0.1, horizontal: 8),
-                      ),
-                    ),
-                  ),
+                      child: DefaultTextField(
+                          withDecimals: false,
+                          maxSize: 9,
+                          type: const TextInputType.numberWithOptions(
+                              decimal: false),
+                          controller: _numberController,
+                          fieldlabel: 'Número')),
                 ],
               ),
               const SizedBox(height: 32),

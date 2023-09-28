@@ -146,6 +146,7 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
               labelText:
                   'Data Nascimento ${types.contains(selAnimalSubtypeId) ? 'média' : ''}',
             ),
+            lastDate: DateTime.now(),
             dateFormat: DateFormat('dd/MM/yyyy'),
             mode: DateTimeFieldPickerMode.date,
             onDateSelected: (DateTime value) {

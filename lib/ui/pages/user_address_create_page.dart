@@ -19,7 +19,12 @@ class _UserAddressCreatePageState extends State<UserAddressCreatePage> {
 
   bool _isSaving = false;
 
-  Future<void> _editAddress() async {
+  Future<void> _saveAddress() async {
+
+    if(!formKey.currentState!.validate()) {
+      return;
+    }
+    
     setState(() {
       _isSaving = true;
     });
@@ -62,50 +67,63 @@ class _UserAddressCreatePageState extends State<UserAddressCreatePage> {
     }
   }
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
             child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text(
-            'Cadastrar Endereço',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(
-            height: 50,
-          ),
-          Center(child: CityUfCombo(
-            onSelectionChanged: (uf, city) {
-              setState(() {
-                selUf = uf;
-                selCityId = city;
-              });
-            },
-          )),
-          Card(
-              color: const Color.fromARGB(255, 243, 243, 243),
-              child: TextField(
-                maxLines: 10,
-                controller: _complementController,
-                decoration: const InputDecoration.collapsed(
-                    hintText: "Complemento", border: InputBorder.none),
-              )),
-          const SizedBox(height: 32),
-          ElevatedButton(
-            onPressed: _isSaving ? null : _editAddress,
-            child: _isSaving ? const Text('Salvando...') : const Text('Salvar'),
-          ),
-        ],
-      ),
-    )));
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        'Cadastrar Endereço',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Center(child: CityUfCombo(
+                        onSelectionChanged: (uf, city) {
+                          setState(() {
+                            selUf = uf;
+                            selCityId = city;
+                          });
+                        },
+                      )),
+                      Card(
+                          color: const Color.fromARGB(255, 243, 243, 243),
+                          child: TextFormField(
+                            maxLines: 10,
+                            validator: (value) {
+                              if (value == '') {
+                                return 'Campo obrigatório';
+                              }
+                              return null;
+                            },
+                            controller: _complementController,
+                            decoration: const InputDecoration.collapsed(
+                                hintText: "Complemento",
+                                border: InputBorder.none),
+                          )),
+                      const SizedBox(height: 32),
+                      ElevatedButton(
+                        onPressed: _isSaving ? null : _saveAddress,
+                        child: _isSaving
+                            ? const Text('Salvando...')
+                            : const Text('Salvar'),
+                      ),
+                    ],
+                  ),
+                ))));
   }
 }

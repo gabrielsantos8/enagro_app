@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 class DefaultTextField extends StatelessWidget {
   final String fieldlabel;
   final TextInputType type;
+  final int maxSize;
   final bool isPass;
   final bool withDecimals;
   final TextEditingController controller;
@@ -16,13 +17,15 @@ class DefaultTextField extends StatelessWidget {
       this.isPass = false,
       required this.controller,
       this.maxLines = 1,
-      this.withDecimals = true});
+      this.withDecimals = true,
+      this.maxSize = 1000});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: type,
       obscureText: isPass,
+      maxLength: maxSize,
       maxLines: maxLines,
       inputFormatters:
           (!withDecimals) ? [FilteringTextInputFormatter.digitsOnly] : [],
