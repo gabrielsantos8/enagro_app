@@ -5,6 +5,7 @@ class DefaultTextField extends StatelessWidget {
   final String fieldlabel;
   final TextInputType type;
   final int maxSize;
+  final bool validate;
   final bool isPass;
   final bool withDecimals;
   final TextEditingController controller;
@@ -18,7 +19,8 @@ class DefaultTextField extends StatelessWidget {
       required this.controller,
       this.maxLines = 1,
       this.withDecimals = true,
-      this.maxSize = 1000});
+      this.maxSize = 1000,
+      this.validate = false});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,12 @@ class DefaultTextField extends StatelessWidget {
       controller: controller,
       enableSuggestions: !isPass,
       autocorrect: !isPass,
+      validator: (value) {
+        if (validate && value == '') {
+          return 'Campo obrigatório';
+        }
+        return null;
+      },
       decoration: InputDecoration(
         labelText: fieldlabel,
         labelStyle: const TextStyle(fontSize: 22),
