@@ -22,7 +22,7 @@ class _VeterinarianCreatePageState extends State<VeterinarianCreatePage> {
 
   bool _isSaving = false;
 
-  Future<void> _saveAddress() async {
+  Future<void> _saveVeterinarian() async {
     if (_nameController.text == '' ||
         _crmvController.text == '' ||
         _idCrmvController.text == '') {
@@ -30,7 +30,7 @@ class _VeterinarianCreatePageState extends State<VeterinarianCreatePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Erro'),
+            title: const Text('Atenção'),
             content: const Text('Preencha todos os dados corretamente!'),
             actions: [
               ElevatedButton(
@@ -75,8 +75,8 @@ class _VeterinarianCreatePageState extends State<VeterinarianCreatePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Erro'),
-            content: const Text('Houve um erro ao realizar seu cadastro.'),
+            title: const Text('Atenção'),
+            content: const Text('Cadastro veterinário não encontrado! Por favor, confira os dados fornecidos e tente novamente.'),
             actions: [
               ElevatedButton(
                 onPressed: () {
@@ -147,7 +147,7 @@ class _VeterinarianCreatePageState extends State<VeterinarianCreatePage> {
                 )),
                 const SizedBox(height: 12),
                 ElevatedButton(
-                  onPressed: _isSaving ? null : _saveAddress,
+                  onPressed: _isSaving ? null : _saveVeterinarian,
                   child: _isSaving
                       ? const Text('Salvando...')
                       : const Text('Salvar'),

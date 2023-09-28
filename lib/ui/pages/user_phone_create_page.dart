@@ -1,11 +1,13 @@
 import 'package:enagro_app/datasource/remote/user_phone_remote.dart';
 import 'package:enagro_app/models/user_phone.dart';
+import 'package:enagro_app/ui/widgets/default_textfield.dart';
 import 'package:flutter/material.dart';
 
 class UserPhoneCreatePage extends StatefulWidget {
   final int userId;
   final Function() onPhoneEdited;
-  const UserPhoneCreatePage(this.userId, {super.key, required this.onPhoneEdited});
+  const UserPhoneCreatePage(this.userId,
+      {super.key, required this.onPhoneEdited});
 
   @override
   State<UserPhoneCreatePage> createState() => _UserPhoneCreatePageState();
@@ -16,7 +18,11 @@ class _UserPhoneCreatePageState extends State<UserPhoneCreatePage> {
   final _numberController = TextEditingController();
   bool _isSaving = false;
 
-  Future<void> _editPhone() async {
+  Future<void> _savePhone() async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+
     setState(() {
       _isSaving = true;
     });
@@ -59,10 +65,14 @@ class _UserPhoneCreatePageState extends State<UserPhoneCreatePage> {
     }
   }
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+        body: Form(
+      key: formKey,
+      child: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -81,35 +91,30 @@ class _UserPhoneCreatePageState extends State<UserPhoneCreatePage> {
               Row(
                 children: [
                   Flexible(
-                    child: TextFormField(
-                      controller: _dddController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 2,
-                      decoration: const InputDecoration(
-                        hintText: 'DDD',
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 0.1, horizontal: 8),
-                      ),
-                    ),
+                    child: DefaultTextField(
+                        validate: true,
+                        withDecimals: false,
+                        controller: _dddController,
+                        type: const TextInputType.numberWithOptions(
+                            decimal: false),
+                        maxSize: 2,
+                        fieldlabel: 'DDD'),
                   ),
                   const SizedBox(width: 16),
                   Flexible(
-                    child: TextFormField(
-                      controller: _numberController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 9,
-                      decoration: const InputDecoration(
-                        hintText: 'Número',
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 0.1, horizontal: 8),
-                      ),
-                    ),
-                  ),
+                      child: DefaultTextField(
+                          validate: true,
+                          withDecimals: false,
+                          maxSize: 9,
+                          type: const TextInputType.numberWithOptions(
+                              decimal: false),
+                          controller: _numberController,
+                          fieldlabel: 'Número')),
                 ],
               ),
               const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: _isSaving ? null : _editPhone,
+                onPressed: _isSaving ? null : _savePhone,
                 child: _isSaving
                     ? const Text('Salvando...')
                     : const Text('Salvar'),
@@ -118,6 +123,6 @@ class _UserPhoneCreatePageState extends State<UserPhoneCreatePage> {
           ),
         ),
       ),
-    );
+    ));
   }
 }

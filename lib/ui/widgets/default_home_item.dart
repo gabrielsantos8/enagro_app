@@ -45,7 +45,7 @@ class DefaultHomeItem extends StatelessWidget {
                     Text(
                       description.length <= 45
                           ? description
-                          : '${description.substring(0, 45)}...', // Limita a 40 caracteres e adiciona "..."
+                          : '${description.substring(0, 40)}...', // Limita a 40 caracteres e adiciona "..."
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 14.0),
@@ -56,9 +56,6 @@ class DefaultHomeItem extends StatelessWidget {
             const Spacer(),
             Icon(rightIcon,
                 size: 30, color: const Color.fromARGB(255, 192, 191, 191)),
-            const SizedBox(
-              width: 20,
-            )
           ]),
           if (div)
             const Divider(

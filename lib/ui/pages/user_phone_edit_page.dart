@@ -1,3 +1,4 @@
+import 'package:enagro_app/ui/widgets/default_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:enagro_app/models/user_phone.dart';
 import 'package:enagro_app/datasource/remote/user_phone_remote.dart';
@@ -34,6 +35,10 @@ class _UserPhoneEditPageState extends State<UserPhoneEditPage> {
   }
 
   Future<void> _editPhone() async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+
     setState(() {
       _isSaving = true;
     });
@@ -76,65 +81,63 @@ class _UserPhoneEditPageState extends State<UserPhoneEditPage> {
     }
   }
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'Editar Telefone',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+        body: Form(
+            key: formKey,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      'Editar Telefone',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: DefaultTextField(
+                              validate: true,
+                              withDecimals: false,
+                              controller: _dddController,
+                              type: const TextInputType.numberWithOptions(
+                                  decimal: false),
+                              maxSize: 2,
+                              fieldlabel: 'DDD'),
+                        ),
+                        const SizedBox(width: 16),
+                        Flexible(
+                            child: DefaultTextField(
+                                validate: true,
+                                withDecimals: false,
+                                maxSize: 9,
+                                type: const TextInputType.numberWithOptions(
+                                    decimal: false),
+                                controller: _numberController,
+                                fieldlabel: 'Número')),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    ElevatedButton(
+                      onPressed: _isSaving ? null : _editPhone,
+                      child: _isSaving
+                          ? const Text('Salvando...')
+                          : const Text('Salvar'),
+                    ),
+                  ],
                 ),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 32),
-              Row(
-                children: [
-                  Flexible(
-                    child: TextFormField(
-                      controller: _dddController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 2,
-                      decoration: const InputDecoration(
-                        hintText: 'DDD',
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 0.1, horizontal: 8),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Flexible(
-                    child: TextFormField(
-                      controller: _numberController,
-                      keyboardType: TextInputType.number,
-                      maxLength: 9,
-                      decoration: const InputDecoration(
-                        hintText: 'Número',
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 0.1, horizontal: 8),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _isSaving ? null : _editPhone,
-                child: _isSaving
-                    ? const Text('Salvando...')
-                    : const Text('Salvar'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            )));
   }
 }

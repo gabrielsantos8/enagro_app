@@ -63,6 +63,10 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
   }
 
   Future<void> _editAnimal() async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+
     setState(() {
       _isSaving = true;
     });
@@ -114,96 +118,116 @@ class _AnimalEditPageState extends State<AnimalEditPage> {
     }
   }
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ListView(
-        children: [
-          const Text(
-            'Cadastrar Animal',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          const Text('Tipo/Subtipo', style: TextStyle(fontSize: 18)),
-          AnimalSubtypeTypeCombo(
-              selAnimalTypeId: widget.animal!.animalType.animalTypeId,
-              selAnimalSubtypeId: widget.animal!.animalSubType.animalSubTypeId,
-              onSelectionChanged: (anmTypeId, anmSubTypeId) {
-                setState(() {
-                  selAnimalTypeId = anmTypeId;
-                  selAnimalSubtypeId = anmSubTypeId;
-                });
-              }),
-          DefaultTextField(controller: _nameController, fieldlabel: 'Nome'),
-          const SizedBox(
-            height: 20,
-          ),
-          DefaultTextField(
-              controller: _descriptionController,
-              fieldlabel: 'Descrição',
-              maxLines: 8),
-          const SizedBox(
-            height: 20,
-          ),
-          if (types.contains(selAnimalSubtypeId))
-            DefaultTextField(
-                withDecimals: false,
-                type: const TextInputType.numberWithOptions(decimal: false),
-                controller: _amountController,
-                fieldlabel: 'Quantidade'),
-          SizedBox(
-            height: (types.contains(selAnimalSubtypeId)) ? 20 : 0,
-          ),
-          DefaultTextField(
-              type: TextInputType.number,
-              controller: _weightController,
-              fieldlabel:
-                  'Peso ${types.contains(selAnimalSubtypeId) ? 'médio' : ''}'),
-          const SizedBox(
-            height: 20,
-          ),
-          DateTimeFormField(
-            initialValue: widget.animal!.birthDate,
-            decoration: InputDecoration(
-              hintStyle: const TextStyle(color: Colors.black45),
-              errorStyle: const TextStyle(color: Colors.redAccent),
-              border: const OutlineInputBorder(),
-              suffixIcon: const Icon(Icons.event_note),
-              labelText:
-                  'Data Nascimento ${types.contains(selAnimalSubtypeId) ? 'média' : ''}',
-            ),
-            dateFormat: DateFormat('dd/MM/yyyy'),
-            mode: DateTimeFieldPickerMode.date,
-            onDateSelected: (DateTime value) {
-              birthDate = value.toString();
-            },
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          UserAddressCombo(
-              selUserAddress: widget.animal!.userAddress.userAddressId,
-              userId: widget.user!.userId,
-              onSelectionChanged: (usrAddress) {
-                selUserAddressId = usrAddress;
-              },
-              fieldlabel: "Endereço"),
-          const SizedBox(height: 32),
-          ElevatedButton(
-            onPressed: _isSaving ? null : _editAnimal,
-            child: _isSaving ? const Text('Salvando...') : const Text('Salvar'),
-          ),
-        ],
-      ),
-    )));
+        body: Form(
+            key: formKey,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView(
+                children: [
+                  const Text(
+                    'Cadastrar Animal',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  const Text('Tipo/Subtipo', style: TextStyle(fontSize: 18)),
+                  AnimalSubtypeTypeCombo(
+                      selAnimalTypeId: widget.animal!.animalType.animalTypeId,
+                      selAnimalSubtypeId:
+                          widget.animal!.animalSubType.animalSubTypeId,
+                      onSelectionChanged: (anmTypeId, anmSubTypeId) {
+                        setState(() {
+                          selAnimalTypeId = anmTypeId;
+                          selAnimalSubtypeId = anmSubTypeId;
+                        });
+                      }),
+                  DefaultTextField(
+                      validate: true,
+                      controller: _nameController, fieldlabel: 'Nome'),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  DefaultTextField(
+                      validate: true,
+                      controller: _descriptionController,
+                      fieldlabel: 'Descrição',
+                      maxLines: 8),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  if (types.contains(selAnimalSubtypeId))
+                    DefaultTextField(
+                      validate: true,
+                        withDecimals: false,
+                        type: const TextInputType.numberWithOptions(
+                            decimal: false),
+                        controller: _amountController,
+                        fieldlabel: 'Quantidade'),
+                  SizedBox(
+                    height: (types.contains(selAnimalSubtypeId)) ? 20 : 0,
+                  ),
+                  DefaultTextField(
+                      validate: true,
+                      type: TextInputType.number,
+                      controller: _weightController,
+                      fieldlabel:
+                          'Peso ${types.contains(selAnimalSubtypeId) ? 'médio' : ''}'),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  DateTimeFormField(
+                    initialValue: widget.animal!.birthDate,
+                    decoration: InputDecoration(
+                      hintStyle: const TextStyle(color: Colors.black45),
+                      errorStyle: const TextStyle(color: Colors.redAccent),
+                      border: const OutlineInputBorder(),
+                      suffixIcon: const Icon(Icons.event_note),
+                      labelText:
+                          'Data Nascimento ${types.contains(selAnimalSubtypeId) ? 'média' : ''}',
+                    ),
+                    dateFormat: DateFormat('dd/MM/yyyy'),
+                    mode: DateTimeFieldPickerMode.date,
+                    onDateSelected: (DateTime value) {
+                      birthDate = value.toString();
+                    },
+                    lastDate: DateTime.now(),
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Campo Obrigatório!';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  UserAddressCombo(
+                      selUserAddress: widget.animal!.userAddress.userAddressId,
+                      userId: widget.user!.userId,
+                      onSelectionChanged: (usrAddress) {
+                        selUserAddressId = usrAddress;
+                      },
+                      fieldlabel: "Endereço"),
+                  const SizedBox(height: 32),
+                  ElevatedButton(
+                    onPressed: _isSaving ? null : _editAnimal,
+                    child: _isSaving
+                        ? const Text('Salvando...')
+                        : const Text('Salvar'),
+                  ),
+                ],
+              ),
+            ))));
   }
 }
