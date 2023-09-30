@@ -26,11 +26,36 @@ class _VeterinaryExplanationState extends State<VeterinaryExplanation> {
   void _isVeterinarian() async {
     VeterinarianRemote vetRemote = VeterinarianRemote();
     Veterinarian vet = await vetRemote.getByUser(widget.user!.userId);
+    if (vet.situationId != 1) {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Atenção'),
+            content: const Text('Seu cadastro de veterinário foi inativado!'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     if (vet.userVeterinarianId > 0) {
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => VeterinarianPage(widget.user, vet)),
+        MaterialPageRoute(
+            builder: (context) => VeterinarianPage(widget.user, vet)),
       );
     }
   }

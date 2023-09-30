@@ -7,17 +7,20 @@ class User {
   final String email;
   final List<UserAddress> addresses;
   final UserType userType;
+  final int situationId;
 
   User(
       {required this.userId,
       required this.name,
       required this.email,
       required this.userType,
-      required this.addresses});
+      required this.addresses,
+      required this.situationId});
 
   factory User.fromMap(Map<String, dynamic> usr) {
     return User(
         userId: usr['id'] ?? 0,
+        situationId: usr['situation_id'] ?? 0,
         name: usr['name'] ?? '',
         email: usr['email'] ?? '',
         userType: UserType.getUserType(

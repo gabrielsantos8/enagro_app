@@ -7,6 +7,7 @@ class Veterinarian {
   final String nomeSocial;
   final int atuante;
   final int userId;
+  final int situationId;
 
   Veterinarian(
       {required this.userVeterinarianId,
@@ -16,7 +17,8 @@ class Veterinarian {
       required this.nome,
       required this.nomeSocial,
       required this.atuante,
-      required this.userId});
+      required this.userId,
+      required this.situationId});
 
   factory Veterinarian.fromMap(Map<String, dynamic> vet) {
     return Veterinarian(
@@ -27,6 +29,7 @@ class Veterinarian {
         nome: vet['nome'] ?? '',
         nomeSocial: vet['nome_social'] ?? '',
         atuante: vet['atuante'] ?? 0,
-        userId: vet['user_id'] ?? 0);
+        userId: vet['user_id'] ?? 0,
+        situationId: vet['situation_id'] ?? 0);
   }
 }
