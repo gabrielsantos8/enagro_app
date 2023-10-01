@@ -1,6 +1,7 @@
 import 'package:enagro_app/datasource/remote/user_remote.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/pages/animal_page.dart';
+import 'package:enagro_app/ui/pages/health_plans_page.dart';
 import 'package:enagro_app/ui/pages/partners_page.dart';
 import 'package:enagro_app/ui/pages/user_page.dart';
 import 'package:enagro_app/ui/widgets/default_drawer_item.dart';
@@ -127,8 +128,13 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(height: 7),
-              DefaultDrawerItem(Icons.local_hospital_outlined,
-                  'Plano de saúde animal', () {}),
+              DefaultDrawerItem(
+                  Icons.local_hospital_outlined, 'Plano de saúde animal', () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HealthPlansPage(widget.user)));
+              }),
               DefaultDrawerItem(Icons.business, 'Parceiros', () {
                 Navigator.push(
                     context,
@@ -177,7 +183,12 @@ class _HomePageState extends State<HomePage> {
                 iconData: Icons.local_hospital_outlined,
                 title: 'Plano de Saúde Animal',
                 description: 'Nenhum plano contratado.',
-                onTap: () {})
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HealthPlansPage(widget.user)));
+                })
           ],
         ));
   }

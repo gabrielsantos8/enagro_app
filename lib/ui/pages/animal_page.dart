@@ -26,9 +26,7 @@ class _AnimalPageState extends State<AnimalPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 213, 213, 213),
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-        ),
+        appBar: AppBar(),
         body: Padding(
           padding: const EdgeInsets.all(14),
           child: Container(
