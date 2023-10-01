@@ -180,7 +180,12 @@ class _UserPageState extends State<UserPage> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const CircularProgressIndicator(); // Ou outro indicador de carregamento
+                          return Center(
+                            child: CircularProgressIndicator(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              color: Theme.of(context).primaryColorLight,
+                            ),
+                          );
                         } else if (snapshot.hasError) {
                           return const Text('Erro ao carregar imagem');
                         } else {

@@ -1,4 +1,6 @@
+import 'package:enagro_app/datasource/remote/health_plan_contract_remote.dart';
 import 'package:enagro_app/datasource/remote/user_remote.dart';
+import 'package:enagro_app/models/health_plan_contract.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/pages/animal_page.dart';
 import 'package:enagro_app/ui/pages/health_plans_page.dart';
@@ -20,11 +22,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Future<String> userProfileImageUrl;
+  late Future<HealthPlanContract> hpContract;
 
   @override
   void initState() {
     super.initState();
     userProfileImageUrl = _loadUserProfileImage();
+    hpContract = _loadUserHealthPlanContract();
   }
 
   void refreshData() {
@@ -36,6 +40,11 @@ class _HomePageState extends State<HomePage> {
   Future<String> _loadUserProfileImage() async {
     UserRemote userRemote = UserRemote();
     return userRemote.getImage(widget.user!.userId);
+  }
+
+  Future<HealthPlanContract> _loadUserHealthPlanContract() async {
+    HealthPlanContractRemote contractRemote = HealthPlanContractRemote();
+    return contractRemote.getActiveContractByUser(widget.user!.userId);
   }
 
   @override
@@ -77,7 +86,12 @@ class _HomePageState extends State<HomePage> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return const CircularProgressIndicator(); // Ou outro indicador de carregamento
+                            return Center(
+                              child: CircularProgressIndicator(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                color: Theme.of(context).primaryColorLight,
+                              ),
+                            );
                           } else if (snapshot.hasError) {
                             return const Text('Erro ao carregar imagem');
                           } else {
@@ -179,16 +193,47 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            DefaultHomeItem(
-                iconData: Icons.local_hospital_outlined,
-                title: 'Plano de Saúde Animal',
-                description: 'Nenhum plano contratado.',
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HealthPlansPage(widget.user)));
-                })
+            FutureBuilder<HealthPlanContract>(
+              future: hpContract,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      color: Theme.of(context).primaryColorLight,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return const Text('Erro ao carregar plano');
+                } else {
+                  if (snapshot.hasData && snapshot.data!.healthPlanContractId > 0) {
+                    return DefaultHomeItem(
+                        iconData: Icons.local_hospital_outlined,
+                        title: 'Plano de Saúde Animal',
+                        description: snapshot.data!.healthPlan.description,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      HealthPlansPage(widget.user)));
+                        });
+                  }
+
+                  return DefaultHomeItem(
+                        iconData: Icons.local_hospital_outlined,
+                        title: 'Plano de Saúde Animal',
+                        description: 'Nenhum plano de saúde animal contratado.',
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      HealthPlansPage(widget.user)));
+                        });
+                }
+              },
+            ),
           ],
         ));
   }
