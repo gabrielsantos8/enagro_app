@@ -184,12 +184,8 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Container(
                       height: 65,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: colors,
-                      )),
+                      decoration:
+                          BoxDecoration(color: Theme.of(context).primaryColor),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,7 +207,29 @@ class _HomePageState extends State<HomePage> {
                                       color: Colors.white,
                                       fontSize: 19,
                                       fontWeight: FontWeight.bold),
-                                )
+                                ),
+                                const Spacer(),
+                                Container(
+                                  height: 40,
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: colors,
+                                      )),
+                                  child: Text(
+                                    snapshot.data!.healthPlan.description,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 16,
+                                ),
                               ],
                             ),
                           ),
@@ -233,22 +251,12 @@ class _HomePageState extends State<HomePage> {
                 );
               }
 
-              List<Color> colors =
-                  snapshot.data!.healthPlan.planColors.map((colorString) {
-                String colorFmt = 'ff' + colorString.substring(0, 6);
-                return Color(int.parse(colorFmt, radix: 16));
-              }).toList();
-
               return ListView(
                 children: [
                   Container(
                     height: 65,
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: colors,
-                    )),
+                    decoration:
+                        BoxDecoration(color: Theme.of(context).primaryColor),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +277,29 @@ class _HomePageState extends State<HomePage> {
                                     color: Colors.white,
                                     fontSize: 19,
                                     fontWeight: FontWeight.bold),
-                              )
+                              ),
+                              const Spacer(),
+                              Container(
+                                height: 40,
+                                padding: const EdgeInsets.all(10),
+                                decoration: const BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [Colors.green, Colors.green],
+                                    )),
+                                child: const Text(
+                                  'Nenhum plano contratado!',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 16,
+                              ),
                             ],
                           ),
                         ),
