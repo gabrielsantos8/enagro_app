@@ -24,7 +24,7 @@ class HealthPlan {
       value: double.parse(healthPlan['value'] != null ? healthPlan['value'].toString() : 0.0.toString()),
       minimalAnimals: healthPlan['minimal_animals'] ?? 0,
       maximumAnimals: healthPlan['maximum_animals'] ?? 0,
-      planColors: healthPlan['plan_colors'].split(',') ?? [],
+      planColors: healthPlan['plan_colors'].split(',') ?? ['ff004400','ff00FF00'],
     );
   }
 

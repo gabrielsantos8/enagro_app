@@ -161,53 +161,64 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        body: ListView(
-          children: [
-            Container(
-              height: 65,
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25, bottom: 25),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'images/logo_enagro_white.png',
-                          width: 35,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Olá, ${widget.user?.name.split(' ')[0]}!',
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 19,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
+        body: FutureBuilder<HealthPlanContract>(
+          future: hpContract,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  color: Theme.of(context).primaryColorLight,
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return const Text('Erro ao carregar plano');
+            } else {
+              if (snapshot.hasData && snapshot.data!.healthPlanContractId > 0) {
+                List<Color> colors =
+                    snapshot.data!.healthPlan.planColors.map((colorString) {
+                  return Color(int.parse(colorString, radix: 16));
+                }).toList();
+
+                return ListView(
+                  children: [
+                    Container(
+                      height: 65,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: colors,
+                      )),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 25, bottom: 25),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  'images/logo_enagro_white.png',
+                                  width: 35,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Olá, ${widget.user?.name.split(' ')[0]}!',
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            FutureBuilder<HealthPlanContract>(
-              future: hpContract,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      color: Theme.of(context).primaryColorLight,
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return const Text('Erro ao carregar plano');
-                } else {
-                  if (snapshot.hasData && snapshot.data!.healthPlanContractId > 0) {
-                    return DefaultHomeItem(
+                    DefaultHomeItem(
                         iconData: Icons.local_hospital_outlined,
                         title: 'Plano de Saúde Animal',
                         description: snapshot.data!.healthPlan.description,
@@ -217,24 +228,69 @@ class _HomePageState extends State<HomePage> {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       HealthPlansPage(widget.user)));
-                        });
-                  }
+                        })
+                  ],
+                );
+              }
 
-                  return DefaultHomeItem(
-                        iconData: Icons.local_hospital_outlined,
-                        title: 'Plano de Saúde Animal',
-                        description: 'Nenhum plano de saúde animal contratado.',
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      HealthPlansPage(widget.user)));
-                        });
-                }
-              },
-            ),
-          ],
+              List<Color> colors =
+                  snapshot.data!.healthPlan.planColors.map((colorString) {
+                String colorFmt = 'ff' + colorString.substring(0, 6);
+                return Color(int.parse(colorFmt, radix: 16));
+              }).toList();
+
+              return ListView(
+                children: [
+                  Container(
+                    height: 65,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: colors,
+                    )),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25, bottom: 25),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                'images/logo_enagro_white.png',
+                                width: 35,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Olá, ${widget.user?.name.split(' ')[0]}!',
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DefaultHomeItem(
+                      iconData: Icons.local_hospital_outlined,
+                      title: 'Plano de Saúde Animal',
+                      description: 'Nenhum plano de saúde animal contratado.',
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    HealthPlansPage(widget.user)));
+                      })
+                ],
+              );
+            }
+          },
         ));
   }
 }
