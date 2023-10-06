@@ -29,6 +29,7 @@ class HealthPlanContract {
             contract['plan_value'] ?? 0.0,
             contract['plan_minimal_animals'] ?? 0,
             contract['plan_maximum_animals'] ?? 0,
+            contract['services'] ?? [],
             contract['plan_colors'] ?? ''),
         healthPlanContractType:
             HealthPlanContractType.getHealthPlanContractType(

@@ -172,6 +172,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             } else if (snapshot.hasError) {
+              print(snapshot.error);
               return const Text('Erro ao carregar plano');
             } else {
               if (snapshot.hasData && snapshot.data!.healthPlanContractId > 0) {

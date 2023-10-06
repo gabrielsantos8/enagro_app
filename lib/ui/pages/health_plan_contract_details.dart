@@ -1,5 +1,6 @@
 import 'package:auto_animated_list/auto_animated_list.dart';
 import 'package:enagro_app/models/health_plan_contract.dart';
+import 'package:enagro_app/models/service.dart';
 import 'package:flutter/material.dart';
 
 class HealthPlanContractDetails extends StatefulWidget {
@@ -56,32 +57,53 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails> {
                     color: Colors.white),
               ),
               const SizedBox(
-                height: 20,
+                height: 30,
               ),
               const Text(
-                'Serviços',
+                'Serviços:',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
               ),
+              const SizedBox(
+                height: 30,
+              ),
               Expanded(
-                child: AutoAnimatedList<String>(
-                  items: ['Teste'],
-                  itemBuilder: (context, fruit, index, animation) {
+                child: AutoAnimatedList<Service>(
+                  items: widget.contract.healthPlan.services,
+                  itemBuilder: (context, record, index, animation) {
                     return SizeFadeTransition(
                       animation: animation,
                       child: ListTile(
                         iconColor: Colors.white,
                         leading: const Icon(Icons.medical_services_outlined),
                         title: Text(
-                          fruit,
+                          record.description,
                           style: const TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
                     );
                   },
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
+                child: Text(
+                  'Acionar',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColorDark,
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ]),
