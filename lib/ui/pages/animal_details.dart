@@ -178,7 +178,7 @@ class _AnimalDetailsState extends State<AnimalDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 213, 213, 213),
-      appBar: AppBar(automaticallyImplyLeading: false),
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: ListView(

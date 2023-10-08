@@ -162,7 +162,7 @@ class _ServiceCityPageState extends State<ServiceCityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(automaticallyImplyLeading: false),
+      appBar: AppBar(),
       body: ListView(
         children: [
           FutureBuilder(

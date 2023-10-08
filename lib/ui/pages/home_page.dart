@@ -1,6 +1,10 @@
+import 'package:enagro_app/datasource/remote/health_plan_contract_remote.dart';
 import 'package:enagro_app/datasource/remote/user_remote.dart';
+import 'package:enagro_app/models/health_plan_contract.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/pages/animal_page.dart';
+import 'package:enagro_app/ui/pages/health_plan_contract_details.dart';
+import 'package:enagro_app/ui/pages/health_plans_page.dart';
 import 'package:enagro_app/ui/pages/partners_page.dart';
 import 'package:enagro_app/ui/pages/user_page.dart';
 import 'package:enagro_app/ui/widgets/default_drawer_item.dart';
@@ -19,11 +23,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Future<String> userProfileImageUrl;
+  late Future<HealthPlanContract> hpContract;
 
   @override
   void initState() {
     super.initState();
     userProfileImageUrl = _loadUserProfileImage();
+    hpContract = _loadUserHealthPlanContract();
   }
 
   void refreshData() {
@@ -35,6 +41,11 @@ class _HomePageState extends State<HomePage> {
   Future<String> _loadUserProfileImage() async {
     UserRemote userRemote = UserRemote();
     return userRemote.getImage(widget.user!.userId);
+  }
+
+  Future<HealthPlanContract> _loadUserHealthPlanContract() async {
+    HealthPlanContractRemote contractRemote = HealthPlanContractRemote();
+    return contractRemote.getActiveContractByUser(widget.user!.userId);
   }
 
   @override
@@ -76,7 +87,12 @@ class _HomePageState extends State<HomePage> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return const CircularProgressIndicator(); // Ou outro indicador de carregamento
+                            return Center(
+                              child: CircularProgressIndicator(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                color: Theme.of(context).primaryColorLight,
+                              ),
+                            );
                           } else if (snapshot.hasError) {
                             return const Text('Erro ao carregar imagem');
                           } else {
@@ -127,8 +143,13 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(height: 7),
-              DefaultDrawerItem(Icons.local_hospital_outlined,
-                  'Plano de saúde animal', () {}),
+              DefaultDrawerItem(
+                  Icons.local_hospital_outlined, 'Plano de saúde animal', () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HealthPlansPage(widget.user)));
+              }),
               DefaultDrawerItem(Icons.business, 'Parceiros', () {
                 Navigator.push(
                     context,
@@ -141,44 +162,176 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        body: ListView(
-          children: [
-            Container(
-              height: 65,
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
+        body: FutureBuilder<HealthPlanContract>(
+          future: hpContract,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  color: Theme.of(context).primaryColorLight,
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return const Text('Erro ao carregar plano');
+            } else {
+              if (snapshot.hasData && snapshot.data!.healthPlanContractId > 0) {
+                List<Color> colors =
+                    snapshot.data!.healthPlan.planColors.map((colorString) {
+                  return Color(int.parse(colorString, radix: 16));
+                }).toList();
+
+                return ListView(
+                  children: [
+                    Container(
+                      height: 65,
+                      decoration:
+                          BoxDecoration(color: Theme.of(context).primaryColor),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 25, bottom: 25),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  'images/logo_enagro_white.png',
+                                  width: 35,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Olá, ${widget.user?.name.split(' ')[0]}!',
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const Spacer(),
+                                Container(
+                                  height: 40,
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: colors,
+                                      )),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => HealthPlanContractDetails(snapshot.data!)));
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      splashFactory: NoSplash.splashFactory,
+                                    ),
+                                    child: Center(
+                                        child: Text(
+                                      snapshot.data!.healthPlan.description,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    )),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 16,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    DefaultHomeItem(
+                        iconData: Icons.local_hospital_outlined,
+                        title: 'Plano de Saúde Animal',
+                        description: snapshot.data!.healthPlan.description,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      HealthPlansPage(widget.user)));
+                        })
+                  ],
+                );
+              }
+
+              return ListView(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25, bottom: 25),
-                    child: Row(
+                  Container(
+                    height: 65,
+                    decoration:
+                        BoxDecoration(color: Theme.of(context).primaryColor),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.asset(
-                          'images/logo_enagro_white.png',
-                          width: 35,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25, bottom: 25),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                'images/logo_enagro_white.png',
+                                width: 35,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Olá, ${widget.user?.name.split(' ')[0]}!',
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const Spacer(),
+                              Container(
+                                height: 40,
+                                padding: const EdgeInsets.all(10),
+                                decoration: const BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [Colors.green, Colors.green],
+                                    )),
+                                child: const Text(
+                                  'Nenhum plano contratado!',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 16,
+                              ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Olá, ${widget.user?.name.split(' ')[0]}!',
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 19,
-                              fontWeight: FontWeight.bold),
-                        )
                       ],
                     ),
                   ),
+                  DefaultHomeItem(
+                      iconData: Icons.local_hospital_outlined,
+                      title: 'Plano de Saúde Animal',
+                      description: 'Nenhum plano de saúde animal contratado.',
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    HealthPlansPage(widget.user)));
+                      })
                 ],
-              ),
-            ),
-            DefaultHomeItem(
-                iconData: Icons.local_hospital_outlined,
-                title: 'Plano de Saúde Animal',
-                description: 'Nenhum plano contratado.',
-                onTap: () {})
-          ],
+              );
+            }
+          },
         ));
   }
 }

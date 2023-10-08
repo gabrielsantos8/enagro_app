@@ -17,6 +17,7 @@ class _VeterinarianPageState extends State<VeterinarianPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: ListView(
         children: [
           Container(

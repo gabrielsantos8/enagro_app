@@ -15,7 +15,7 @@ class _PartnersPageState extends State<PartnersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(automaticallyImplyLeading: false),
+      appBar: AppBar(),
       body: Column(
         children: [
           DefaultDrawerItem(Icons.man_4, 'Eu, veterinário', () {
