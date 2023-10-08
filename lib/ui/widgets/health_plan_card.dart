@@ -31,7 +31,7 @@ class HealthPlanCard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+            Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
             const SizedBox(height: 10),
             SizedBox(
               height: 200,
@@ -53,11 +53,11 @@ class HealthPlanCard extends StatelessWidget {
                 },
               ),
             ),
-            Text('Entre $minimalAnimals e $maximumAnimals animais', style: const TextStyle(fontWeight: FontWeight.bold),),
-            const SizedBox(height: 10),
-            Text('${value.toStringAsFixed(2)} /mês'),
+            Text('Entre $minimalAnimals e $maximumAnimals animais'),
+            const SizedBox(height: 20),
+            Text('R\$ ${value.toStringAsFixed(2)} /mês', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
             const SizedBox(height: 8),
-            Text('${(value * 12).toStringAsFixed(2)} /ano'),
+            Text('R\$ ${(value * 12).toStringAsFixed(2)} /ano'),
             const Spacer(),
             DefaultOutlineButton(
                 "Detahes",
