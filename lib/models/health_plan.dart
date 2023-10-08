@@ -25,12 +25,23 @@ class HealthPlan {
       healthPlanId: healthPlan['id'] ?? 0,
       description: healthPlan['description'] ?? '',
       detailedDescription: healthPlan['detailed_description'] ?? '',
-      value: double.parse(healthPlan['value'] != null ? healthPlan['value'].toString() : 0.0.toString()),
+      value: double.parse(healthPlan['value'] != null
+          ? healthPlan['value'].toString()
+          : 0.0.toString()),
       minimalAnimals: healthPlan['minimal_animals'] ?? 0,
       maximumAnimals: healthPlan['maximum_animals'] ?? 0,
       services: Service.getServices(healthPlan['services']),
-      planColors: healthPlan['plan_colors'].split(',') ?? ['ff00b200','ff00b200'],
+      planColors:
+          healthPlan['plan_colors'].split(',') ?? ['ff00b200', 'ff00b200'],
     );
+  }
+
+  static List<HealthPlan> fromArray(List plans) {
+    List<HealthPlan> healthPlans = [];
+    for (var plan in plans) {
+      healthPlans.add(HealthPlan.fromMap(plan));
+    }
+    return healthPlans;
   }
 
   static HealthPlan getHealthPlan(

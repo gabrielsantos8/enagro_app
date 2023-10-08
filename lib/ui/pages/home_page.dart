@@ -3,6 +3,7 @@ import 'package:enagro_app/datasource/remote/user_remote.dart';
 import 'package:enagro_app/models/health_plan_contract.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/pages/animal_page.dart';
+import 'package:enagro_app/ui/pages/health_plan_contract_details.dart';
 import 'package:enagro_app/ui/pages/health_plans_page.dart';
 import 'package:enagro_app/ui/pages/partners_page.dart';
 import 'package:enagro_app/ui/pages/user_page.dart';
@@ -172,7 +173,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             } else if (snapshot.hasError) {
-              print(snapshot.error);
               return const Text('Erro ao carregar plano');
             } else {
               if (snapshot.hasData && snapshot.data!.healthPlanContractId > 0) {
@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                                 const Spacer(),
                                 Container(
                                   height: 40,
-                                  padding: const EdgeInsets.all(10),
+                                  padding: const EdgeInsets.all(5),
                                   decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10)),
@@ -221,11 +221,21 @@ class _HomePageState extends State<HomePage> {
                                         end: Alignment.bottomRight,
                                         colors: colors,
                                       )),
-                                  child: Text(
-                                    snapshot.data!.healthPlan.description,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => HealthPlanContractDetails(snapshot.data!)));
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      splashFactory: NoSplash.splashFactory,
+                                    ),
+                                    child: Center(
+                                        child: Text(
+                                      snapshot.data!.healthPlan.description,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    )),
                                   ),
                                 ),
                                 const SizedBox(
