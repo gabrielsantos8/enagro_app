@@ -17,17 +17,37 @@ class HealthPlansPage extends StatefulWidget {
   State<HealthPlansPage> createState() => _HealthPlansPageState();
 }
 
-class _HealthPlansPageState extends State<HealthPlansPage> {
+class _HealthPlansPageState extends State<HealthPlansPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   Future<HealthPlanContract>? _futureActiveContract;
   Future<List<HealthPlan>>? _futureBestsPlansByUser;
+  Future<List<HealthPlan>>? _futureAllPlansByUser;
 
   @override
   void initState() {
     super.initState();
+
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_handleTabSelection);
+
     _futureActiveContract =
         HealthPlanContractRemote().getActiveContractByUser(widget.user!.userId);
     _futureBestsPlansByUser =
         HealthPlanRemote().getBestsPlansByUser(widget.user!.userId);
+    _futureAllPlansByUser =
+        HealthPlanRemote().getAllPlansByUser(widget.user!.userId);
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_handleTabSelection);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _handleTabSelection() {
+    setState(() {});
   }
 
   @override
@@ -146,11 +166,33 @@ class _HealthPlansPageState extends State<HealthPlansPage> {
               }
             },
           ),
+          const SizedBox(
+            height: 14,
+          ),
+          TabBar(
+              controller: _tabController,
+              tabs: const [
+                Tab(text: 'Para você'),
+                Tab(text: 'Todos'),
+              ],
+              indicatorColor: Theme.of(context).primaryColor,
+              labelColor: Theme.of(context).primaryColor),
           Container(
             padding: const EdgeInsets.all(16),
-            height: MediaQuery.of(context).size.height * 0.90,
-            child: _buildBestsPlansByUserList(widget.user!.userId),
-          )
+            height: MediaQuery.of(context).size.height * 0.80,
+            child: TabBarView(controller: _tabController, children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                height: MediaQuery.of(context).size.height * 0.90,
+                child: _buildBestsPlansByUserList(widget.user!.userId),
+              ),
+              Container(
+                padding: const EdgeInsets.all(16),
+                height: MediaQuery.of(context).size.height * 0.90,
+                child: _buildAllPlansByUserList(widget.user!.userId),
+              )
+            ]),
+          ),
         ],
       ),
     );
@@ -173,6 +215,10 @@ class _HealthPlansPageState extends State<HealthPlansPage> {
           case ConnectionState.done:
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               List<Widget> planCards = snapshot.data!.map<Widget>((planData) {
+                List<Color> colors = planData.planColors.map((colorString) {
+                  return Color(int.parse(colorString, radix: 16));
+                }).toList();
+
                 return HealthPlanCard(
                   title: planData.description,
                   description: planData.detailedDescription,
@@ -180,6 +226,7 @@ class _HealthPlansPageState extends State<HealthPlansPage> {
                   maximumAnimals: planData.maximumAnimals,
                   value: planData.value,
                   services: planData.services,
+                  colors: colors,
                   onPressed: () {
                     print('Detalhes do plano: ${planData.description}');
                   },
@@ -198,7 +245,68 @@ class _HealthPlansPageState extends State<HealthPlansPage> {
             } else if (snapshot.hasError) {
               return const Center(child: Text('Erro ao carregar plano!'));
             }
-            return const Text('Foi mas vei vazio');
+            return const Center(
+                child: Text(
+              'Não encontramos nenhum plano para você! Por favor, cadastre seus animais para oferecermos os melhores planos',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ));
+        }
+      },
+    );
+  }
+
+  Widget _buildAllPlansByUserList(int userId) {
+    return FutureBuilder(
+      future: _futureAllPlansByUser,
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+          case ConnectionState.none:
+            return Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).primaryColor,
+                color: Theme.of(context).primaryColorLight,
+              ),
+            );
+          case ConnectionState.done:
+            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+              List<Widget> planCards = snapshot.data!.map<Widget>((planData) {
+                List<Color> colors = planData.planColors.map((colorString) {
+                  return Color(int.parse(colorString, radix: 16));
+                }).toList();
+
+                return HealthPlanCard(
+                  title: planData.description,
+                  description: planData.detailedDescription,
+                  minimalAnimals: planData.minimalAnimals,
+                  maximumAnimals: planData.maximumAnimals,
+                  value: planData.value,
+                  services: planData.services,
+                  colors: colors,
+                  onPressed: () {
+                    print('Detalhes do plano: ${planData.description}');
+                  },
+                );
+              }).toList();
+              return Center(
+                  child: FlipCarousel(
+                      items: planCards,
+                      height: MediaQuery.of(context).size.height * 0.70,
+                      width: MediaQuery.of(context).size.width * 0.99,
+                      isAssetImage: false,
+                      fit: BoxFit.cover,
+                      perspectiveFactor: 0.002,
+                      layersGap: 30,
+                      transitionDuration: const Duration(milliseconds: 400)));
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('Erro ao carregar plano!'));
+            }
+            return const Center(
+                child: Text(
+              'Não encontramos nenhum plano! Por favor, tente novamente mais tarde',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ));
         }
       },
     );

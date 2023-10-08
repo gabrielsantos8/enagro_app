@@ -12,7 +12,7 @@ class HealthPlanRemote {
   }
 
   Future<List<HealthPlan>> getAllPlansByUser(int id) async {
-    var data = await GeneralHttpClient().getJson('${url}getBestsPlansByUser/$id');
+    var data = await GeneralHttpClient().getJson('${url}getAllPlansByUser/$id');
     List<HealthPlan> healthPlans = HealthPlan.fromArray(data['dados']);
     return healthPlans;
   }

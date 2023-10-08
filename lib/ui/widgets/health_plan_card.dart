@@ -11,27 +11,49 @@ class HealthPlanCard extends StatelessWidget {
   final double value;
   final List<Service> services;
   final VoidCallback onPressed;
+  final List<Color> colors;
 
   const HealthPlanCard({
-    super.key,
+    Key? key,
     required this.title,
     required this.description,
     required this.minimalAnimals,
     required this.maximumAnimals,
     required this.value,
     required this.services,
-    required this.onPressed
-  });
+    required this.onPressed,
+    required this.colors,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 4.0,
-      child: Padding(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+            Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              height: 2.0,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: colors,
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+              ),
+            ),
             const SizedBox(height: 10),
             SizedBox(
               height: 200,
@@ -46,7 +68,9 @@ class HealthPlanCard extends StatelessWidget {
                       title: Text(
                         record.description,
                         style: const TextStyle(
-                            color: Color.fromARGB(255, 55, 55, 55), fontSize: 13),
+                          color: Color.fromARGB(255, 55, 55, 55),
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   );
@@ -54,16 +78,27 @@ class HealthPlanCard extends StatelessWidget {
               ),
             ),
             Text('Entre $minimalAnimals e $maximumAnimals animais'),
-            const SizedBox(height: 20),
-            Text('R\$ ${value.toStringAsFixed(2)} /mês', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+            const Spacer(),
+            Text(
+              'R\$ ${value.toStringAsFixed(2)} /mês',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text('R\$ ${(value * 12).toStringAsFixed(2)} /ano'),
+            Text(
+              'R\$ ${(value * 12).toStringAsFixed(2)} /ano',
+              style: TextStyle(color: Theme.of(context).primaryColorDark),
+            ),
             const Spacer(),
             DefaultOutlineButton(
-                "Detahes",
-                onPressed,
-                width: 200,
-                style: TextStyle(color: Theme.of(context).primaryColor))
+              "Detalhes",
+              onPressed,
+              width: 200,
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
           ],
         ),
       ),
