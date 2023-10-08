@@ -240,14 +240,14 @@ class _HealthPlansPageState extends State<HealthPlansPage>
                       isAssetImage: false,
                       fit: BoxFit.cover,
                       perspectiveFactor: 0.002,
-                      layersGap: 30,
-                      transitionDuration: const Duration(milliseconds: 400)));
+                      layersGap: 5,
+                      transitionDuration: const Duration(milliseconds: 300)));
             } else if (snapshot.hasError) {
               return const Center(child: Text('Erro ao carregar plano!'));
             }
             return const Center(
                 child: Text(
-              'Não encontramos nenhum plano para você! Por favor, cadastre seus animais para oferecermos os melhores planos',
+              'Não encontramos nenhum plano para você! Por favor, cadastre seus animais para oferecermos os melhores planos.',
               style: TextStyle(fontWeight: FontWeight.bold),
             ));
         }
@@ -297,14 +297,14 @@ class _HealthPlansPageState extends State<HealthPlansPage>
                       isAssetImage: false,
                       fit: BoxFit.cover,
                       perspectiveFactor: 0.002,
-                      layersGap: 30,
-                      transitionDuration: const Duration(milliseconds: 400)));
+                      layersGap: 5,
+                      transitionDuration: const Duration(milliseconds: 300)));
             } else if (snapshot.hasError) {
               return const Center(child: Text('Erro ao carregar plano!'));
             }
             return const Center(
                 child: Text(
-              'Não encontramos nenhum plano! Por favor, tente novamente mais tarde',
+              'Não encontramos nenhum plano! Por favor, tente novamente mais tarde.',
               style: TextStyle(fontWeight: FontWeight.bold),
             ));
         }

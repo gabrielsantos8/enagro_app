@@ -5,6 +5,7 @@ class CardListItem extends StatelessWidget {
   final String description;
   final String imageUrl;
   final VoidCallback onTap;
+  final Icon trailing;
 
   const CardListItem({
     Key? key,
@@ -12,6 +13,7 @@ class CardListItem extends StatelessWidget {
     required this.description,
     required this.imageUrl,
     required this.onTap,
+    this.trailing = const Icon(Icons.chevron_right)
   }) : super(key: key);
 
   @override
@@ -27,7 +29,7 @@ class CardListItem extends StatelessWidget {
         ),
         title: Text(title),
         subtitle: Text(description),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: trailing,
         onTap: onTap,
       ),
     );
