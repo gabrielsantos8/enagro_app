@@ -88,6 +88,37 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
     }
   }
 
+  void _addAnimal(int animalId) async {
+    Object map = {
+      "animal_id": animalId,
+      "contract_id": widget.contract.healthPlanContractId
+    };
+
+    bool isSuccess =
+        await HealthPlanContractAnimalRemote().addContractAnimal(map);
+
+    if (!isSuccess) {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: const Text('Houve um erro ao adicionar o animal.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -321,66 +352,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                           child: DefaultOutlineButton(
                             'Adicionar Animal',
                             () async {
-                              await Navigator.push(
-                                context,
-                                BackdropModalRoute<void>(
-                                  overlayContentBuilder: (context) {
-                                    return Container(
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.all(24),
-                                        child: Column(
-                                          children: [
-                                            Row(children: [
-                                              const Text(
-                                                'Adicionar animais',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18),
-                                              ),
-                                              const Spacer(),
-                                              IconButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                  icon: const Icon(Icons.close))
-                                            ]),
-                                            const SizedBox(height: 50),
-                                            Center(
-                                              child: MultiSelectDialogField(
-                                                items: animals
-                                                    .map((e) => MultiSelectItem(
-                                                        e, e.name))
-                                                    .toList(),
-                                                listType:
-                                                    MultiSelectListType.CHIP,
-                                                title: const Text(
-                                                    'Seus animais disponíveis'),
-                                                cancelText: Text(
-                                                  'Fechar',
-                                                  style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .primaryColor),
-                                                ),
-                                                buttonText:
-                                                    const Text('Selecione...'),
-                                                onConfirm: (values) {},
-                                                onSelectionChanged: (value) {
-                                                  
-                                                },
-                                              ),
-                                            ),
-                                            SizedBox(height: MediaQuery.of(context).size.height * 0.50),
-                                            Text(
-                                              'Quantidade disponível: ${widget.contract.healthPlan.maximumAnimals - totalAmount}.',
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16),
-                                            ),
-                                            const Divider()
-                                          ],
-                                        ));
-                                  },
-                                ),
-                              );
+                              await _buildAddAnimalModal(totalAmount);
                             },
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor),
@@ -391,26 +363,31 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
             } else if (snapshot.hasError) {
               return const Center(child: Text('Erro ao carregar animais!'));
             } else {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Center(child: Text('Nenhum animal cadastrado')),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: DefaultOutlineButton(
-                      'Adicionar Animal',
-                      () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => AnimalCreatePage(
-                        //             refreshData, widget.user!.userId)));
-                      },
-                      style: TextStyle(color: Theme.of(context).primaryColor),
-                    ),
-                  ),
-                ],
-              );
+              return Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [colors[1], colors[0]],
+                  )),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Center(child: Text('Nenhum animal cadastrado!', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: DefaultOutlineButton(
+                          'Adicionar Animal',
+                          () async {
+                            await _buildAddAnimalModal(0);
+                          },
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
+                        ),
+                      ),
+                    ],
+                  ));
             }
         }
       },
@@ -425,5 +402,96 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
     }
 
     return totalAmount;
+  }
+
+  _buildAddAnimalModal(int totalAmount) {
+    return Navigator.push(
+      context,
+      BackdropModalRoute<void>(
+        overlayContentBuilder: (context) {
+          return Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  Row(children: [
+                    const Text(
+                      'Adicionar animais',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close))
+                  ]),
+                  const SizedBox(height: 50),
+                  Center(
+                    child: MultiSelectDialogField(
+                      items: animals
+                          .map((e) => MultiSelectItem(e, e.name))
+                          .toList(),
+                      listType: MultiSelectListType.CHIP,
+                      title: const Text('Seus animais disponíveis'),
+                      cancelText: Text(
+                        'Fechar',
+                        style: TextStyle(color: Theme.of(context).primaryColor),
+                      ),
+                      buttonText: const Text('Selecione...'),
+                      onConfirm: (values) {
+                        int maxAnimals =
+                            widget.contract.healthPlan.maximumAnimals -
+                                totalAmount;
+                        int totalAnimalsAmount = values
+                            .map((animal) => animal.amount)
+                            .reduce((sum, amount) => sum + amount);
+
+                        if (totalAnimalsAmount <= maxAnimals) {
+                          for (var animal in values) {
+                            _addAnimal(animal.animalId);
+                          }
+                          Navigator.pop(context);
+                          refreshData();
+                          return;
+                        }
+                        Navigator.pop(context);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Atenção'),
+                              content: const Text(
+                                  'Você está tentando adicionar uma quantia acima do máximo de animais para esse plano!'),
+                              actions: [
+                                OutlinedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    'Ok',
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      onSelectionChanged: (values) {},
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.50),
+                  Text(
+                    'Quantidade disponível: ${widget.contract.healthPlan.maximumAnimals - totalAmount}.',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const Divider()
+                ],
+              ));
+        },
+      ),
+    );
   }
 }

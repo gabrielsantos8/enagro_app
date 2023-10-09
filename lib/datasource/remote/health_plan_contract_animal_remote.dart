@@ -18,6 +18,11 @@ class HealthPlanContractAnimalRemote {
     return data['success'];
   }
 
+  Future<bool> addContractAnimal(Object prms) async {
+    var data = await GeneralHttpClient().post('${url}store', jsonEncode(prms));
+    return data['success'];
+  }
+
   Future<List<Animal>> getAnimalsToAddByUser(int userId, int contractId) async {
     var data = await GeneralHttpClient().getJson('${url}getAnimalsToAddByUser/$userId/$contractId');
     List<Animal> animals = Animal.getAnimals(data['dados']);
