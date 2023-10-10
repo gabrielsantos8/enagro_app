@@ -8,7 +8,6 @@ import 'package:enagro_app/ui/widgets/card_list_item.dart';
 import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class HealthPlanContractDetails extends StatefulWidget {
@@ -122,7 +121,9 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: colors[1],
+      ),
       body: ListView(children: [
         Container(
           color: colors[1],

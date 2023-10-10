@@ -4,6 +4,7 @@ import 'package:enagro_app/models/health_plan.dart';
 import 'package:enagro_app/models/health_plan_contract.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/pages/health_plan_contract_details.dart';
+import 'package:enagro_app/ui/pages/health_plan_details.dart';
 import 'package:enagro_app/ui/widgets/health_plan_card.dart';
 import 'package:flip_carousel/flip_carousel.dart';
 import 'package:flutter/material.dart';
@@ -228,7 +229,10 @@ class _HealthPlansPageState extends State<HealthPlansPage>
                   services: planData.services,
                   colors: colors,
                   onPressed: () {
-                    print('Detalhes do plano: ${planData.description}');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HealthPlanDetails(planData)));
                   },
                 );
               }).toList();
@@ -285,7 +289,10 @@ class _HealthPlansPageState extends State<HealthPlansPage>
                   services: planData.services,
                   colors: colors,
                   onPressed: () {
-                    print('Detalhes do plano: ${planData.description}');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HealthPlanDetails(planData)));
                   },
                 );
               }).toList();
