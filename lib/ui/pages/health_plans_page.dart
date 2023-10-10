@@ -4,6 +4,7 @@ import 'package:enagro_app/models/health_plan.dart';
 import 'package:enagro_app/models/health_plan_contract.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/pages/health_plan_contract_details.dart';
+import 'package:enagro_app/ui/pages/health_plan_details.dart';
 import 'package:enagro_app/ui/widgets/health_plan_card.dart';
 import 'package:flip_carousel/flip_carousel.dart';
 import 'package:flutter/material.dart';
@@ -228,7 +229,10 @@ class _HealthPlansPageState extends State<HealthPlansPage>
                   services: planData.services,
                   colors: colors,
                   onPressed: () {
-                    print('Detalhes do plano: ${planData.description}');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HealthPlanDetails(planData)));
                   },
                 );
               }).toList();
@@ -240,14 +244,14 @@ class _HealthPlansPageState extends State<HealthPlansPage>
                       isAssetImage: false,
                       fit: BoxFit.cover,
                       perspectiveFactor: 0.002,
-                      layersGap: 30,
-                      transitionDuration: const Duration(milliseconds: 400)));
+                      layersGap: 5,
+                      transitionDuration: const Duration(milliseconds: 300)));
             } else if (snapshot.hasError) {
               return const Center(child: Text('Erro ao carregar plano!'));
             }
             return const Center(
                 child: Text(
-              'Não encontramos nenhum plano para você! Por favor, cadastre seus animais para oferecermos os melhores planos',
+              'Não encontramos nenhum plano para você! Por favor, cadastre seus animais para oferecermos os melhores planos.',
               style: TextStyle(fontWeight: FontWeight.bold),
             ));
         }
@@ -285,7 +289,10 @@ class _HealthPlansPageState extends State<HealthPlansPage>
                   services: planData.services,
                   colors: colors,
                   onPressed: () {
-                    print('Detalhes do plano: ${planData.description}');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HealthPlanDetails(planData)));
                   },
                 );
               }).toList();
@@ -297,14 +304,14 @@ class _HealthPlansPageState extends State<HealthPlansPage>
                       isAssetImage: false,
                       fit: BoxFit.cover,
                       perspectiveFactor: 0.002,
-                      layersGap: 30,
-                      transitionDuration: const Duration(milliseconds: 400)));
+                      layersGap: 5,
+                      transitionDuration: const Duration(milliseconds: 300)));
             } else if (snapshot.hasError) {
               return const Center(child: Text('Erro ao carregar plano!'));
             }
             return const Center(
                 child: Text(
-              'Não encontramos nenhum plano! Por favor, tente novamente mais tarde',
+              'Não encontramos nenhum plano! Por favor, tente novamente mais tarde.',
               style: TextStyle(fontWeight: FontWeight.bold),
             ));
         }

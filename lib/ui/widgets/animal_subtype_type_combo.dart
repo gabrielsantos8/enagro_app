@@ -8,7 +8,10 @@ class AnimalSubtypeTypeCombo extends StatefulWidget {
   final int? selAnimalTypeId;
 
   const AnimalSubtypeTypeCombo(
-      {Key? key, required this.onSelectionChanged, this.selAnimalSubtypeId, this.selAnimalTypeId})
+      {Key? key,
+      required this.onSelectionChanged,
+      this.selAnimalSubtypeId,
+      this.selAnimalTypeId})
       : super(key: key);
 
   @override
@@ -22,9 +25,12 @@ class _AnimalSubtypeTypeComboState extends State<AnimalSubtypeTypeCombo> {
   late int selectedAnimalSubtypeId;
   late int selectedAnimalTypeId;
 
+  late bool isChange;
+
   @override
   void initState() {
     super.initState();
+    isChange = false;
     selectedAnimalTypeId = widget.selAnimalTypeId ?? 1;
     selectedAnimalSubtypeId = widget.selAnimalSubtypeId ?? 0;
     loadAnimalTypes();
@@ -34,9 +40,10 @@ class _AnimalSubtypeTypeComboState extends State<AnimalSubtypeTypeCombo> {
   Future<void> loadAnimalTypes() async {
     final animalTypeRemote = AnimalTypeRemote();
     final animalTypeList = await animalTypeRemote.getAnimalTypes();
-    animalTypesMap = animalTypeList.fold<Map<int, String>>({}, (previousMap, city) {
-      final id = city['id'] as int;
-      final description = city['description'] as String;
+    animalTypesMap =
+        animalTypeList.fold<Map<int, String>>({}, (previousMap, type) {
+      final id = type['id'] as int;
+      final description = type['description'] as String;
       previousMap[id] = description;
       return previousMap;
     });
@@ -47,20 +54,32 @@ class _AnimalSubtypeTypeComboState extends State<AnimalSubtypeTypeCombo> {
 
   Future<void> loadAnimalSubtypes(int id) async {
     final animalSubtypeRemote = AnimalSubTypeRemote();
-    final animalSubtypeList = await animalSubtypeRemote.getAnimalSubtypesByAnimalType(id);
+    final animalSubtypeList =
+        await animalSubtypeRemote.getAnimalSubtypesByAnimalType(id);
 
-    final map = animalSubtypeList.fold<Map<int, String>>({}, (previousMap, city) {
-      final id = city['id'] as int;
-      final description = city['description'] as String;
+    final map =
+        animalSubtypeList.fold<Map<int, String>>({}, (previousMap, subtype) {
+      final id = subtype['id'] as int;
+      final description = subtype['description'] as String;
       previousMap[id] = description;
       return previousMap;
     });
 
-    setState(() {
-      animalSubtypesMap = map;
-      selectedAnimalSubtypeId = widget.selAnimalSubtypeId ?? map.keys.first;
-      widget.onSelectionChanged(selectedAnimalTypeId, selectedAnimalSubtypeId);
-    });
+    if (!isChange) {
+      setState(() {
+        animalSubtypesMap = map;
+        selectedAnimalSubtypeId = widget.selAnimalSubtypeId ?? map.keys.first;
+        widget.onSelectionChanged(
+            selectedAnimalTypeId, selectedAnimalSubtypeId);
+      });
+    } else {
+      setState(() {
+        animalSubtypesMap = map;
+        selectedAnimalSubtypeId = map.keys.first;
+        widget.onSelectionChanged(
+            selectedAnimalTypeId, selectedAnimalSubtypeId);
+      });
+    }
   }
 
   @override
@@ -81,9 +100,11 @@ class _AnimalSubtypeTypeComboState extends State<AnimalSubtypeTypeCombo> {
           }).toList(),
           onChanged: (int? newValue) {
             setState(() {
+              isChange = true;
               selectedAnimalTypeId = newValue!;
               loadAnimalSubtypes(selectedAnimalTypeId);
-              widget.onSelectionChanged(selectedAnimalTypeId, selectedAnimalSubtypeId);
+              widget.onSelectionChanged(
+                  selectedAnimalTypeId, selectedAnimalSubtypeId);
             });
           },
         ),
@@ -101,7 +122,8 @@ class _AnimalSubtypeTypeComboState extends State<AnimalSubtypeTypeCombo> {
           onChanged: (int? newValue) {
             setState(() {
               selectedAnimalSubtypeId = newValue!;
-              widget.onSelectionChanged(selectedAnimalTypeId, selectedAnimalSubtypeId);
+              widget.onSelectionChanged(
+                  selectedAnimalTypeId, selectedAnimalSubtypeId);
             });
           },
         ),
