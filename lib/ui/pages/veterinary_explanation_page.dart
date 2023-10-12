@@ -26,7 +26,7 @@ class _VeterinaryExplanationState extends State<VeterinaryExplanation> {
   void _isVeterinarian() async {
     VeterinarianRemote vetRemote = VeterinarianRemote();
     Veterinarian vet = await vetRemote.getByUser(widget.user!.userId);
-    if (vet.situationId != 1) {
+    if (vet.idPfInscricao > 0 && vet.situationId != 1) {
       // ignore: use_build_context_synchronously
       showDialog(
         context: context,
