@@ -1,15 +1,17 @@
 import 'package:auto_animated_list/auto_animated_list.dart';
 import 'package:enagro_app/models/health_plan.dart';
 import 'package:enagro_app/models/service.dart';
+import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/ui/pages/signature_page.dart';
 import 'package:flutter/material.dart';
 
 class HealthPlanDetails extends StatefulWidget {
   final HealthPlan plan;
-  const HealthPlanDetails(this.plan, {super.key});
+  final User? user;
+  const HealthPlanDetails(this.plan, this.user, {super.key});
 
   @override
-  State<HealthPlanDetails> createState() =>
-      _HealthPlanDetailsState();
+  State<HealthPlanDetails> createState() => _HealthPlanDetailsState();
 }
 
 class _HealthPlanDetailsState extends State<HealthPlanDetails> {
@@ -129,7 +131,12 @@ class _HealthPlanDetailsState extends State<HealthPlanDetails> {
           ),
           const SizedBox(height: 10),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SignaturePage(widget.plan, widget.user)));
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
@@ -148,5 +155,4 @@ class _HealthPlanDetailsState extends State<HealthPlanDetails> {
       ),
     );
   }
-
 }

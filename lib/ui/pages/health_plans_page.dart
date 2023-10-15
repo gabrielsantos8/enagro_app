@@ -232,7 +232,7 @@ class _HealthPlansPageState extends State<HealthPlansPage>
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => HealthPlanDetails(planData)));
+                            builder: (context) => HealthPlanDetails(planData, widget.user)));
                   },
                 );
               }).toList();
@@ -292,7 +292,7 @@ class _HealthPlansPageState extends State<HealthPlansPage>
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => HealthPlanDetails(planData)));
+                            builder: (context) => HealthPlanDetails(planData, widget.user)));
                   },
                 );
               }).toList();
