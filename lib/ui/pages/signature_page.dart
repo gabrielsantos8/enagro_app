@@ -1,4 +1,5 @@
 import 'package:checkbox_grouped/checkbox_grouped.dart';
+import 'package:enagro_app/datasource/remote/health_plan_contract_remote.dart';
 import 'package:enagro_app/datasource/remote/health_plan_remote.dart';
 import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/animal_subtype.dart';
@@ -7,6 +8,8 @@ import 'package:enagro_app/models/city.dart';
 import 'package:enagro_app/models/health_plan.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/models/user_address.dart';
+import 'package:enagro_app/ui/pages/home_page.dart';
+import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -24,6 +27,7 @@ class _SignaturePageState extends State<SignaturePage> {
   GroupController typeController = GroupController(initSelectedItem: [1]);
   late int type = 1;
   late double value = widget.plan.value;
+  late int animalsCount = 0;
   late String animalsId = '';
   late List<Animal> animals = [
     Animal(
@@ -51,6 +55,62 @@ class _SignaturePageState extends State<SignaturePage> {
   void initState() {
     super.initState();
     fetchAnimals();
+  }
+
+  void _signPlan() async {
+    Object map = {
+      "health_plan_id": widget.plan.healthPlanId,
+      "user_id": widget.user!.userId,
+      "health_plan_contract_type_id": type,
+      "value": value,
+      "animals": animalsId
+    };
+
+    bool isSuccess = await HealthPlanContractRemote().contractSign(map);
+
+    if (isSuccess) {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Sucesso'),
+            content: const Text('Plano assinado com sucesso!'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(widget.user)),
+                      (Route<dynamic> route) => false);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: const Text('Houve um erro ao assinar o plano.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Future<void> fetchAnimals() async {
@@ -130,15 +190,17 @@ class _SignaturePageState extends State<SignaturePage> {
                               ),
                               Text(
                                 'R\$ ${type == 1 ? widget.plan.value.toStringAsFixed(2) : (widget.plan.value * 12).toStringAsFixed(2)}/${type == 1 ? 'mês' : 'ano'}.',
-                                style:  TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 22, color: Theme.of(context).primaryColor),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                    color: Theme.of(context).primaryColor),
                               ),
                               const SizedBox(
                                 height: 20,
                               ),
-                              const Text(
-                                'Animais',
-                                style: TextStyle(fontSize: 16),
+                              Text(
+                                'Animais ($animalsCount/${widget.plan.maximumAnimals.toString()})',
+                                style: const TextStyle(fontSize: 16),
                               ),
                               const SizedBox(
                                 height: 10,
@@ -194,14 +256,39 @@ class _SignaturePageState extends State<SignaturePage> {
                                     }
                                     setState(() {
                                       animalsId = str.join(',');
+                                      animalsCount = totalAnimalsAmount;
                                     });
                                   },
                                 ),
                               ),
                               const Spacer(),
-                              DefaultOutlineButton('Realizar assinatura', () {
-                                
-                               }, style: TextStyle(color: Theme.of(context).primaryColor),)
+                              DefaultOutlineButton(
+                                'Realizar assinatura',
+                                () {
+                                  if (animalsCount == 0) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return ConfirmDialog(
+                                            content:
+                                                "Você tem certeza que deseja vincular nenhum animal a assinatura? Você pode fazer isso mais tarde.",
+                                            noFunction: () {
+                                              Navigator.pop(context);
+                                            },
+                                            yesFunction: () {
+                                              Navigator.pop(context);
+                                              _signPlan();
+                                            },
+                                          );
+                                        });
+                                        return;
+                                  }
+                                  _signPlan();
+                                  return;
+                                },
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor),
+                              )
                             ],
                           ),
                         ),
