@@ -2,12 +2,14 @@ import 'package:enagro_app/models/animal_subtype.dart';
 
 class Service {
   final int serviceId;
+  final int vetServiceId;
   final String description;
   final AnimalSubType animalSubType;
   final double value;
 
   Service(
       {required this.serviceId,
+      required this.vetServiceId,
       required this.description,
       required this.animalSubType,
       required this.value});
@@ -15,6 +17,7 @@ class Service {
   factory Service.fromMap(Map<String, dynamic> usr) {
     return Service(
         serviceId: usr['id'] ?? 0,
+        vetServiceId: usr['vetservice_id'] ?? 0,
         description: usr['description'] ?? '',
         animalSubType: AnimalSubType.getAnimalSubType(
             usr['animal_subtype_id'] ?? 0,

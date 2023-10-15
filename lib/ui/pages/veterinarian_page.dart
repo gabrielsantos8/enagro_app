@@ -1,6 +1,7 @@
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/models/veterinarian.dart';
 import 'package:enagro_app/ui/pages/service_city_page.dart';
+import 'package:enagro_app/ui/pages/veterinarian_service_page.dart';
 import 'package:enagro_app/ui/widgets/default_home_item.dart';
 import 'package:flutter/material.dart';
 
@@ -71,6 +72,17 @@ class _VeterinarianPageState extends State<VeterinarianPage> {
               title: 'Acionamentos',
               description: 'Acionamentos em busca de atendimento.',
               onTap: () {}),
+          DefaultHomeItem(
+              iconData: Icons.build_outlined,
+              title: 'Meus Serviços',
+              description: 'Meus serviços de atendimento.',
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            VeterinarianServicePage(widget.veterinarian)));
+              }),
           DefaultHomeItem(
               iconData: Icons.location_city_outlined,
               title: 'Meus Municípios de Atendimento',
