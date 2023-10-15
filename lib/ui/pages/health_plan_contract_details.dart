@@ -1,12 +1,16 @@
 import 'package:auto_animated_list/auto_animated_list.dart';
 import 'package:backdrop_modal_route/backdrop_modal_route.dart';
 import 'package:enagro_app/datasource/remote/health_plan_contract_animal_remote.dart';
+import 'package:enagro_app/datasource/remote/health_plan_contract_installment_remote.dart';
+import 'package:enagro_app/datasource/remote/health_plan_contract_remote.dart';
 import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/health_plan_contract.dart';
+import 'package:enagro_app/models/installment.dart';
 import 'package:enagro_app/models/service.dart';
 import 'package:enagro_app/ui/widgets/card_list_item.dart';
 import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
+import 'package:enagro_app/ui/widgets/installment_item.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
@@ -28,7 +32,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_handleTabSelection);
     colors = widget.contract.healthPlan.planColors.map((colorString) {
       return Color(int.parse(colorString, radix: 16));
@@ -53,6 +57,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
   void refreshData() {
     setState(() {
       _buildAnimalList(widget.contract.healthPlanContractId);
+      _buildInstallmentlList(widget.contract.healthPlanContractId);
       fetchAnimals();
     });
   }
@@ -118,6 +123,38 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
     }
   }
 
+  void _pay(int installmentId) async {
+    Object map = {
+      "installment_id": installmentId,
+      "type_id": widget.contract.healthPlanContractType.healthPlanContractTypeId
+    };
+
+    bool isSuccess = await HealthPlanContractRemote().payInstallment(map);
+
+    if (!isSuccess) {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: const Text('Houve um erro ao pagar a parcela.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+    refreshData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,6 +169,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
               tabs: const [
                 Tab(text: 'Detalhes'),
                 Tab(text: 'Animais'),
+                Tab(text: 'Parcelas'),
               ],
               indicatorColor: colors[0],
               labelColor: Colors.white),
@@ -144,6 +182,10 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
               ),
               Container(
                 child: _buildAnimalList(widget.contract.healthPlanContractId),
+              ),
+              Container(
+                child: _buildInstallmentlList(
+                    widget.contract.healthPlanContractId),
               )
             ])),
       ]),
@@ -375,7 +417,12 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Center(child: Text('Nenhum animal cadastrado!', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)),
+                      const Center(
+                          child: Text(
+                        'Nenhum animal cadastrado!',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      )),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: DefaultOutlineButton(
@@ -493,6 +540,127 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
               ));
         },
       ),
+    );
+  }
+
+  Widget _buildInstallmentlList(int contractId) {
+    return FutureBuilder(
+      future: HealthPlanContractInstallmentRemote().getByContract(contractId),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.active:
+          case ConnectionState.waiting:
+          case ConnectionState.none:
+            return Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [colors[1], colors[0]],
+                )),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                ));
+          case ConnectionState.done:
+            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+              return Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [colors[1], colors[0]],
+                  )),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [colors[1], colors[0]],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: colors[1],
+                                spreadRadius: 2,
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ]),
+                        height: MediaQuery.of(context).size.height * 0.70,
+                        child: ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            Installment installment = snapshot.data![index];
+                            String status = "";
+                            if (installment.statusId == 1) {
+                              status = "Pago";
+                            } else if (installment.statusId == 2) {
+                              status = "Pendente";
+                            } else {
+                              status = "Cancelado";
+                            }
+                            return InstallmentItem(
+                                installmentNumber:
+                                    installment.installmentNumber,
+                                status: status,
+                                value: installment.value,
+                                dueDate: installment.dueDate,
+                                color: colors[0],
+                                onCLick: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return ConfirmDialog(
+                                          content:
+                                              "Tem certeza que deseja pagar essa parcela?",
+                                          noFunction: () {
+                                            Navigator.pop(context);
+                                          },
+                                          yesFunction: () {
+                                            Navigator.pop(context);
+                                            _pay(installment.installmentId);
+                                          },
+                                        );
+                                      });
+                                });
+                          },
+                        ),
+                      ),
+                    ],
+                  ));
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('Erro ao carregar parcelas!'));
+            } else {
+              return Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [colors[1], colors[0]],
+                  )),
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                          child: Text(
+                        'Nenhuma parcela encontrada!',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ))
+                    ],
+                  ));
+            }
+        }
+      },
     );
   }
 }
