@@ -7,6 +7,7 @@ import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/health_plan_contract.dart';
 import 'package:enagro_app/models/installment.dart';
 import 'package:enagro_app/models/service.dart';
+import 'package:enagro_app/ui/pages/activation_page.dart';
 import 'package:enagro_app/ui/widgets/card_list_item.dart';
 import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
@@ -28,6 +29,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
   late List<Color> colors;
   late TabController _tabController;
   late List<Animal> animals;
+  late bool canTrigger = false;
 
   @override
   void initState() {
@@ -38,6 +40,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
       return Color(int.parse(colorString, radix: 16));
     }).toList();
     fetchAnimals();
+    _buildInstallmentlList(widget.contract.healthPlanContractId);
   }
 
   Future<void> fetchAnimals() async {
@@ -280,23 +283,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
               ),
             ),
           ),
-          const SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-            ),
-            child: Text(
-              'Acionar',
-              style: TextStyle(
-                  color: colors[1],
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
+          const SizedBox(height: 10)
         ]),
       ),
     );
@@ -599,6 +586,11 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
                             Installment installment = snapshot.data![index];
+                            if (index == snapshot.data!.length - 1) {
+                              DateTime today = DateTime.now();
+                              canTrigger = installment.statusId != 1 &&
+                                  !installment.dueDate.isBefore(today);
+                            }
                             String status = "";
                             if (installment.statusId == 1) {
                               status = "Pago";
@@ -632,6 +624,47 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                                       });
                                 });
                           },
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (!canTrigger) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Atenção'),
+                                  content: const Text('Primeiro pague as parcelas que estão pendentes/vencidas.'),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                            return;
+                          }
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ActivationPage(widget.contract)));
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                        ),
+                        child: Text(
+                          'Acionar',
+                          style: TextStyle(
+                              color: colors[1],
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],
