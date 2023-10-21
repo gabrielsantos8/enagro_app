@@ -86,6 +86,17 @@ class _AnimalCreatePageState extends State<AnimalCreatePage> {
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    
+  }
+
   final formKey = GlobalKey<FormState>();
 
   @override

@@ -102,10 +102,10 @@ class _AnimalSubtypeTypeComboState extends State<AnimalSubtypeTypeCombo> {
             setState(() {
               isChange = true;
               selectedAnimalTypeId = newValue!;
-              loadAnimalSubtypes(selectedAnimalTypeId);
               widget.onSelectionChanged(
                   selectedAnimalTypeId, selectedAnimalSubtypeId);
             });
+              loadAnimalSubtypes(selectedAnimalTypeId);
           },
         ),
         DropdownButton<int>(
