@@ -171,7 +171,7 @@ class _SignaturePageState extends State<SignaturePage> {
                                 onItemSelected: (values) {
                                   setState(() {
                                     type = values;
-                                    value = values == 1 ? value : value * 12;
+                                    value = values == 1 ? widget.plan.value : widget.plan.value * 12;
                                   });
                                 },
                                 itemsTitle: const ["Mensal", "Anual"],
