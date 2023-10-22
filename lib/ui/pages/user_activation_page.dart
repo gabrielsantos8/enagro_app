@@ -1,7 +1,10 @@
+import 'package:auto_animated_list/auto_animated_list.dart';
 import 'package:card_actions/card_action_button.dart';
 import 'package:card_actions/card_actions.dart';
 import 'package:enagro_app/datasource/remote/activation_remote.dart';
 import 'package:enagro_app/models/activation.dart';
+import 'package:enagro_app/models/animal.dart';
+import 'package:enagro_app/models/service.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/widgets/activation_card.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
@@ -16,35 +19,104 @@ class UserActivationPage extends StatefulWidget {
 }
 
 class _UserActivationPageState extends State<UserActivationPage> {
-  void _showServicesModal() {
+  void _showServicesModal(List<Service> services) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Text("Lista de Serviços"),
-            ],
+        return Center(
+            child: Column(children: [
+          const SizedBox(height: 20),
+          const Text(
+            'Serviços:',
+            style: TextStyle(fontSize: 20),
           ),
-        );
+          const SizedBox(height: 20),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: AutoAnimatedList<Service>(
+                items: services,
+                itemBuilder: (context, record, index, animation) {
+                  return SizeFadeTransition(
+                    animation: animation,
+                    child: ListTile(
+                      iconColor: const Color.fromARGB(255, 0, 0, 0),
+                      leading: const Icon(Icons.medical_services_outlined),
+                      title: Text(
+                        record.description,
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          const Spacer(),
+          DefaultOutlineButton(
+            'Fechar',
+            () {
+              Navigator.pop(context);
+            },
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+          const Spacer(),
+        ]));
       },
     );
   }
 
-  void _showAnimalsModal() {
+  void _showAnimalsModal(List<Animal> animals) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Text("Lista de Animais"),
-              // Aqui você pode adicionar a lista de animais
-            ],
+        return Center(
+            child: Column(children: [
+          const SizedBox(height: 20),
+          const Text(
+            'Animais:',
+            style: TextStyle(fontSize: 20),
           ),
-        );
+          const SizedBox(height: 20),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: AutoAnimatedList<Animal>(
+                items: animals,
+                itemBuilder: (context, record, index, animation) {
+                  return SizeFadeTransition(
+                    animation: animation,
+                    child: ListTile(
+                      iconColor: const Color.fromARGB(255, 0, 0, 0),
+                      leading: const Icon(Icons.pets_outlined),
+                      title: Text(
+                        record.name,
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          const Spacer(),
+          DefaultOutlineButton(
+            'Fechar',
+            () {
+              Navigator.pop(context);
+            },
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+          const Spacer(),
+        ]));
       },
     );
   }
@@ -135,7 +207,8 @@ class _UserActivationPageState extends State<UserActivationPage> {
                                     size: 20,
                                   ),
                                   label: 'Animais',
-                                  onPress: _showAnimalsModal,
+                                  onPress: () =>
+                                      _showAnimalsModal(activation.animals),
                                 ),
                                 CardActionButton(
                                   icon: const Icon(
@@ -144,7 +217,8 @@ class _UserActivationPageState extends State<UserActivationPage> {
                                     size: 20,
                                   ),
                                   label: 'Serviços',
-                                  onPress: _showServicesModal,
+                                  onPress: () =>
+                                      _showServicesModal(activation.services),
                                 ),
                               ],
                               child: ActivationCard(
