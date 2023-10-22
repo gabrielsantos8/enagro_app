@@ -6,6 +6,7 @@ import 'package:enagro_app/ui/pages/animal_page.dart';
 import 'package:enagro_app/ui/pages/health_plan_contract_details.dart';
 import 'package:enagro_app/ui/pages/health_plans_page.dart';
 import 'package:enagro_app/ui/pages/partners_page.dart';
+import 'package:enagro_app/ui/pages/user_activation_page.dart';
 import 'package:enagro_app/ui/pages/user_page.dart';
 import 'package:enagro_app/ui/widgets/default_drawer_item.dart';
 import 'package:enagro_app/ui/widgets/default_home_item.dart';
@@ -149,6 +150,13 @@ class _HomePageState extends State<HomePage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => HealthPlansPage(widget.user)));
+              }),
+              DefaultDrawerItem(
+                  Icons.warning_amber_outlined, 'Meus acionamentos', () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UserActivationPage(widget.user)));
               }),
               DefaultDrawerItem(Icons.business, 'Parceiros', () {
                 Navigator.push(
