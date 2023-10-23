@@ -7,6 +7,7 @@ import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/health_plan_contract.dart';
 import 'package:enagro_app/models/installment.dart';
 import 'package:enagro_app/models/service.dart';
+import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/pages/activation_page.dart';
 import 'package:enagro_app/ui/widgets/card_list_item.dart';
 import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
@@ -17,7 +18,8 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class HealthPlanContractDetails extends StatefulWidget {
   final HealthPlanContract contract;
-  const HealthPlanContractDetails(this.contract, {super.key});
+  final User? user;
+  const HealthPlanContractDetails(this.contract, this.user, {super.key});
 
   @override
   State<HealthPlanContractDetails> createState() =>
@@ -651,7 +653,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                             );
                             return;
                           }
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ActivationPage(widget.contract)));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ActivationPage(widget.contract, widget.user)));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,

@@ -3,7 +3,9 @@ import 'package:date_field/date_field.dart';
 import 'package:enagro_app/datasource/remote/activation_remote.dart';
 import 'package:enagro_app/datasource/remote/veterinarian_remote.dart';
 import 'package:enagro_app/models/health_plan_contract.dart';
+import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/models/veterinarian.dart';
+import 'package:enagro_app/ui/pages/user_activation_page.dart';
 import 'package:enagro_app/ui/widgets/default_button.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:enagro_app/ui/widgets/multi_select_animal_services.dart';
@@ -14,7 +16,8 @@ import 'package:stepper_page_view/stepper_page_view.dart';
 
 class ActivationPage extends StatefulWidget {
   final HealthPlanContract contract;
-  const ActivationPage(this.contract, {super.key});
+  final User? user;
+  const ActivationPage(this.contract, this.user, {super.key});
 
   @override
   State<ActivationPage> createState() => _ActivationPageState();
@@ -68,7 +71,7 @@ class _ActivationPageState extends State<ActivationPage> {
 
     if (isSuccess) {
       // ignore: use_build_context_synchronously
-      Navigator.pop(context, true);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserActivationPage(widget.user)));
     } else {
       // ignore: use_build_context_synchronously
       showDialog(
