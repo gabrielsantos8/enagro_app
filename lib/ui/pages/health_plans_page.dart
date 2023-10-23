@@ -104,7 +104,7 @@ class _HealthPlansPageState extends State<HealthPlansPage>
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         HealthPlanContractDetails(
-                                            activeContract)));
+                                            activeContract, widget.user)));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,

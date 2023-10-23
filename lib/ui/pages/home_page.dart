@@ -231,7 +231,7 @@ class _HomePageState extends State<HomePage> {
                                       )),
                                   child: TextButton(
                                     onPressed: () {
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => HealthPlanContractDetails(snapshot.data!)));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => HealthPlanContractDetails(snapshot.data!, widget.user)));
                                     },
                                     style: TextButton.styleFrom(
                                       backgroundColor: Colors.transparent,
