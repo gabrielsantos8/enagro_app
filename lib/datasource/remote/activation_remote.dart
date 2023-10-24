@@ -17,4 +17,10 @@ class ActivationRemote {
     List<Activation> activations = Activation.fromArray(data['dados']);
     return activations;
   }
+
+  Future<List<Activation>> getByVeterinarian(int id) async {
+    var data = await GeneralHttpClient().getJson('${url}getByVeterinarian/$id');
+    List<Activation> activations = Activation.fromArray(data['dados']);
+    return activations;
+  }
 }
