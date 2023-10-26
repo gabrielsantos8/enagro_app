@@ -7,13 +7,15 @@ class ActivationCard extends StatelessWidget {
   final DateTime activationDate;
   final String status;
   final String type;
+  final num? value;
   const ActivationCard(
       {super.key,
       required this.activationId,
       required this.scheduledDate,
       required this.activationDate,
       required this.status,
-      required this.type});
+      required this.type,
+      this.value = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +57,17 @@ class ActivationCard extends StatelessWidget {
                 fontSize: 18,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+            if(value != 0)
+              Text(
+                'Você recebe: R\$${value!.toStringAsFixed(2)}',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            const SizedBox(height: 10),
             Container(
               color: (status == 'Pendente'
                   ? Colors.yellow
