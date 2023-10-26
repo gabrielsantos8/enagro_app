@@ -256,22 +256,24 @@ class _VeterinarianActivationPageState
                                   onPress: () =>
                                       _showServicesModal(activation.services),
                                 ),
-                                CardActionButton(
-                                    icon: const Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                    label: 'Aceitar',
-                                    onPress: () {}),
-                                CardActionButton(
-                                    icon: const Icon(
-                                      Icons.not_interested,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                    label: 'Recusar',
-                                    onPress: () {}),
+                                if(activation.statusId == 3)
+                                  CardActionButton(
+                                      icon: const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      label: 'Aceitar',
+                                      onPress: () {}),
+                                if(activation.statusId == 3)
+                                  CardActionButton(
+                                      icon: const Icon(
+                                        Icons.not_interested,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      label: 'Recusar',
+                                      onPress: () {}),
                               ],
                               child: ActivationCard(
                                   activationDate: activation.activationDate,
