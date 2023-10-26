@@ -17,4 +17,12 @@ class UserPhone {
         number: usr['number'] ?? '0',
         userId: usr['user_id'] ?? 0);
   }
+
+  static List<UserPhone> getPhones(List userPhones) {
+    List<UserPhone> phonesList = [];
+    for (var phone in userPhones) {
+      phonesList.add(UserPhone.fromMap(phone));
+    }
+    return phonesList;
+  }
 }
