@@ -8,6 +8,7 @@ import 'package:enagro_app/models/service.dart';
 import 'package:enagro_app/models/user_address.dart';
 import 'package:enagro_app/models/user_phone.dart';
 import 'package:enagro_app/models/veterinarian.dart';
+import 'package:enagro_app/ui/pages/vet_animal_details.dart';
 import 'package:enagro_app/ui/widgets/activation_card.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +98,9 @@ class _VeterinarianActivationPageState
                   return SizeFadeTransition(
                     animation: animation,
                     child: ListTile(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => VetAnimalDetails(record)));
+                      },
                       iconColor: const Color.fromARGB(255, 0, 0, 0),
                       leading: const Icon(Icons.pets_outlined),
                       title: Text(
@@ -153,7 +157,7 @@ class _VeterinarianActivationPageState
                         animation: animation,
                         child: ListTile(
                           iconColor: const Color.fromARGB(255, 0, 0, 0),
-                          leading: const Icon(Icons.pets_outlined),
+                          leading: const Icon(Icons.location_city),
                           title: Text(
                             '${record.city.description}-${record.city.uf}',
                             style: const TextStyle(
