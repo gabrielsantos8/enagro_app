@@ -35,7 +35,7 @@ class ActivationCard extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +50,15 @@ class ActivationCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              'Data desejada: ${DateFormat('dd/MM/yyyy').format(scheduledDate)}. $status.',
+              'Data desejada: ${DateFormat('dd/MM/yyyy H:mm').format(scheduledDate)}.',
+              style: const TextStyle(
+                color: Color.fromARGB(255, 0, 0, 0),
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            Text(
+              'Situação: $status.',
               style: const TextStyle(
                 color: Color.fromARGB(255, 0, 0, 0),
                 fontWeight: FontWeight.bold,

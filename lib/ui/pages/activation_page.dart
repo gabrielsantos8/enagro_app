@@ -188,16 +188,15 @@ class _ActivationPageState extends State<ActivationPage> {
                                             labelText:
                                                 'Data desejada para atendimento',
                                           ),
-                                          dateFormat: DateFormat('dd/MM/yyyy'),
-                                          mode: DateTimeFieldPickerMode.date,
+                                          dateFormat: DateFormat('dd/MM/yyyy H:mm'),
+                                          mode: DateTimeFieldPickerMode.dateAndTime,
                                           onDateSelected: (DateTime value) {
                                             setState(() {
                                               scheduledDate = value;
                                             });
                                           },
                                           use24hFormat: true,
-                                          firstDate: DateTime.now().subtract(
-                                              const Duration(days: 1)),
+                                          firstDate: DateTime.now(),
                                           validator: (value) {
                                             if (value == null) {
                                               return 'Campo Obrigatório!';
