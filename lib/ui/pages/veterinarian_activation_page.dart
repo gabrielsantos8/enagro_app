@@ -1,7 +1,9 @@
 import 'package:auto_animated_list/auto_animated_list.dart';
 import 'package:card_actions/card_action_button.dart';
 import 'package:card_actions/card_actions.dart';
+import 'package:date_field/date_field.dart';
 import 'package:enagro_app/datasource/remote/activation_remote.dart';
+import 'package:enagro_app/datasource/remote/appointment_remote.dart';
 import 'package:enagro_app/models/activation.dart';
 import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/service.dart';
@@ -12,6 +14,7 @@ import 'package:enagro_app/ui/pages/vet_animal_details.dart';
 import 'package:enagro_app/ui/widgets/activation_card.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class VeterinarianActivationPage extends StatefulWidget {
   final Veterinarian? veterinarian;
@@ -24,6 +27,54 @@ class VeterinarianActivationPage extends StatefulWidget {
 
 class _VeterinarianActivationPageState
     extends State<VeterinarianActivationPage> {
+  late DateTime endDate = DateTime.now();
+  late bool _isSaving = false;
+
+  Future<void> _acceptActivation(Activation activation) async {
+    setState(() {
+      _isSaving = true;
+    });
+
+    Object prms = {
+      "activation_id": activation.activationId,
+      "date": activation.activationDate.toString(),
+      "end_date": endDate.toString(),
+      "status_id": 2,
+      "value": activation.value
+    };
+
+    bool isSuccess = await AppointmentRemote().createAppointment(prms);
+
+    setState(() {
+      _isSaving = false;
+    });
+
+    if (isSuccess) {
+      _buildActivationList(widget.veterinarian!.userVeterinarianId);
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context, true);
+    } else {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: const Text('Houve um erro ao salvar o animal.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   void _showServicesModal(List<Service> services) {
     showModalBottomSheet(
       context: context,
@@ -99,7 +150,11 @@ class _VeterinarianActivationPageState
                     animation: animation,
                     child: ListTile(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => VetAnimalDetails(record)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    VetAnimalDetails(record)));
                       },
                       iconColor: const Color.fromARGB(255, 0, 0, 0),
                       leading: const Icon(Icons.pets_outlined),
@@ -129,7 +184,8 @@ class _VeterinarianActivationPageState
     );
   }
 
-  void _showUserModal(String userName, List<UserAddress> address, UserPhone phone) {
+  void _showUserModal(
+      String userName, List<UserAddress> address, UserPhone phone) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -140,11 +196,15 @@ class _VeterinarianActivationPageState
               Text("Usuário: $userName.",
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 20,),
-              Text("Telefone: (${phone.ddd.toString()}) ${phone.number.toString()}.",
-                  style: const TextStyle(
-                      fontSize: 18)),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                  "Telefone: (${phone.ddd.toString()}) ${phone.number.toString()}.",
+                  style: const TextStyle(fontSize: 18)),
+              const SizedBox(
+                height: 20,
+              ),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -171,6 +231,89 @@ class _VeterinarianActivationPageState
                 ),
               ),
               const Spacer(),
+              DefaultOutlineButton(
+                'Fechar',
+                () {
+                  Navigator.pop(context);
+                },
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showAppointmentModal(DateTime scheduledDate, Activation activation) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const Text("Aceitar acionamento.",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(
+                height: 20,
+              ),
+              const Spacer(),
+              DateTimeFormField(
+                decoration: const InputDecoration(
+                  hintStyle: TextStyle(color: Colors.black45),
+                  errorStyle: TextStyle(color: Colors.redAccent),
+                  border: OutlineInputBorder(),
+                  suffixIcon: Icon(Icons.event_note),
+                  labelText: 'Data estimada do término',
+                ),
+                dateFormat: DateFormat('dd/MM/yyyy H:mm'),
+                mode: DateTimeFieldPickerMode.dateAndTime,
+                onDateSelected: (DateTime value) {
+                  setState(() {
+                    endDate = value;
+                  });
+                },
+                use24hFormat: true,
+                firstDate: DateTime.now(),
+                initialValue: endDate,
+                validator: (value) {
+                  if (value == null) {
+                    return 'Campo Obrigatório!';
+                  }
+                  return null;
+                },
+              ),
+              const Spacer(),
+              DefaultOutlineButton(
+                (_isSaving ? 'Aceitando...' : 'Aceitar'),
+                () {
+                  if (!scheduledDate.isBefore(endDate)) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Atenção'),
+                          content: const Text(
+                              'Data de término selecionada menor que a data inicial.'),
+                          actions: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                    return;
+                  }
+                  _acceptActivation(activation);
+                },
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
+              const SizedBox(height: 10),
               DefaultOutlineButton(
                 'Fechar',
                 () {
@@ -233,8 +376,10 @@ class _VeterinarianActivationPageState
                                     size: 20,
                                   ),
                                   label: 'Usuário',
-                                  onPress: () =>
-                                      _showUserModal(activation.user, activation.addresses, activation.phones[0]),
+                                  onPress: () => _showUserModal(
+                                      activation.user,
+                                      activation.addresses,
+                                      activation.phones[0]),
                                 ),
                                 CardActionButton(
                                   icon: const Icon(
@@ -256,7 +401,7 @@ class _VeterinarianActivationPageState
                                   onPress: () =>
                                       _showServicesModal(activation.services),
                                 ),
-                                if(activation.statusId == 3)
+                                if (activation.statusId == 3)
                                   CardActionButton(
                                       icon: const Icon(
                                         Icons.check,
@@ -264,8 +409,11 @@ class _VeterinarianActivationPageState
                                         size: 20,
                                       ),
                                       label: 'Aceitar',
-                                      onPress: () {}),
-                                if(activation.statusId == 3)
+                                      onPress: () {
+                                        _showAppointmentModal(
+                                            activation.scheduledDate, activation);
+                                      }),
+                                if (activation.statusId == 3)
                                   CardActionButton(
                                       icon: const Icon(
                                         Icons.not_interested,
