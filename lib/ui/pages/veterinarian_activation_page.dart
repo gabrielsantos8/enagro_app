@@ -12,6 +12,7 @@ import 'package:enagro_app/models/user_phone.dart';
 import 'package:enagro_app/models/veterinarian.dart';
 import 'package:enagro_app/ui/pages/vet_animal_details.dart';
 import 'package:enagro_app/ui/widgets/activation_card.dart';
+import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -34,22 +35,20 @@ class _VeterinarianActivationPageState
     setState(() {
       _isSaving = true;
     });
-
     Object prms = {
       "activation_id": activation.activationId,
-      "date": activation.activationDate.toString(),
+      "date": activation.scheduledDate.toString(),
       "end_date": endDate.toString(),
       "status_id": 2,
       "value": activation.value
     };
-
-    bool isSuccess = await AppointmentRemote().createAppointment(prms);
-
+    dynamic ret = await AppointmentRemote().createAppointment(prms);
+    String msg = ret['message'];
     setState(() {
       _isSaving = false;
     });
 
-    if (isSuccess) {
+    if (ret['success']) {
       _buildActivationList(widget.veterinarian!.userVeterinarianId);
       // ignore: use_build_context_synchronously
       Navigator.pop(context, true);
@@ -59,8 +58,39 @@ class _VeterinarianActivationPageState
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Erro'),
-            content: const Text('Houve um erro ao salvar o animal.'),
+            title: const Text('Atenção'),
+            content: Text(msg),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  Future<void> _recuseActivation(Activation activation) async {
+    Object prms = {"id": activation.activationId, "activation_status_id": 2};
+
+    bool success = await ActivationRemote().editActivation(prms);
+
+    if (success) {
+      setState(() {
+        _buildActivationList(widget.veterinarian!.userVeterinarianId);
+      });
+    } else {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Atenção'),
+            content: const Text('Houve um erro ao recusar acionamento.'),
             actions: [
               ElevatedButton(
                 onPressed: () {
@@ -411,7 +441,8 @@ class _VeterinarianActivationPageState
                                       label: 'Aceitar',
                                       onPress: () {
                                         _showAppointmentModal(
-                                            activation.scheduledDate, activation);
+                                            activation.scheduledDate,
+                                            activation);
                                       }),
                                 if (activation.statusId == 3)
                                   CardActionButton(
@@ -421,7 +452,23 @@ class _VeterinarianActivationPageState
                                         size: 20,
                                       ),
                                       label: 'Recusar',
-                                      onPress: () {}),
+                                      onPress: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return ConfirmDialog(
+                                                content:
+                                                    "Tem certeza que deseja recusar esse acionamento?",
+                                                noFunction: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                yesFunction: () {
+                                                  _recuseActivation(activation);
+                                                  Navigator.pop(context);
+                                                },
+                                              );
+                                            });
+                                      }),
                               ],
                               child: ActivationCard(
                                   activationDate: activation.activationDate,

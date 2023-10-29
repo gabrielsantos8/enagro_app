@@ -6,8 +6,8 @@ import 'package:enagro_app/infra/general_http_client.dart';
 class AppointmentRemote {
   final url = Util.concatenateEndpoint("appointment/");
 
-  Future<bool> createAppointment(Object prms) async {
+  Future<dynamic> createAppointment(Object prms) async {
     var data = await GeneralHttpClient().post('${url}store', jsonEncode(prms));
-    return data['success'];
+    return data;
   }
 }
