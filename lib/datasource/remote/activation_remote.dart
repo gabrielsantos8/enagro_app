@@ -23,4 +23,9 @@ class ActivationRemote {
     List<Activation> activations = Activation.fromArray(data['dados']);
     return activations;
   }
+
+  Future<bool> editActivation(Object prms) async {
+    var data = await GeneralHttpClient().post('${url}update', jsonEncode(prms));
+    return data['success'];
+  }
 }
