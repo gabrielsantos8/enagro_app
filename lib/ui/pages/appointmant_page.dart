@@ -1,6 +1,7 @@
 import 'package:enagro_app/datasource/remote/appointment_remote.dart';
 import 'package:enagro_app/models/activation.dart';
 import 'package:enagro_app/models/appointment.dart';
+import 'package:enagro_app/models/user_address.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -29,8 +30,15 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(child: Text('Dados do atendimento', style: TextStyle(fontSize: 16),),),
-            const SizedBox(height: 20,),
+            const Center(
+              child: Text(
+                'Dados do atendimento',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             const Text(
               'Atendimento de:',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -77,8 +85,15 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(child: Text('Dados do cliente', style: TextStyle(fontSize: 16),),),
-            const SizedBox(height: 20,),
+            const Center(
+              child: Text(
+                'Dados do cliente',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             const Text(
               'Nome:',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -87,7 +102,48 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
             const SizedBox(height: 8),
             const Text('Telefone:',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            Text('(${widget.activation.phones[0].ddd}) ${widget.activation.phones[0].number}'),
+            Text(
+                '(${widget.activation.phones[0].ddd}) ${widget.activation.phones[0].number}'),
+            const SizedBox(height: 8),
+            const Center(
+              child: Text(
+                'Cidades',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              height: 100,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                  borderRadius: BorderRadius.circular(2.0),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromARGB(255, 186, 186, 186),
+                      spreadRadius: 0,
+                      blurRadius: 5,
+                      offset: Offset(0, 2),
+                    ),
+                  ]),
+              child: ListView.builder(
+                itemCount: widget.activation.addresses.length,
+                itemBuilder: (context, index) {
+                  UserAddress address = widget.activation.addresses[index];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8),
+                      Text(
+                          'Cidade${widget.activation.addresses.length <= 1 ? '' : ' $index'}:',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text('${address.city.description} - ${address.city.uf}'),
+                    ],
+                  );
+                },
+              ),
+            )
           ],
         ),
       ),
@@ -115,7 +171,15 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
               } else {
                 Appointment? appointment = snapshot.data;
                 if (appointment != null) {
-                  return SizedBox(height: MediaQuery.of(context).size.height * 0.9, child: ListView(children: [buildCardAppointment(appointment), buildCardUser()],),);
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.9,
+                    child: ListView(
+                      children: [
+                        buildCardAppointment(appointment),
+                        buildCardUser()
+                      ],
+                    ),
+                  );
                 } else {
                   return const Text('Nenhum dado encontrado.');
                 }
