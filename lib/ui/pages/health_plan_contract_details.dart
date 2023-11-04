@@ -28,7 +28,6 @@ class HealthPlanContractDetails extends StatefulWidget {
 
 class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
     with SingleTickerProviderStateMixin {
-  late List<Color> colors;
   late TabController _tabController;
   late List<Animal> animals;
   late bool canTrigger = false;
@@ -38,9 +37,6 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_handleTabSelection);
-    colors = widget.contract.healthPlan.planColors.map((colorString) {
-      return Color(int.parse(colorString, radix: 16));
-    }).toList();
     fetchAnimals();
     _buildInstallmentlList(widget.contract.healthPlanContractId);
   }
