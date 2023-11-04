@@ -67,6 +67,45 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
     }
   }
 
+  Future<void> _cancelAppointment(Appointment appointment) async {
+    setState(() {
+      _isSaving = true;
+    });
+
+    Object prms = {"id": appointment.appointmentId, "status_id": 3};
+
+    bool isSuccess = await AppointmentRemote().updateAppointment(prms);
+
+    setState(() {
+      _isSaving = false;
+    });
+
+    if (isSuccess) {
+      setState(() {
+        fetchAppointmentData();
+      });
+    } else {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: const Text('Houve um erro ao cancelar atendimento.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   void _showAddressDetailsModal(BuildContext context, UserAddress userAddress) {
     showDialog(
       context: context,
@@ -524,6 +563,27 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
                                       yesFunction: () {
                                         Navigator.pop(context);
                                         _confirmAppointment(appointment);
+                                      },
+                                    );
+                                  });
+                            }),
+                          ),
+                        if (!widget.isUser && appointment.statusId == 2)
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: DefaultButton( !_isSaving ? 'Cancelar Atendimento' : 'Cancelando...', () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return ConfirmDialog(
+                                      content:
+                                          "Tem certeza que deseja cancelar o atendimento?",
+                                      noFunction: () {
+                                        Navigator.pop(context);
+                                      },
+                                      yesFunction: () {
+                                        Navigator.pop(context);
+                                        _cancelAppointment(appointment);
                                       },
                                     );
                                   });
