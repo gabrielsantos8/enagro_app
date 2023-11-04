@@ -1,7 +1,10 @@
 import 'package:enagro_app/datasource/remote/appointment_remote.dart';
 import 'package:enagro_app/models/activation.dart';
+import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/appointment.dart';
+import 'package:enagro_app/models/service.dart';
 import 'package:enagro_app/models/user_address.dart';
+import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -19,6 +22,34 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
     Future<Appointment> appointment =
         AppointmentRemote().getByActivation(widget.activation.activationId);
     return appointment;
+  }
+
+  void _showAddressDetailsModal(BuildContext context, UserAddress userAddress) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Detalhes do Endereço"),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Cidade: ${userAddress.city.description}."),
+              Text("UF: ${userAddress.city.uf}."),
+              Text("IBGE: ${userAddress.city.ibge}."),
+              Text("Complemento: ${userAddress.complement}"),
+            ],
+          ),
+          actions: [
+            DefaultOutlineButton(
+              'Fechar',
+              () => Navigator.of(context).pop(),
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget buildCardAppointment(Appointment appointment) {
@@ -76,6 +107,123 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
     );
   }
 
+  Widget buildCardServices() {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.all(16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(children: [
+          const Center(
+            child: Text(
+              'Serviços',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+              height: MediaQuery.of(context).size.height * 0.15,
+              child: ListView.builder(
+                itemCount: widget.activation.services.length,
+                itemBuilder: (context, index) {
+                  Service service = widget.activation.services[index];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8),
+                      const Text('Descrição:',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(service.description),
+                      const SizedBox(height: 8),
+                      const Text('Valor:',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(
+                        'R\$${service.value.toStringAsFixed(2)}',
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      const Divider()
+                    ],
+                  );
+                },
+              ))
+        ]),
+      ),
+    );
+  }
+
+  Widget buildCardAnimals() {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.all(16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(children: [
+          const Center(
+            child: Text(
+              'Animais',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+              height: MediaQuery.of(context).size.height * 0.19,
+              child: ListView.builder(
+                itemCount: widget.activation.animals.length,
+                itemBuilder: (context, index) {
+                  Animal animal = widget.activation.animals[index];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8),
+                      const Text('Nome:',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(animal.name),
+                      const SizedBox(height: 8),
+                      const Text('Tipo:',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(animal.animalSubType.description),
+                      const SizedBox(height: 8),
+                      const Text('Endereço:',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      InkWell(
+                        onTap: () {
+                          _showAddressDetailsModal(context, animal.userAddress);
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              '${animal.userAddress.city.description} - ${animal.userAddress.city.uf}',
+                            ),
+                            Icon(
+                              Icons.not_listed_location_outlined,
+                              size: 22,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider()
+                    ],
+                  );
+                },
+              ))
+        ]),
+      ),
+    );
+  }
+
   Widget buildCardUser() {
     return Card(
       elevation: 4,
@@ -116,7 +264,7 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
               height: 100,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.white,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(2.0),
                   boxShadow: const [
                     BoxShadow(
@@ -139,6 +287,8 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
                       Text('${address.city.description} - ${address.city.uf}'),
+                      const SizedBox(height: 8),
+                      const Divider()
                     ],
                   );
                 },
@@ -176,7 +326,9 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
                     child: ListView(
                       children: [
                         buildCardAppointment(appointment),
-                        buildCardUser()
+                        buildCardUser(),
+                        buildCardServices(),
+                        buildCardAnimals()
                       ],
                     ),
                   );
