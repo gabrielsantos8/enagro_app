@@ -28,11 +28,11 @@ class InstallmentItem extends StatelessWidget {
         title: Text(
           'Parcela $installmentNumber. Status: $status.',
           style:
-              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              const TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
             'R\$ ${value.toStringAsFixed(2)}. Vencimento: $formattedDueDate.',
-            style: const TextStyle(color: Colors.white)),
+            style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
         trailing: status.toLowerCase() == 'pendente'
             ? ElevatedButton(
                 style: ButtonStyle(
@@ -44,7 +44,7 @@ class InstallmentItem extends StatelessWidget {
             : null,
       ),
       const Divider(
-        color: Colors.white,
+        color: Color.fromARGB(255, 127, 127, 127),
       )
     ]);
   }
