@@ -22,7 +22,7 @@ class Appointment {
         activationId:  appointment['activation_id'] ?? 0,
         statusId: appointment['status_id'],
         status: appointment['status'],
-        date: DateTime.parse(appointment['date'] ?? '1900-12-01'),
+        date: DateTime.parse(appointment['initial_date'] ?? '1900-12-01'),
         endDate: DateTime.parse(appointment['end_date'] ?? '1900-12-01'),
         value: appointment['value'] ?? 0.0);
   }

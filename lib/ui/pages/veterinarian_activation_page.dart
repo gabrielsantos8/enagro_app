@@ -38,7 +38,7 @@ class _VeterinarianActivationPageState
     });
     Object prms = {
       "activation_id": activation.activationId,
-      "date": activation.scheduledDate.toString(),
+      "initial_date": activation.scheduledDate.toString(),
       "end_date": endDate.toString(),
       "status_id": 2,
       "value": activation.value
