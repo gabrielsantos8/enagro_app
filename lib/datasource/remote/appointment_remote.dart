@@ -17,4 +17,9 @@ class AppointmentRemote {
     Appointment appnt = Appointment.fromMap(data['dados'][0]);
     return appnt;
   }
+
+   Future<bool> updateAppointment(Object prms) async {
+    var data = await GeneralHttpClient().post('${url}update', jsonEncode(prms));
+    return data['success'];
+  }
 }

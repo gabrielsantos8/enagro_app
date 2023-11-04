@@ -4,6 +4,8 @@ import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/appointment.dart';
 import 'package:enagro_app/models/service.dart';
 import 'package:enagro_app/models/user_address.dart';
+import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
+import 'package:enagro_app/ui/widgets/default_button.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -18,10 +20,51 @@ class AppointmentPage extends StatefulWidget {
 }
 
 class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
+  bool _isSaving = false;
+
   Future<Appointment> fetchAppointmentData() async {
     Future<Appointment> appointment =
         AppointmentRemote().getByActivation(widget.activation.activationId);
     return appointment;
+  }
+
+  Future<void> _confirmAppointment(Appointment appointment) async {
+    setState(() {
+      _isSaving = true;
+    });
+
+    Object prms = {"id": appointment.appointmentId, "status_id": 1};
+
+    bool isSuccess = await AppointmentRemote().updateAppointment(prms);
+
+    setState(() {
+      _isSaving = false;
+    });
+
+    if (isSuccess) {
+      setState(() {
+        fetchAppointmentData();
+      });
+    } else {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: const Text('Houve um erro ao confirmar atendimento.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   void _showAddressDetailsModal(BuildContext context, UserAddress userAddress) {
@@ -465,6 +508,27 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
                     height: MediaQuery.of(context).size.height * 0.9,
                     child: ListView(
                       children: [
+                        if (widget.isUser && appointment.statusId == 2)
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: DefaultButton( !_isSaving ? 'Confirmar Atendimento' : 'Confirmando...', () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return ConfirmDialog(
+                                      content:
+                                          "Tem certeza que deseja confirmar que o atendimento foi realizado?",
+                                      noFunction: () {
+                                        Navigator.pop(context);
+                                      },
+                                      yesFunction: () {
+                                        Navigator.pop(context);
+                                        _confirmAppointment(appointment);
+                                      },
+                                    );
+                                  });
+                            }),
+                          ),
                         buildCardAppointment(appointment),
                         if (!widget.isUser) buildCardUser(),
                         buildCardServices(),
