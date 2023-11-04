@@ -15,7 +15,6 @@ class HealthPlanDetails extends StatefulWidget {
 }
 
 class _HealthPlanDetailsState extends State<HealthPlanDetails> {
-  late List<Color> colors;
 
   @override
   void initState() {
