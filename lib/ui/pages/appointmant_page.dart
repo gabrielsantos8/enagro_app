@@ -53,175 +53,315 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
   }
 
   Widget buildCardAppointment(Appointment appointment) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.all(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(
-              child: Text(
-                'Dados do atendimento',
-                style: TextStyle(fontSize: 16),
+    return !widget.isUser
+        ? Card(
+            elevation: 4,
+            margin: const EdgeInsets.all(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child: Text(
+                      'Dados do atendimento',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    'Atendimento de:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Text(DateFormat('dd/MM/yyyy H:mm').format(appointment.date)),
+                  const SizedBox(height: 8),
+                  const Text('Até:',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(DateFormat('dd/MM/yyyy H:mm')
+                      .format(appointment.endDate)),
+                  const SizedBox(height: 8),
+                  const Text('Tempo:',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                      '${appointment.endDate.difference(appointment.date).inHours.toString().padLeft(2, '0')}:${(appointment.endDate.difference(appointment.date).inMinutes % 60).toString().padLeft(2, '0')}'),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Situação:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Text(appointment.status),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  const Text(
+                    'Valor:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Text(
+                    'R\$${appointment.value.toStringAsFixed(2)}',
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(
-              height: 20,
+          )
+        : Card(
+            elevation: 4,
+            margin: const EdgeInsets.all(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child: Text(
+                      'Dados do atendimento',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    'Atendimento de:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Text(DateFormat('dd/MM/yyyy H:mm').format(appointment.date)),
+                  const SizedBox(height: 8),
+                  const Text('Até:',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(DateFormat('dd/MM/yyyy H:mm')
+                      .format(appointment.endDate)),
+                  const SizedBox(height: 8),
+                  const Text('Tempo:',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                      '${appointment.endDate.difference(appointment.date).inHours.toString().padLeft(2, '0')}:${(appointment.endDate.difference(appointment.date).inMinutes % 60).toString().padLeft(2, '0')}'),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Situação:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Text(appointment.status),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Veterinário:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Text(widget.activation.veterinarian),
+                ],
+              ),
             ),
-            const Text(
-              'Atendimento de:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            Text(DateFormat('dd/MM/yyyy H:mm').format(appointment.date)),
-            const SizedBox(height: 8),
-            const Text('Até:',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            Text(DateFormat('dd/MM/yyyy H:mm').format(appointment.endDate)),
-            const SizedBox(height: 8),
-            const Text('Tempo:',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            Text(
-                '${appointment.endDate.difference(appointment.date).inHours.toString().padLeft(2, '0')}:${(appointment.endDate.difference(appointment.date).inMinutes % 60).toString().padLeft(2, '0')}'),
-            const SizedBox(height: 8),
-            const Text(
-              'Situação:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            Text(appointment.status),
-            const SizedBox(height: 8),
-            const Text(
-              'Valor:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            Text(
-              'R\$${appointment.value.toStringAsFixed(2)}',
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 
   Widget buildCardServices() {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.all(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(children: [
-          const Center(
-            child: Text(
-              'Serviços',
-              style: TextStyle(fontSize: 16),
+    return !widget.isUser
+        ? Card(
+            elevation: 4,
+            margin: const EdgeInsets.all(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(children: [
+                const Center(
+                  child: Text(
+                    'Serviços',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.15,
+                    child: ListView.builder(
+                      itemCount: widget.activation.services.length,
+                      itemBuilder: (context, index) {
+                        Service service = widget.activation.services[index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 8),
+                            const Text('Descrição:',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(service.description),
+                            const SizedBox(height: 8),
+                            const Text('Valor:',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(
+                              'R\$${service.value.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            const Divider()
+                          ],
+                        );
+                      },
+                    ))
+              ]),
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          SizedBox(
-              height: MediaQuery.of(context).size.height * 0.15,
-              child: ListView.builder(
-                itemCount: widget.activation.services.length,
-                itemBuilder: (context, index) {
-                  Service service = widget.activation.services[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      const Text('Descrição:',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text(service.description),
-                      const SizedBox(height: 8),
-                      const Text('Valor:',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text(
-                        'R\$${service.value.toStringAsFixed(2)}',
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      const Divider()
-                    ],
-                  );
-                },
-              ))
-        ]),
-      ),
-    );
+          )
+        : Card(
+            elevation: 4,
+            margin: const EdgeInsets.all(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(children: [
+                const Center(
+                  child: Text(
+                    'Serviços',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.15,
+                    child: ListView.builder(
+                      itemCount: widget.activation.services.length,
+                      itemBuilder: (context, index) {
+                        Service service = widget.activation.services[index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 8),
+                            const Text('Descrição:',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(service.description),
+                            const SizedBox(height: 8),
+                            const Divider()
+                          ],
+                        );
+                      },
+                    ))
+              ]),
+            ),
+          );
   }
 
   Widget buildCardAnimals() {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.all(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(children: [
-          const Center(
-            child: Text(
-              'Animais',
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          SizedBox(
-              height: MediaQuery.of(context).size.height * 0.19,
-              child: ListView.builder(
-                itemCount: widget.activation.animals.length,
-                itemBuilder: (context, index) {
-                  Animal animal = widget.activation.animals[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      const Text('Nome:',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text(animal.name),
-                      const SizedBox(height: 8),
-                      const Text('Tipo:',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text(animal.animalSubType.description),
-                      const SizedBox(height: 8),
-                      const Text('Endereço:',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
-                      InkWell(
-                        onTap: () {
-                          _showAddressDetailsModal(context, animal.userAddress);
-                        },
-                        child: Row(
+    return !widget.isUser
+        ? Card(
+            elevation: 4,
+            margin: const EdgeInsets.all(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(children: [
+                const Center(
+                  child: Text(
+                    'Animais',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.19,
+                    child: ListView.builder(
+                      itemCount: widget.activation.animals.length,
+                      itemBuilder: (context, index) {
+                        Animal animal = widget.activation.animals[index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              '${animal.userAddress.city.description} - ${animal.userAddress.city.uf}',
+                            const SizedBox(height: 8),
+                            const Text('Nome:',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(animal.name),
+                            const SizedBox(height: 8),
+                            const Text('Tipo:',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(animal.animalSubType.description),
+                            const SizedBox(height: 8),
+                            const Text('Endereço:',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            InkWell(
+                              onTap: () {
+                                _showAddressDetailsModal(
+                                    context, animal.userAddress);
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    '${animal.userAddress.city.description} - ${animal.userAddress.city.uf}',
+                                  ),
+                                  Icon(
+                                    Icons.not_listed_location_outlined,
+                                    size: 22,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ],
+                              ),
                             ),
-                            Icon(
-                              Icons.not_listed_location_outlined,
-                              size: 22,
-                              color: Theme.of(context).primaryColor,
+                            const SizedBox(
+                              height: 8,
                             ),
+                            const Divider()
                           ],
-                        ),
-                      ),
-                      const Divider()
-                    ],
-                  );
-                },
-              ))
-        ]),
-      ),
-    );
+                        );
+                      },
+                    ))
+              ]),
+            ),
+          )
+        : Card(
+            elevation: 4,
+            margin: const EdgeInsets.all(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(children: [
+                const Center(
+                  child: Text(
+                    'Animais',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.19,
+                    child: ListView.builder(
+                      itemCount: widget.activation.animals.length,
+                      itemBuilder: (context, index) {
+                        Animal animal = widget.activation.animals[index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 8),
+                            const Text('Nome:',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(animal.name),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            const Divider()
+                          ],
+                        );
+                      },
+                    ))
+              ]),
+            ),
+          );
   }
 
   Widget buildCardUser() {
@@ -326,7 +466,7 @@ class _VeterinarianAppointmentPageState extends State<AppointmentPage> {
                     child: ListView(
                       children: [
                         buildCardAppointment(appointment),
-                        buildCardUser(),
+                        if (!widget.isUser) buildCardUser(),
                         buildCardServices(),
                         buildCardAnimals()
                       ],

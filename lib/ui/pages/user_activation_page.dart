@@ -6,6 +6,7 @@ import 'package:enagro_app/models/activation.dart';
 import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/service.dart';
 import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/ui/pages/appointmant_page.dart';
 import 'package:enagro_app/ui/widgets/activation_card.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
@@ -220,6 +221,15 @@ class _UserActivationPageState extends State<UserActivationPage> {
                                   onPress: () =>
                                       _showServicesModal(activation.services),
                                 ),
+                                if (activation.statusId == 1)
+                                  CardActionButton(
+                                      icon: const Icon(
+                                        Icons.remove_red_eye,
+                                        color: Colors.white,
+                                        size: 20
+                                      ),
+                                      label: 'Acompanhar',
+                                      onPress: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AppointmentPage(activation, true)))),
                               ],
                               child: ActivationCard(
                                 activationDate: activation.activationDate,

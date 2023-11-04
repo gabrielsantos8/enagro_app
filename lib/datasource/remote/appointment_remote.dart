@@ -13,7 +13,7 @@ class AppointmentRemote {
   }
 
   Future<Appointment> getByActivation(int id) async {
-    var data = await GeneralHttpClient().getJson('${url}getByActivation/${id}');
+    var data = await GeneralHttpClient().getJson('${url}getByActivation/$id');
     Appointment appnt = Appointment.fromMap(data['dados'][0]);
     return appnt;
   }
