@@ -7,6 +7,7 @@ import 'package:enagro_app/models/user_address.dart';
 import 'package:enagro_app/ui/pages/animal_edit_page.dart';
 import 'package:enagro_app/ui/widgets/circular_button.dart';
 import 'package:enagro_app/ui/widgets/confirm_circular_button.dart';
+import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -357,14 +358,9 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                                           user: widget.user,
                                         )));
                           }),
-                      CircularButton(
-                          label: "Histórico",
-                          color: const Color.fromARGB(255, 238, 237, 237),
-                          icon: Icons.history_outlined,
-                          onPressed: () {}),
                       ConfirmCircularButton(
                           label: "Excluir",
-                          color: const Color.fromARGB(255, 255, 227, 225),
+                          color: const Color.fromARGB(255, 238, 237, 237),
                           icon: Icons.delete_outline,
                           confirmText: "Tem certeza que deseja excluir?",
                           onPressed: _deleteAnimal)
@@ -397,12 +393,11 @@ void _showAddressDetailsModal(BuildContext context, UserAddress userAddress) {
           ],
         ),
         actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Fechar o modal
-            },
-            child: const Text("Fechar"),
-          ),
+          DefaultOutlineButton(
+              'Fechar',
+              () => Navigator.of(context).pop(),
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
         ],
       );
     },

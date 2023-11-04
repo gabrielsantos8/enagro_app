@@ -11,6 +11,7 @@ import 'package:enagro_app/models/user_address.dart';
 import 'package:enagro_app/models/user_phone.dart';
 import 'package:enagro_app/models/veterinarian.dart';
 import 'package:enagro_app/ui/pages/vet_animal_details.dart';
+import 'package:enagro_app/ui/pages/appointmant_page.dart';
 import 'package:enagro_app/ui/widgets/activation_card.dart';
 import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
@@ -469,6 +470,15 @@ class _VeterinarianActivationPageState
                                               );
                                             });
                                       }),
+                                if (activation.statusId == 1)
+                                  CardActionButton(
+                                      icon: const Icon(
+                                        Icons.remove_red_eye,
+                                        color: Colors.white,
+                                        size: 20
+                                      ),
+                                      label: 'Acompanhar',
+                                      onPress: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AppointmentPage(activation, false)))),
                               ],
                               child: ActivationCard(
                                   activationDate: activation.activationDate,

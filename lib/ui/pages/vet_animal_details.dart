@@ -1,6 +1,7 @@
 import 'package:enagro_app/datasource/remote/animal_remote.dart';
 import 'package:enagro_app/models/animal.dart';
 import 'package:enagro_app/models/user_address.dart';
+import 'package:enagro_app/ui/widgets/default_outline_button.dart';
 import 'package:flutter/material.dart';
 
 class VetAnimalDetails extends StatefulWidget {
@@ -212,12 +213,11 @@ void _showAddressDetailsModal(BuildContext context, UserAddress userAddress) {
           ],
         ),
         actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Fechar o modal
-            },
-            child: const Text("Fechar"),
-          ),
+          DefaultOutlineButton(
+              'Fechar',
+              () => Navigator.of(context).pop(),
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
         ],
       );
     },
