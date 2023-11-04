@@ -20,17 +20,12 @@ class _HealthPlanDetailsState extends State<HealthPlanDetails> {
   @override
   void initState() {
     super.initState();
-    colors = widget.plan.planColors.map((colorString) {
-      return Color(int.parse(colorString, radix: 16));
-    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: colors[1],
-      ),
+      appBar: AppBar(),
       body: ListView(children: [
         SizedBox(
           child: Container(
@@ -45,18 +40,12 @@ class _HealthPlanDetailsState extends State<HealthPlanDetails> {
     return Container(
       padding: const EdgeInsets.all(16),
       height: MediaQuery.of(context).size.height * 0.90,
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [colors[1], colors[0]],
-      )),
       child: Center(
         child: Column(children: [
           Text(
             widget.plan.description,
             style: const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 20, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 0, 0, 0)),
           ),
           const SizedBox(
             height: 12,
@@ -64,7 +53,7 @@ class _HealthPlanDetailsState extends State<HealthPlanDetails> {
           Text(
             widget.plan.detailedDescription,
             style: const TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 0, 0, 0)),
           ),
           const SizedBox(
             height: 15,
@@ -72,7 +61,7 @@ class _HealthPlanDetailsState extends State<HealthPlanDetails> {
           Text(
             'Entre ${widget.plan.minimalAnimals}-${widget.plan.maximumAnimals} animais.',
             style: const TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 0, 0, 0)),
           ),
           const SizedBox(
             height: 15,
@@ -80,7 +69,7 @@ class _HealthPlanDetailsState extends State<HealthPlanDetails> {
           Text(
             'Você paga R\$${widget.plan.value.toStringAsFixed(2)} por mês (R\$${(widget.plan.value * 12).toStringAsFixed(2)} por ano).',
             style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 16, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 0, 0, 0)),
           ),
           const SizedBox(
             height: 30,
@@ -88,7 +77,7 @@ class _HealthPlanDetailsState extends State<HealthPlanDetails> {
           const Text(
             'Serviços:',
             style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 0, 0, 0)),
           ),
           const SizedBox(
             height: 30,
@@ -97,17 +86,17 @@ class _HealthPlanDetailsState extends State<HealthPlanDetails> {
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [colors[1], colors[0]],
+                    colors: [Colors.white, Color.fromARGB(255, 221, 221, 221)],
                   ),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
-                      color: colors[1],
+                      color: Color.fromARGB(255, 221, 221, 221),
                       spreadRadius: 2,
                       blurRadius: 4,
-                      offset: const Offset(0, 2),
+                      offset: Offset(0, 2),
                     ),
                   ]),
               child: AutoAnimatedList<Service>(
@@ -116,12 +105,12 @@ class _HealthPlanDetailsState extends State<HealthPlanDetails> {
                   return SizeFadeTransition(
                     animation: animation,
                     child: ListTile(
-                      iconColor: Colors.white,
+                      iconColor: const Color.fromARGB(255, 0, 0, 0),
                       leading: const Icon(Icons.medical_services_outlined),
                       title: Text(
                         record.description,
                         style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                            color: Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold),
                       ),
                     ),
                   );
@@ -146,7 +135,7 @@ class _HealthPlanDetailsState extends State<HealthPlanDetails> {
             child: Text(
               'Assinar',
               style: TextStyle(
-                  color: colors[1],
+                  color: Theme.of(context).primaryColor,
                   fontSize: 14.0,
                   fontWeight: FontWeight.bold),
             ),

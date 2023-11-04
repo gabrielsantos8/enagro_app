@@ -163,12 +163,10 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: colors[1],
-      ),
+      appBar: AppBar(),
       body: ListView(children: [
         Container(
-          color: colors[1],
+          color: Theme.of(context).primaryColor,
           child: TabBar(
               controller: _tabController,
               tabs: const [
@@ -176,7 +174,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                 Tab(text: 'Animais'),
                 Tab(text: 'Parcelas'),
               ],
-              indicatorColor: colors[0],
+              indicatorColor: Theme.of(context).primaryColorLight,
               labelColor: Colors.white),
         ),
         SizedBox(
@@ -201,18 +199,14 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
     return Container(
       padding: const EdgeInsets.all(16),
       height: MediaQuery.of(context).size.height * 0.90,
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [colors[1], colors[0]],
-      )),
       child: Center(
         child: Column(children: [
           Text(
             widget.contract.healthPlan.description,
             style: const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 0, 0, 0)),
           ),
           const SizedBox(
             height: 12,
@@ -220,7 +214,9 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
           Text(
             widget.contract.healthPlan.detailedDescription,
             style: const TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 0, 0, 0)),
           ),
           const SizedBox(
             height: 15,
@@ -228,7 +224,9 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
           Text(
             'Entre ${widget.contract.healthPlan.minimalAnimals}-${widget.contract.healthPlan.maximumAnimals} animais.',
             style: const TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 0, 0, 0)),
           ),
           const SizedBox(
             height: 15,
@@ -236,7 +234,9 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
           Text(
             'Você está pagando R\$${widget.contract.value.toStringAsFixed(2)} por ${widget.contract.healthPlanContractType.healthPlanContractTypeId == 1 ? 'mês' : 'ano'}.',
             style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 0, 0, 0)),
           ),
           const SizedBox(
             height: 30,
@@ -244,7 +244,9 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
           const Text(
             'Serviços:',
             style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 0, 0, 0)),
           ),
           const SizedBox(
             height: 30,
@@ -253,31 +255,24 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [colors[1], colors[0]],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: colors[1],
-                      spreadRadius: 2,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]),
+                    colors: [Colors.white, Color.fromARGB(255, 221, 221, 221)],
+                  )),
               child: AutoAnimatedList<Service>(
                 items: widget.contract.healthPlan.services,
                 itemBuilder: (context, record, index, animation) {
                   return SizeFadeTransition(
                     animation: animation,
                     child: ListTile(
-                      iconColor: Colors.white,
+                      iconColor: const Color.fromARGB(255, 0, 0, 0),
                       leading: const Icon(Icons.medical_services_outlined),
                       title: Text(
                         record.description,
                         style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   );
@@ -301,12 +296,6 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
           case ConnectionState.none:
             return Container(
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [colors[1], colors[0]],
-                )),
                 child: Center(
                   child: CircularProgressIndicator(
                     backgroundColor: Theme.of(context).primaryColor,
@@ -318,29 +307,26 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
               int totalAmount = _calculateTotalAmount(snapshot.data!);
               return Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [colors[1], colors[0]],
-                  )),
                   child: Column(
                     children: [
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0),
-                            gradient: LinearGradient(
+                            gradient: const LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: [colors[1], colors[0]],
+                              colors: [
+                                Colors.white,
+                                Color.fromARGB(255, 221, 221, 221)
+                              ],
                             ),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
-                                color: colors[1],
+                                color: Color.fromARGB(255, 221, 221, 221),
                                 spreadRadius: 2,
                                 blurRadius: 4,
-                                offset: const Offset(0, 2),
+                                offset: Offset(0, 2),
                               ),
                             ]),
                         height: MediaQuery.of(context).size.height * 0.70,
@@ -397,11 +383,11 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
             } else {
               return Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [colors[1], colors[0]],
+                    colors: [Colors.white, Color.fromARGB(255, 221, 221, 221)],
                   )),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -542,12 +528,6 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
           case ConnectionState.none:
             return Container(
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [colors[1], colors[0]],
-                )),
                 child: Center(
                   child: CircularProgressIndicator(
                     backgroundColor: Theme.of(context).primaryColor,
@@ -558,29 +538,19 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               return Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [colors[1], colors[0]],
-                  )),
                   child: Column(
                     children: [
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(10.0),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [colors[1], colors[0]],
-                            ),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
-                                color: colors[1],
+                                color: Color.fromARGB(255, 221, 221, 221),
                                 spreadRadius: 2,
                                 blurRadius: 4,
-                                offset: const Offset(0, 2),
+                                offset: Offset(0, 2),
                               ),
                             ]),
                         height: MediaQuery.of(context).size.height * 0.70,
@@ -607,7 +577,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                                 status: status,
                                 value: installment.value,
                                 dueDate: installment.dueDate,
-                                color: colors[0],
+                                color: Theme.of(context).primaryColor,
                                 onCLick: () {
                                   showDialog(
                                       context: context,
@@ -639,7 +609,8 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: const Text('Atenção'),
-                                  content: const Text('Primeiro pague as parcelas que estão pendentes/vencidas.'),
+                                  content: const Text(
+                                      'Primeiro pague as parcelas que estão pendentes/vencidas.'),
                                   actions: [
                                     ElevatedButton(
                                       onPressed: () {
@@ -653,7 +624,11 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                             );
                             return;
                           }
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ActivationPage(widget.contract, widget.user)));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ActivationPage(
+                                      widget.contract, widget.user)));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
@@ -664,7 +639,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                         child: Text(
                           'Acionar',
                           style: TextStyle(
-                              color: colors[1],
+                              color: Theme.of(context).primaryColor,
                               fontSize: 14.0,
                               fontWeight: FontWeight.bold),
                         ),
@@ -676,12 +651,6 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
             } else {
               return Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [colors[1], colors[0]],
-                  )),
                   child: const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -689,7 +658,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                           child: Text(
                         'Nenhuma parcela encontrada!',
                         style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                            color: Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold),
                       ))
                     ],
                   ));
