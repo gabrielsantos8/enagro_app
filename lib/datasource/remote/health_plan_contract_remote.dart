@@ -33,4 +33,10 @@ class HealthPlanContractRemote {
         await GeneralHttpClient().post('${url}installmentPayment', jsonEncode(prms));
     return data['success'];
   }
+
+  Future<bool> contractCancel(Object prms) async {
+    var data =
+        await GeneralHttpClient().post('${url}contractCancel', jsonEncode(prms));
+    return data['success'];
+  }
 }
