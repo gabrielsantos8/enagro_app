@@ -9,6 +9,7 @@ import 'package:enagro_app/models/installment.dart';
 import 'package:enagro_app/models/service.dart';
 import 'package:enagro_app/models/user.dart';
 import 'package:enagro_app/ui/pages/activation_page.dart';
+import 'package:enagro_app/ui/pages/home_page.dart';
 import 'package:enagro_app/ui/widgets/card_list_item.dart';
 import 'package:enagro_app/ui/widgets/confirm__dialog.dart';
 import 'package:enagro_app/ui/widgets/default_outline_button.dart';
@@ -61,6 +62,35 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
       _buildInstallmentlList(widget.contract.healthPlanContractId);
       fetchAnimals();
     });
+  }
+
+  void _cancel() async {
+    Object map = {"user_id": widget.user!.userId};
+    bool isSuccess =
+        await HealthPlanContractRemote().contractCancel(map);
+    if (isSuccess) {
+      // ignore: use_build_context_synchronously
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage(widget.user)), (Route<dynamic> route) => false);
+    } else {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: const Text('Houve um erro ao cancelar a assinatura.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   void _removeAnimal(int id) async {
@@ -597,49 +627,87 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                       const SizedBox(
                         height: 20,
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (!canTrigger) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Atenção'),
-                                  content: const Text(
-                                      'Primeiro pague as parcelas que estão pendentes/vencidas.'),
-                                  actions: [
-                                    ElevatedButton(
-                                      onPressed: () {
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              if (!canTrigger) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Atenção'),
+                                      content: const Text(
+                                          'Primeiro pague as parcelas que estão pendentes/vencidas.'),
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                return;
+                              }
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ActivationPage(
+                                          widget.contract, widget.user)));
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                            ),
+                            child: Text(
+                              'Acionar',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return ConfirmDialog(
+                                      content:
+                                          "Tem certeza que deseja cancelar sua assinatura?",
+                                      noFunction: () {
                                         Navigator.pop(context);
                                       },
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                            return;
-                          }
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ActivationPage(
-                                      widget.contract, widget.user)));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
+                                      yesFunction: () {
+                                        Navigator.pop(context);
+                                        _cancel();
+                                      },
+                                    );
+                                  });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                            ),
+                            child: Text(
+                              'Cancelar',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
-                        child: Text(
-                          'Acionar',
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                        ],
+                      )
                     ],
                   ));
             } else if (snapshot.hasError) {
@@ -654,7 +722,8 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                           child: Text(
                         'Nenhuma parcela encontrada!',
                         style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold),
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontWeight: FontWeight.bold),
                       ))
                     ],
                   ));
