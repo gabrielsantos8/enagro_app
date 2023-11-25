@@ -295,7 +295,7 @@ class _HealthPlanContractDetailsState extends State<HealthPlanContractDetails>
                       iconColor: const Color.fromARGB(255, 0, 0, 0),
                       leading: const Icon(Icons.medical_services_outlined),
                       title: Text(
-                        record.description,
+                        '${record.description} (${record.animalSubType.description})',
                         style: const TextStyle(
                             color: Color.fromARGB(255, 0, 0, 0),
                             fontWeight: FontWeight.bold),

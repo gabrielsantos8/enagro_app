@@ -66,7 +66,7 @@ class HealthPlanCard extends StatelessWidget {
                       iconColor: const Color.fromARGB(255, 55, 55, 55),
                       leading: const Icon(Icons.medical_services_outlined),
                       title: Text(
-                        record.description,
+                        '${record.description} (${record.animalSubType.description})',
                         style: const TextStyle(
                           color: Color.fromARGB(255, 55, 55, 55),
                           fontSize: 13,

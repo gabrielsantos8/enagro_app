@@ -2,6 +2,7 @@ import 'package:enagro_app/datasource/remote/health_plan_contract_remote.dart';
 import 'package:enagro_app/datasource/remote/user_remote.dart';
 import 'package:enagro_app/models/health_plan_contract.dart';
 import 'package:enagro_app/models/user.dart';
+import 'package:enagro_app/ui/pages/about_page.dart';
 import 'package:enagro_app/ui/pages/animal_page.dart';
 import 'package:enagro_app/ui/pages/health_plan_contract_details.dart';
 import 'package:enagro_app/ui/pages/health_plans_page.dart';
@@ -165,7 +166,10 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => PartnersPage(widget.user)));
               }),
               const Spacer(),
-              DefaultDrawerItem(Icons.info_outline, 'Sobre a Enagro', () {},
+              DefaultDrawerItem(Icons.info_outline, 'Sobre a Enagro', () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AboutPage())),
                   div: false),
             ],
           ),
