@@ -14,9 +14,11 @@ class Animal {
   final AnimalSubType animalSubType;
   final int amount;
   final int? healthPlanContractAnimalId;
+  final bool? isNotDeletable;
 
   Animal(
-      {required this.animalType,
+      {this.isNotDeletable,
+      required this.animalType,
       required this.imgUrl,
       required this.userAddress,
       required this.birthDate,
@@ -54,6 +56,7 @@ class Animal {
             anml['animal_type_id'] ?? 0,
             anml['animal_type'] ?? ''),
         amount: anml['amount'] ?? 0,
+        isNotDeletable: anml['is_not_deletable'] ?? false,
         healthPlanContractAnimalId:
             anml['health_plan_contract_animals_id'] ?? 0);
   }
