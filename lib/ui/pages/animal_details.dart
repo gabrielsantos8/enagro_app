@@ -358,12 +358,13 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                                           user: widget.user,
                                         )));
                           }),
-                      ConfirmCircularButton(
-                          label: "Excluir",
-                          color: const Color.fromARGB(255, 238, 237, 237),
-                          icon: Icons.delete_outline,
-                          confirmText: "Tem certeza que deseja excluir?",
-                          onPressed: _deleteAnimal)
+                      if(widget.animal!.isNotDeletable == false)
+                        ConfirmCircularButton(
+                            label: "Excluir",
+                            color: const Color.fromARGB(255, 238, 237, 237),
+                            icon: Icons.delete_outline,
+                            confirmText: "Tem certeza que deseja excluir?",
+                            onPressed: _deleteAnimal)
                     ],
                   ),
                 ],

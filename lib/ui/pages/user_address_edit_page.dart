@@ -155,13 +155,14 @@ class _UserAddressEditPageState extends State<UserAddressEditPage> {
             child: _isSaving ? const Text('Salvando...') : const Text('Salvar'),
           ),
           const SizedBox(height: 12),
-          ConfirmButton(
-              yesFunction: () {
-                _deleteAddress();
-              },
-              color: const Color.fromARGB(255, 204, 63, 53),
-              buttonText: "Excluir",
-              confirmText: "Tem certeza que deseja excluir?"),
+          if(widget.userAddress.isNotDeletable == false)
+            ConfirmButton(
+                yesFunction: () {
+                  _deleteAddress();
+                },
+                color: const Color.fromARGB(255, 204, 63, 53),
+                buttonText: "Excluir",
+                confirmText: "Tem certeza que deseja excluir?"),
         ],
       ),
     )));
