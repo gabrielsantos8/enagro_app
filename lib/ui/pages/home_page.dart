@@ -218,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                                   textAlign: TextAlign.start,
                                   style: const TextStyle(
                                       color: Colors.white,
-                                      fontSize: 19,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
@@ -285,7 +285,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 25, bottom: 25),
+                          padding: const EdgeInsets.only(left: 20, bottom: 25),
                           child: Row(
                             children: [
                               Image.asset(
@@ -314,7 +314,7 @@ class _HomePageState extends State<HomePage> {
                                       colors: [Colors.green, Colors.green],
                                     )),
                                 child: const Text(
-                                  'Nenhum plano contratado!',
+                                  'Nenhum plano!',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white),
